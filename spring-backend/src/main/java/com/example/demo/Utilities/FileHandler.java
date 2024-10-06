@@ -1,4 +1,5 @@
 package com.example.demo.Utilities;
+import com.example.demo.Utilities.UtilitiesInterface.FileHandlerInterface;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -9,13 +10,9 @@ import java.nio.file.Path;
 
 import org.springframework.web.multipart.MultipartFile;
 
-public class FileHandler {
+
+public class FileHandler implements FileHandlerInterface {
     private String uploadDir = "projectfiles/";
-
-    public FileHandler(String uploadDir) {
-        this.uploadDir = this.uploadDir + uploadDir;
-
-    }
 
     private String generateTimestampedFileName(String originalFileName) {
         long timestamp = System.currentTimeMillis();
@@ -30,30 +27,42 @@ public class FileHandler {
         return timestamp + "_" + originalFileName + extension;
     }
 
-    public String saveFile(MultipartFile file) throws IOException{
+    @Override
+    public String saveFile(MultipartFile file, String tableName, String recordId){
         String filename = generateTimestampedFileName(file.getOriginalFilename());
-        Path filepath = Paths.get(uploadDir, filename);
+        Path filepath = Paths.get(uploadDir, tableName, recordId, filename);
 
-        Files.createDirectories(filepath.getParent());
+        try{
+            Files.createDirectories(filepath.getParent());
 
-        Files.write(filepath, file.getBytes());
+            Files.write(filepath, file.getBytes());
+        }
+        catch(IOException e){
+            return null;
+        }
 
         return filename;
     }
 
-    public List<String> saveFiles(MultipartFile[] files) throws IOException {
+    @Override
+    public List<String> saveFiles(MultipartFile[] files, String tableName, String recordId) {
         List<String> fileNames = new ArrayList<String>();
 
         for(MultipartFile file : files) {
-            fileNames.add(saveFile(file));
+            fileNames.add(saveFile(file, tableName, recordId));
         }
 
         return fileNames;
     }
 
-    public void deleteFile(String filename) throws IOException {
+    @Override
+    public void deleteFile(String filename, String tableName, String recordId) {
         Path filepath = Paths.get(uploadDir, filename);
-
-        Files.deleteIfExists(filepath);
+        try{
+            Files.deleteIfExists(filepath);
+        }
+        catch(IOException e){
+            e.printStackTrace();
+        }
     }
 }

@@ -1,7 +1,5 @@
 package com.example.demo.Service;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +18,9 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    // @Autowired
-    // private SecurityConfig securityConfig;
+    private final String tablename = "users";
 
-    private final FileHandler fileHandler = new FileHandler("avatars");
+    private final FileHandler fileHandler = new FileHandler();
 
     public List<Users> getUsers() {
         return userRepository.findAll();
@@ -34,29 +31,22 @@ public class UserService {
     }
 
     public Users createUser(Users user, MultipartFile avatarFile) {
+        // user.setPassword(securityConfig.passwordEncoder().encode(user.getPassword()));
+        Users newUser = userRepository.save(user);
+
         String avatar = null;
-        if (avatarFile != null) {
-            try {
-                avatar = fileHandler.saveFile(avatarFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+
+        if (newUser != null && avatarFile != null) {
+            avatar = fileHandler.saveFile(avatarFile, this.tablename, user.getId());
             user.setAvatar(avatar);
         }
-        // user.setPassword(securityConfig.passwordEncoder().encode(user.getPassword()));
-        user.setAvatar(avatar);
-        return userRepository.save(user);
+        return newUser;
     }
 
     public Users updateUser(String id, Users user, MultipartFile avatarFile) {
         String avatar = null;
         if (avatarFile != null) {
-            try {
-                avatar = fileHandler.saveFile(avatarFile
-                );
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            avatar = fileHandler.saveFile(avatarFile, this.tablename, user.getId());
             user.setAvatar(avatar);
         }
         Users existingUser = userRepository.findById(id).orElse(null);
