@@ -10,7 +10,7 @@ import java.nio.file.Path;
 import org.springframework.web.multipart.MultipartFile;
 
 public class FileHandler {
-    private String uploadDir = "files/";
+    private String uploadDir = "projectfiles/";
 
     public FileHandler(String uploadDir) {
         this.uploadDir = this.uploadDir + uploadDir;
