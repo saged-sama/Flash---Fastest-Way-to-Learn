@@ -30,17 +30,20 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
 
+    @SuppressWarnings("null")
     public Users createUser(Users user, MultipartFile avatarFile) {
         // user.setPassword(securityConfig.passwordEncoder().encode(user.getPassword()));
-        Users newUser = userRepository.save(user);
 
         String avatar = null;
+        // System.out.println(user);
+        user = userRepository.save(user);
 
-        if (newUser != null && avatarFile != null) {
+        if (user != null && avatarFile != null) {
             avatar = fileHandler.saveFile(avatarFile, this.tablename, user.getId());
             user.setAvatar(avatar);
         }
-        return newUser;
+        user = userRepository.save(user);
+        return user;
     }
 
     public Users updateUser(String id, Users user, MultipartFile avatarFile) {

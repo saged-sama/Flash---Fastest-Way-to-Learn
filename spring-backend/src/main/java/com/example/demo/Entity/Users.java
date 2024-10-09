@@ -36,6 +36,8 @@ public class Users {
     @Column(nullable = false)
     private boolean emailVerified = false;
 
+    private String username;
+
     @Column(nullable = false)
     @JsonIgnore
     private String password;
