@@ -1,4 +1,4 @@
-package com.example.demo.Service;
+package com.example.demo.Rooms;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -9,9 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.Component.ApiRequestClient;
-import com.example.demo.DTO.RoomPayload;
-import com.example.demo.Entity.Rooms;
-import com.example.demo.Repository.RoomsRepository;
 
 @Service
 public class RoomsService {
@@ -33,7 +30,7 @@ public class RoomsService {
     public Rooms createRoom(String userId){
         String name = userId + new Date().getTime();
 
-        RoomPayload payload = new RoomPayload(
+        RoomPayloadDTO payload = new RoomPayloadDTO(
             name,
             userId,
             template_id

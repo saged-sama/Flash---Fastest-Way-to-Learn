@@ -1,4 +1,4 @@
-package com.example.demo.Service;
+package com.example.demo.Files;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;

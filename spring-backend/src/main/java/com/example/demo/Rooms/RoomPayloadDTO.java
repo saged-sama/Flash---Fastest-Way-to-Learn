@@ -1,14 +1,14 @@
-package com.example.demo.DTO;
+package com.example.demo.Rooms;
 
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-public class RoomPayload {
+public class RoomPayloadDTO {
     private String name;
     private String description;
     private String template_id;
 
-    public RoomPayload(String name, String description, String template_id) {
+    public RoomPayloadDTO(String name, String description, String template_id) {
         this.name = name;
         this.description = description;
         this.template_id = template_id;
