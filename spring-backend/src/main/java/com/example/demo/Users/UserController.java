@@ -15,11 +15,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.demo.Websocket.WebSocketController;
+
 @RestController
 @RequestMapping("/api/collections/users/")
 public class UserController {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private WebSocketController webSocketController;
 
     @GetMapping("/records")
     public ResponseEntity<List<Users>> getUsers() {
@@ -58,6 +63,8 @@ public class UserController {
     ) {
 
         Users updatedUser = userService.updateUser(id, user, avatarFile);
+        String destination = "/users/" + id;
+        webSocketController.updateNotification(updatedUser, destination);
         return ResponseEntity.ok(updatedUser);
     }
 
