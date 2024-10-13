@@ -1,7 +1,7 @@
 import React from "react"
 import Back from "../common/back/Back"
-import CoursesCard from "@/components/allcourses/CourseCard";
-import OnlineCourses from "@/components/allcourses/OnlineCourses";
+import CoursesCard from "./CourseCard";
+import OnlineCourses from "./OnlineCourses";
 
 const CourseHome = () => {
   return (

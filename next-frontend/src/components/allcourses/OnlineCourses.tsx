@@ -1,6 +1,6 @@
 import React from "react"
-import { online } from "@/dummydata"
-import Heading from "@/components/common/heading/heading"
+import { online } from "../../dummydata"
+import Heading from "../common/heading/heading"
 import "./courses.css"
 
 const OnlineCourses = () => {

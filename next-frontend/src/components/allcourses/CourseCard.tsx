@@ -1,6 +1,6 @@
 import React from "react";
-import { coursesCard } from "@/dummydata";
-import Heading from "@/components/common/heading/heading";
+import { coursesCard } from "../../dummydata";
+import Heading from "../common/heading/heading";
 
 const CoursesCard = () => {
   return (

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";  // Next.js's Link component for navigation
-import Head from "@/components/common/header/Head";  // Custom Head component
+import Head from "./Head";  // Custom Head component
 import { useRouter } from "next/router"; 
 
 const Header: React.FC = () => {
