@@ -1,9 +1,9 @@
-package com.example.demo.Sessions;
+package com.example.demo.Users;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SessionRepository extends JpaRepository<Sessions, String> {
-    
+public interface UsersRepository extends JpaRepository<Users, String> {
+
 }

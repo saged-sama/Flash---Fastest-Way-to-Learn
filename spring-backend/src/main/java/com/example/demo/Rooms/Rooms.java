@@ -2,6 +2,7 @@ package com.example.demo.Rooms;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
@@ -9,6 +10,8 @@ import jakarta.persistence.Embeddable;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -43,6 +46,16 @@ public class Rooms {
 
     private String template;
     private String region;
+
+    @OneToOne
+    @JoinColumn(name = "host_room", referencedColumnName = "id")
+    @JsonIgnore
+    private RoomData hostRoom;
+
+    @OneToOne
+    @JoinColumn(name = "guest_room", referencedColumnName = "id")
+    @JsonIgnore
+    private RoomData guestRoom;
 
     @JsonProperty("created_at")
     private LocalDateTime createdAt;
@@ -94,6 +107,14 @@ public class Rooms {
         return region;
     }
 
+    public RoomData getGuestRoom() {
+        return guestRoom;
+    }
+
+    public RoomData getHostRoom() {
+        return hostRoom;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -137,7 +158,14 @@ public class Rooms {
 
     public void setRegion(String region) {
         this.region = region;
-        System.out.println(region);
+    }
+
+    public void setHostRoom(RoomData hostRoom) {
+        this.hostRoom = hostRoom;
+    }
+
+    public void setGuestRoom(RoomData guestRoom) {
+        this.guestRoom = guestRoom;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {

@@ -6,7 +6,7 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import com.example.demo.Users.UserRepository;
+import com.example.demo.Users.UsersRepository;
 import com.example.demo.Users.Users;
 
 import io.jsonwebtoken.Claims;
@@ -16,7 +16,7 @@ import io.jsonwebtoken.security.Keys;
 public class JwtService {
 
     @Autowired
-    private UserRepository userRepository;
+    private UsersRepository userRepository;
 
     @Value("${jwt.secret}")
     private String jwt_secret;

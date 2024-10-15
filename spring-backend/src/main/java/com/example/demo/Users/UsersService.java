@@ -11,9 +11,9 @@ import com.example.demo.Files.FileHandler;
 import com.example.demo.Utilities.EntityUpdate;
 
 @Service
-public class UserService {
+public class UsersService {
     @Autowired
-    private UserRepository userRepository;
+    private UsersRepository userRepository;
 
     private final String tablename = "users";
 

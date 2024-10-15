@@ -16,17 +16,23 @@ public class ApiRequestClient {
         this.restTemplate = restTemplate;
     }
 
-    public <T> T sendGetRequest(String url, Map<String, String> queryParams, Class<T> responseType) {
+    public <T> T sendGetRequest(String url, Map<String, String> queryParams, Class<T> responseType, String authToken) {
 
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(url);
         if (queryParams != null) {
             queryParams.forEach(uriBuilder::queryParam);
         }
 
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(authToken);
+
+        HttpEntity<Object> requestEntity = new HttpEntity<>(headers);
+
         ResponseEntity<T> response = restTemplate.exchange(
             uriBuilder.toUriString(),
             HttpMethod.GET,
-            null,
+            requestEntity,
             responseType
         );
 

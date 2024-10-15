@@ -26,12 +26,12 @@ import com.example.demo.Websocket.GenericWebSocketHandler;
 @EnableWebSocket
 @RestController
 @RequestMapping("/api/collections/users/")
-public class UserController implements WebSocketConfigurer {
+public class UsersController implements WebSocketConfigurer {
 
     private final String entity = "users";
 
     @Autowired
-    private UserService userService;
+    private UsersService userService;
 
     @Autowired
     private GenericWebSocketHandler webSocketHandler;
@@ -72,7 +72,8 @@ public class UserController implements WebSocketConfigurer {
         @ModelAttribute Users user,
         @RequestParam(value = "avatarFile", required = false) MultipartFile avatarFile
     ) throws IOException {
-
+        Users existingUser = userService.getUser(id);
+        user.setEmailVerified(existingUser.isEmailVerified());
         Users updatedUser = userService.updateUser(id, user, avatarFile);
 
         webSocketHandler.notifyEntityUpdate(entity, "update");
