@@ -4,8 +4,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.Users.Users;
-
 @Service
 public class SessionsService {
 
@@ -21,7 +19,7 @@ public class SessionsService {
         return sessionRepository.findById(sessionId).orElse(null);
     }
 
-    public List<Sessions> getSessions(Users user) {
-        return sessionRepository.findByOwner(user);
+    public List<Sessions> getSessions() {
+        return sessionRepository.findAll();
     }
 }

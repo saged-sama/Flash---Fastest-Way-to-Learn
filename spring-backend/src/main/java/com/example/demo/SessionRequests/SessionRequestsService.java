@@ -3,6 +3,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.demo.Sessions.Sessions;
+import com.example.demo.Utilities.EntityUpdate;
 
 @Service
 public class SessionRequestsService {
@@ -22,7 +23,15 @@ public class SessionRequestsService {
         return sessionRequestsRepository.findById(sessionRequestId).orElse(null);
     }
 
-    public SessionRequests updatSessionRequest(SessionRequests sessionRequest) {
-        return sessionRequestsRepository.save(sessionRequest);
+    public SessionRequests updateSessionRequest(String sessionId, SessionRequests sessionRequest) {
+        SessionRequests existingSession = sessionRequestsRepository.findById(sessionId).orElse(null);
+
+        if (existingSession == null) {
+            return null;
+        }
+
+        EntityUpdate.merge(existingSession, sessionRequest);
+
+        return sessionRequestsRepository.save(existingSession);
     }
 }
