@@ -55,7 +55,13 @@ public class SessionRequestController implements WebSocketConfigurer {
     }
 
     @PostMapping("/records")
-    public ResponseEntity<SessionRequests> createSessionRequest(@ModelAttribute SessionRequests sessionRequest, @RequestParam String userId) throws IOException {
+    public ResponseEntity<SessionRequests> createSessionRequest(
+        @ModelAttribute SessionRequests sessionRequest, 
+        @RequestParam(required = true) String sessionId, 
+        @RequestParam(required = true) String userId
+    ) throws IOException {
+        System.out.println(userId + " " + sessionId);
+        sessionRequest.setSession(sessionService.getSession(sessionId));
         sessionRequest.setUser(userService.getUser(userId));
         SessionRequests createdSessionRequest = sessionRequestsService.createSessionRequest(sessionRequest);
         webSocketHandler.notifyEntityUpdate(entity, "create");

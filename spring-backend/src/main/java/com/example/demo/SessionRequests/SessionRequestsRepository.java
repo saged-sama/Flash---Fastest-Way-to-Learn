@@ -9,4 +9,5 @@ import com.example.demo.Sessions.Sessions;
 @Repository
 public interface SessionRequestsRepository extends JpaRepository<SessionRequests, String> {
     public List<SessionRequests> findBySession(Sessions session);
+    public List<SessionRequests> findBySessionOrderByCreatedAtDesc(Sessions session);
 }
