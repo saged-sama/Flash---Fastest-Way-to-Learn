@@ -50,7 +50,7 @@ public class SessionRequestController implements WebSocketConfigurer {
     }
 
     @GetMapping("/records/{id}")
-    public ResponseEntity<SessionRequests> getSessionRequest(@RequestParam String id) {
+    public ResponseEntity<SessionRequests> getSessionRequest(@PathVariable String id) {
         return ResponseEntity.ok(sessionRequestsService.getSessionRequest(id));
     }
 
@@ -70,6 +70,7 @@ public class SessionRequestController implements WebSocketConfigurer {
 
     @PatchMapping("/records/{id}")
     public ResponseEntity<SessionRequests> updateSessionRequest(@ModelAttribute SessionRequests sessionRequest, @PathVariable String id) throws IOException {
+        System.out.println(sessionRequest.getStatus());
         SessionRequests updatedSessionRequest = sessionRequestsService.updateSessionRequest(id, sessionRequest);
         webSocketHandler.notifyEntityUpdate(entity, "update");
         return ResponseEntity.ok(updatedSessionRequest);

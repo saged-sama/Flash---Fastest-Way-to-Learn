@@ -8,18 +8,22 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import com.example.demo.Utilities.UtilitiesInterface.LiveSessionHandlerInterface;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
+@Component
 public class HmsLiveSessionHandler implements LiveSessionHandlerInterface {
-    @Value("${access_key}")
-    private String access_key;
+    private final String access_key;
+    private final String app_secret;
 
-    @Value("${app_secret}")
-    private String app_secret;
+    public HmsLiveSessionHandler(@Value("${access_key}") String access_key, @Value("${app_secret}") String app_secret) {
+        this.access_key = access_key;
+        this.app_secret = app_secret;
+    }
 
     @Override
     public String generateManagementToken() {

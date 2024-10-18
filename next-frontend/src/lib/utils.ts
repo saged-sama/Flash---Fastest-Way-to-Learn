@@ -46,3 +46,7 @@ export function getDateTimeFromString(date: string){
   const minute = d.getMinutes()
   return `${day} ${getMonthName(month)}, ${year} at ${getTimeAMPM(hour, minute)}`;
 }
+
+export function getCurrentUser(){
+  return localStorage.getItem("userId") as string;
+}

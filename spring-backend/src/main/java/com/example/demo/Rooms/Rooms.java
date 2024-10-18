@@ -2,6 +2,7 @@ package com.example.demo.Rooms;
 
 import java.time.LocalDateTime;
 
+import com.example.demo.SessionRequests.SessionRequests;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -33,6 +34,10 @@ public class Rooms {
 
     @JsonProperty("customer_id")
     private String customerId;
+
+    @OneToOne
+    @JoinColumn(name = "session_request_id", referencedColumnName = "id")
+    private SessionRequests sessionRequest;
 
     @JsonProperty("app_id")
     private String appId;
@@ -77,6 +82,14 @@ public class Rooms {
 
     public boolean isEnabled() {
         return enabled;
+    }
+
+    public void setSessionRequest(SessionRequests sessionRequests) {
+        this.sessionRequest = sessionRequests;
+    }
+
+    public SessionRequests getSessionRequest() {
+        return sessionRequest;
     }
 
     public String getDescription() {

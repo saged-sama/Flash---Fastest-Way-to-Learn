@@ -40,8 +40,8 @@ export default function Active() {
 
             <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-5">
                 {
-                    activeSessions.map((item: any) => (
-                        <ActiveSession session={item} key={item.id}></ActiveSession>
+                    activeSessions.map((item, index) => (
+                            <ActiveSession session={item} key={index}></ActiveSession>
                     ))
                 }
             </div>

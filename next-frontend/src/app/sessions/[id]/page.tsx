@@ -4,7 +4,6 @@ import { getSessionInfo } from "@/lib/session/sessions";
 import { useEffect, useState } from "react";
 import SessionInfo from "@/components/session/sessionInfo";
 import SessionRequests from "@/components/session/sessionRequests";
-import { springbase } from "@/lib/springbase";
 
 export default function Sessions({params}: {params: any}){
     const [session, setSession] = useState<any>(null);

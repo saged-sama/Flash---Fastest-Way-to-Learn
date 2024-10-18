@@ -4,6 +4,7 @@ import { getJoinRequests } from "@/lib/session/sessions";
 import { useEffect, useState } from "react";
 import RequestToJoin from "@/components/session/RequestToJoin";
 import { springbase } from "@/lib/springbase";
+import { getCurrentUser } from "@/lib/utils";
 
 export default function SessionRequests({ session }: { session: any }) {
     const [requests, setRequests] = useState<any[]>([]);
@@ -20,6 +21,11 @@ export default function SessionRequests({ session }: { session: any }) {
                 await getReqs();
             });
 
+            wsocket?.onUpdate(async() => {
+                console.log("Update");
+                await getReqs();
+            });
+
             getReqs();
         } catch (err) {
             console.log(err);
@@ -31,8 +37,7 @@ export default function SessionRequests({ session }: { session: any }) {
             <div className="flex justify-between items-end w-full p-3 border-b">
                 <h1 className='text-xl font-extrabold text-center'>Total Request : {requests.length}</h1>
                 {
-                    session.owner.id !== "7acb7a19-1a63-41f0-b0a5-0bc60d34dd48" ?
-                        // <button className="btn btn-warning"> Request a Session </button> : <div></div>
+                    session.owner.id !== getCurrentUser() ?
                         <RequestToJoin sessionId={session.id} /> : <div></div>
                 }
             </div>
@@ -43,9 +48,9 @@ export default function SessionRequests({ session }: { session: any }) {
 
                 <div className="flex flex-col w-full items-start text-left gap-5 p-3">
                     {
-                        requests.map((req) => {
+                        requests.map((req, index) => {
                             // return <div></div>
-                            return <Request key={req.id} request={req} />
+                            return <Request key={index} request={req} />
                         })
                     }
                 </div>
