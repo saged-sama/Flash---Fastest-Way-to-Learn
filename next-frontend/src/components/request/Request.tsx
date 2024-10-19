@@ -25,7 +25,7 @@ export default function Request({request}: {request: any}) {
                     if(room){
                         const code = await getRoomCode(room.id);
                         if(code) {
-                            router.push(`/sessions/room/${code}`);
+                            router.push(`/sessions/${request.session.id}/room/${code}`);
                         }
                     }
                 }
@@ -45,7 +45,7 @@ export default function Request({request}: {request: any}) {
             if(room){
                 const code = await getRoomCode(room.id);
                 if(code) {
-                    router.push(`/sessions/room/${code}`);
+                    router.push(`/sessions/${request.session.id}/room/${code}`);
                 }
             }
         }
