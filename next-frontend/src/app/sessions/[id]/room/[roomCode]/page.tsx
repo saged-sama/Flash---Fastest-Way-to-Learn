@@ -2,10 +2,11 @@
 
 import { HMSPrebuilt } from '@100mslive/roomkit-react';
 
-export default function Home() {
+export default function Home({ params }: { params: any }) {
+
     return (
         <div style={{ height: '100vh' }}>
-            <HMSPrebuilt roomCode="lmc-rnjp-fyx" />
+            <HMSPrebuilt roomCode={params.roomCode} />
         </div>
     );
 }
