@@ -10,7 +10,7 @@ In this magical land of `Flash`, everyone gets to share their wacky ways of lear
 - [Releases](#releases)
 - [Tech and Stack](#tech-and-stack)
 - [Installation](#installation)
-    - [Developers' Installation Guide](#developers-installation-guide)
+    - [Contributor's Installation Guide](#contributors-installation-guide)
 - [Team](#team)
 
 # Features
@@ -30,7 +30,7 @@ In this magical land of `Flash`, everyone gets to share their wacky ways of lear
 
 # Installation
 
-## Developers' Installation Guide
+## Contributor's Installation Guide
 
 - Clone the repo, or maybe just fork. Anyway:
     ```bash
@@ -44,7 +44,7 @@ In this magical land of `Flash`, everyone gets to share their wacky ways of lear
     ```
 - Add the database url, username, and password to `spring-backend`'s `application.properties`:
     ```bash
-    spring.datasource.url=jdbc:postgresql://localhost:5432/<Your Database Name>
+    spring.datasource.url=jdbc:postgresql://<Database Host>:<Database Port>/<Your Database Name>
     spring.datasource.username=<Your PostgreSQL server username>
     spring.datasource.password=<Your PostgreSQL user password>
     ```
