@@ -19,7 +19,7 @@ In this magical land of `Flash`, everyone gets to share their wacky ways of lear
 [--Documentation Coming Soon--]
 
 # Releases
-## [Fast v0.0.1](#fast-v001)
+## [Flash v0.0.1](#fast-v001)
 [--Documentation Coming Soon--]
 
 # Tech and Stack
