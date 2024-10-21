@@ -7,19 +7,23 @@ import { getActiveSessions } from "@/lib/session/sessions";
 
 export default function Active() {
 
-    const [activeSessions, setActiveSessions] = useState([]);
+    const [activeSessions, setActiveSessions] = useState<Array<any>>(new Array());
 
     useEffect(() => {
         try{
             const pageInit = async() => {
                 const sess = await getActiveSessions();
-                setActiveSessions(sess);
+                if(sess){
+                    setActiveSessions(sess);
+                }
             }
     
             const wsocket = springbase.collection("sessions").subscribe();
             wsocket?.onCreate(async() => {
                 const sess = await getActiveSessions();
-                setActiveSessions(sess);
+                if(sess){
+                    setActiveSessions(sess);
+                }
             });
     
             pageInit();
@@ -27,6 +31,14 @@ export default function Active() {
             console.log(err);
         }
     }, []);
+
+    if(!activeSessions){
+        return (
+            <div>
+                Yo Wait...
+            </div>
+        )
+    }
 
     return (
         <div className="flex flex-col justify-center items-center gap-10 p-10">
