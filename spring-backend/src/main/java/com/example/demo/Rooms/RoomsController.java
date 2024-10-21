@@ -1,7 +1,5 @@
 package com.example.demo.Rooms;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,28 +16,24 @@ public class RoomsController {
     @Autowired
     private RoomsService roomsService;
 
-    @GetMapping("/records")
-    public ResponseEntity<List<Rooms>> getRooms(@RequestParam(required = true) String userId){
-        return ResponseEntity.ok(roomsService.getRooms(userId));
+    @GetMapping("/records/{sessionRequestId}")
+    public ResponseEntity<Rooms> getRoom(@PathVariable String sessionRequestId){
+        return ResponseEntity.ok(roomsService.getRoom(sessionRequestId));
     }
 
-    @GetMapping("/records/{roomId}")
-    public ResponseEntity<Rooms> getRoom(@RequestParam(required = true) String userId, @PathVariable(required = true) String roomId){
-        return ResponseEntity.ok(roomsService.getRoom(userId, roomId));
+    @GetMapping("/records/roomdata/{roomId}")
+    public ResponseEntity<RoomData> getRoomHostData(@RequestParam(required = true) String userId, @PathVariable String roomId){
+        return ResponseEntity.ok(roomsService.getRoomData(userId, roomId));
     }
 
-    @GetMapping("/records/{roomId}/room-codes/host")
-    public ResponseEntity<RoomData> getRoomHostData(@RequestParam(required = true) String userId, @PathVariable(required = true) String roomId){
-        return ResponseEntity.ok(roomsService.getRoomHostData(userId, roomId));
-    }
-
-    @GetMapping("/records/{roomId}/room-codes/guest")
-    public ResponseEntity<RoomData> getRoomGuestData(@RequestParam(required = true) String userId, @PathVariable(required = true) String roomId){
-        return ResponseEntity.ok(roomsService.getRoomGuestData(userId, roomId));
+    @GetMapping("/records/room-auth-token/{roomCode}")
+    public ResponseEntity<RoomData> getRoomAuthToken(@RequestParam(required = true) String userId, @PathVariable(required = true) String roomCode){
+        return ResponseEntity.ok(roomsService.getRoomAuthToken(userId, roomCode));
     }
 
     @PostMapping("/records")
-    public ResponseEntity<Rooms> createRoom(String userId){
-        return ResponseEntity.ok(roomsService.createRoom(userId));
+    public ResponseEntity<Rooms> createRoom(@RequestParam String userId, @RequestParam String sessionRequestId){
+        System.out.println(userId + " " + sessionRequestId);
+        return ResponseEntity.ok(roomsService.createRoom(userId, sessionRequestId));
     }
 }

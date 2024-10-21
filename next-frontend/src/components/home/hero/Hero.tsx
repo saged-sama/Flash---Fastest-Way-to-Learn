@@ -22,7 +22,7 @@ const Hero = () => {
                 GET STARTED NOW <i className="fa fa-long-arrow-alt-right"></i>
               </button>
               <button className="border border-teal-500 text-teal-500 py-3 px-6 rounded-lg shadow-lg hover:bg-teal-500 hover:text-white transition duration-300">
-                VIEW COURSE <i className="fa fa-long-arrow-alt-right"></i>
+                VIEW COURSES <i className="fa fa-long-arrow-alt-right"></i>
               </button>
             </div>
           </div>

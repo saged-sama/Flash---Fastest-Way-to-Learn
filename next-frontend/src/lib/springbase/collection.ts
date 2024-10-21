@@ -11,17 +11,21 @@ function urlSearchParametersFromObject(obj: { [key: string]: any }) {
 export default class Collection{
     private collectionName: string;
     private baseurl: string;
+    private fileurl: string;
     private authStore: AuthStore;
     private webSocketUrl: string;
+    private ws: WebSocket | undefined;
 
-    constructor (baseUrl:string, collectionName: string, authStore: AuthStore){
+    constructor (baseUrl: string, collectionName: string, authStore: AuthStore){
         if(baseUrl.endsWith("/")){
             baseUrl = baseUrl.slice(0, -1);
         }
         this.collectionName = collectionName;
         this.authStore = authStore;
-        this.baseurl = baseUrl + "/api/collections/" + collectionName;
-        this.webSocketUrl = baseUrl.replace("http", "ws") + "/ws/" + collectionName;
+        this.baseurl = baseUrl + "/api/collections/" + this.collectionName;
+        this.fileurl = baseUrl + "/api/files/" + this.collectionName;
+        this.webSocketUrl = baseUrl.replace("http", "ws") + "/ws/" + this.collectionName;
+        this.ws = undefined;
     }
 
     async create(data: object | FormData, auth: boolean = true){
@@ -93,7 +97,56 @@ export default class Collection{
     }
 
     subscribe() {
-        return new WebSocket(this.webSocketUrl);
+        try{
+            this.ws = new WebSocket(this.webSocketUrl);
+            const eventHandlers = {
+                create: new Function(),
+                update: new Function(),
+                delete: new Function(),
+            };
+
+            const onCreate = (func: Function) => {
+                eventHandlers.create = func;
+            }
+            
+            const onUpdate = (func: Function) => {
+                eventHandlers.update = func;
+            }
+
+            const onDelete = (func: Function) => {
+                eventHandlers.delete = func;
+            }
+
+            this.ws.onmessage = (event) => {
+                const data = event.data;
+                
+                switch(data){
+                    case "create":
+                        eventHandlers?.create();
+                        break;
+                    case "update":
+                        eventHandlers?.update();
+                        break;
+                    case "delete":
+                        eventHandlers?.delete();
+                        break;
+                    default:
+                        break;
+                }
+            }
+            
+            return {
+                onCreate,
+                onUpdate,
+                onDelete,
+            };
+        }catch(err){
+            console.log(err);
+        }
+    }
+
+    unsubscribe() {
+        this.ws?.close();
     }
 
     async authWithPassword(email: string, password: string){
@@ -117,5 +170,9 @@ export default class Collection{
         this.authStore.isAdmin = this.authStore.model?.role === "ADMIN";
 
         return resp.springbase_auth;
+    }
+
+    file(recordId: string, filename: string){
+        return `${this.fileurl}/${recordId}/${filename}`;
     }
 }

@@ -1,3 +1,3 @@
 import SpringBase from "./springbase/springbase";
 
-export const springbase = new SpringBase(process.env.PUBLIC_API_ROOT as string);
+export const springbase = new SpringBase("http://localhost:8080");

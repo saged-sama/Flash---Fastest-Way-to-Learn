@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RoomDataRepository extends JpaRepository<RoomData, String> {
-    
+    public RoomData findByCode(String roomId);
 }

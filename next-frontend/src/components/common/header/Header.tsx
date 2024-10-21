@@ -73,13 +73,13 @@ const Header: React.FC = () => {
           </div>
 
          {/* Get Online Session Button with Room component */}
-         <div
+         <Link href="/sessions"
             className="bg-teal-500 py-2 px-6 text-white font-semibold cursor-pointer"
-            onClick={toggleRoom}  // Toggle Room component on click
+            // Toggle Room component on click
           >
-            <span>GET ONLINE SESSION</span>
+            <span>JOIN ONLINE SESSIONS</span>
             {showRoom }  {/* Conditionally render the Room component */}
-          </div>
+          </Link>
 
 
           {/* Mobile Menu Button */}

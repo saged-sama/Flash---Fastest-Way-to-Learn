@@ -2,7 +2,6 @@ package com.example.demo.Rooms;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +9,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.Component.ApiRequestClient;
+import com.example.demo.SessionRequests.SessionRequests;
+import com.example.demo.SessionRequests.SessionRequestsRepository;
+import com.example.demo.Utilities.HmsLiveSessionHandler;
 
 @Service
 public class RoomsService {
@@ -25,13 +27,20 @@ public class RoomsService {
     @Autowired
     private ApiRequestClient apiRequestClient;
 
-    @Value("${management_token}")
-    private String management_token;
+    @Autowired
+    private SessionRequestsRepository sessionRequestsRepository;
+    @Autowired
+    private HmsLiveSessionHandler hmsLiveSessionHandler;
 
-    @Value("${template_id}")
+    private String management_token;
     private String template_id;
 
-    public Rooms createRoom(String userId){
+    public RoomsService(@Value("${management_token}") String management_token, @Value("${template_id}") String template_id){
+        this.management_token = management_token;
+        this.template_id = template_id;
+    }
+
+    public Rooms createRoom(String userId, String sessionRequestId){
         String name = userId + new Date().getTime();
 
         RoomPayloadDTO payload = new RoomPayloadDTO(
@@ -50,6 +59,8 @@ public class RoomsService {
             management_token
         );
 
+        SessionRequests sessionRequests = sessionRequestsRepository.findById(sessionRequestId).orElse(null);
+        room.setSessionRequest(sessionRequests);
 
         RoomDataList roomDataList = apiRequestClient.sendPostRequest(
             baseUrl + "/room-codes/room/" + room.getId(),
@@ -59,36 +70,41 @@ public class RoomsService {
             management_token
         );
 
-        // System.out.println(roomDataList.getData());
-        System.out.println(roomDataList.getData().get(0).getRoomId());
-        System.out.println(roomDataList.getData().get(1).getRoomId());
-
-        RoomData hostRoomData = roomDataRepository.save(roomDataList.getData().get(0));
-        RoomData guestRoomData = roomDataRepository.save(roomDataList.getData().get(1));
-
+        RoomData hostRoomData = roomDataRepository.save(roomDataList.getData().get(1));
+        hostRoomData.setAuthToken(hmsLiveSessionHandler.generateClientToken(room.getId(), userId, "host"));
+        System.out.println("host: " + hostRoomData.getRole());
+        RoomData guestRoomData = roomDataRepository.save(roomDataList.getData().get(0));
+        guestRoomData.setAuthToken(hmsLiveSessionHandler.generateClientToken(room.getId(), room.getSessionRequest().getUser().getId(), "guest"));
+        System.out.println("guest: " + guestRoomData.getRole());
         room.setHostRoom(hostRoomData);
         room.setGuestRoom(guestRoomData);
-
-        // System.out.println(room);
 
         return roomsRepository.save(room);
     }
 
-    public List<Rooms> getRooms(String userId){
-        return roomsRepository.findByCustomerId(userId);
+    public RoomData getRoomData(String userId, String roomId){
+        Rooms room = roomsRepository.findById(roomId).orElse(null);
+
+        System.out.println("host--" + room.getHostRoom().getRole());
+        System.out.println("guest--" + room.getGuestRoom().getRole());
+
+        if(room.getSessionRequest().getSession().getOwner().getId().equals(userId)){
+            System.out.println("Host Room");
+            return room.getHostRoom();
+        }
+        else if(room.getSessionRequest().getUser().getId().equals(userId)){
+            return room.getGuestRoom();
+        }
+        return null;
     }
 
-    public RoomData getRoomHostData(String userId, String roomId){
-        Rooms room = roomsRepository.findByIdAndCustomerId(roomId, userId);
-        return room.getHostRoom();
+    public RoomData getRoomAuthToken(String userId, String roomCode){
+        RoomData roomdata = roomDataRepository.findByCode(roomCode);
+        return roomdata;
     }
 
-    public RoomData getRoomGuestData(String userId, String roomId){
-        Rooms room = roomsRepository.findByIdAndCustomerId(roomId, userId);
-        return room.getGuestRoom();
-    }
-
-    public Rooms getRoom(String userId, String roomId){
-        return roomsRepository.findByIdAndCustomerId(roomId, userId);
+    public Rooms getRoom(String sessionRequestId){
+        SessionRequests sessionRequest = sessionRequestsRepository.findById(sessionRequestId).orElse(null);
+        return roomsRepository.findBySessionRequest(sessionRequest);
     }
 }

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -27,6 +28,9 @@ public class RoomData {
     private String roomId;
     private String role;
     private boolean enabled;
+
+    @Column(length = 1000)
+    private String authToken;
 
     @JsonProperty("created_at")
     private LocalDateTime createdAt;

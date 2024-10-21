@@ -49,9 +49,13 @@ public class SessionRequests {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    private enum Status {
+    public enum Status {
         PENDING, ACCEPTED, REJECTED, CANCELLED, FINISHED
     }
 
-    private Status status = Status.PENDING;
+    public Status status = Status.PENDING;
+
+    public Status getStatus(){
+        return status;
+    }
 }
