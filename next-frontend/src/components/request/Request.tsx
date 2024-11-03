@@ -4,6 +4,8 @@ import { getCurrentUser, getTimePassedSince } from "@/lib/utils";
 import { createRoom, getRoom, getRoomCode } from "@/lib/session/sessions";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { AcceptSessionCommand } from "@components/session/commands/AcceptSessionCommand";
+import { DeclineSessionCommand } from "@components/session/commands/DeclineSessionCommand";
 
 export default function Request({request}: {request: any}) {
     const router = useRouter();
@@ -33,29 +35,40 @@ export default function Request({request}: {request: any}) {
         }
     }, []);
 
-    const accept = async () => {
-        const formData = new FormData();
-        formData.append("status", "ACCEPTED")
-        const sessreq = await springbase.collection("sessionrequests").update(request.id, formData);
-        if(sessreq.status === "ACCEPTED"){
-            const modal = document.getElementById("waitingModal") as HTMLDialogElement;
-            modal?.showModal();
-            console.log("Aissala eine modal aya porse");
-            const room = await getRoom(request.id);
-            if(room){
-                const code = await getRoomCode(room.id);
-                if(code) {
-                    router.push(`/sessions/${request.session.id}/room/${code}`);
-                }
-            }
-        }
-    }
+    const handleAccept = async () => {
+        const acceptCommand = new AcceptSessionCommand(request.id, request.session.id, router);
+        await acceptCommand.execute();
+    };
 
-    const reject = async () => {
-        await springbase.collection("sessionrequests").update(request.id, {
-            status: "REJECTED"
-        });
-    }
+    const handleReject = async () => {
+        const rejectCommand = new DeclineSessionCommand(request.id);
+        await rejectCommand.execute();
+    };
+
+//    // const accept = async () => {
+//         const formData = new FormData();
+//         formData.append("status", "ACCEPTED")
+//         const sessreq = await springbase.collection("sessionrequests").update(request.id, formData);
+//         if(sessreq.status === "ACCEPTED"){
+//             const modal = document.getElementById("waitingModal") as HTMLDialogElement;
+//             modal?.showModal();
+//             console.log("Aissala eine modal aya porse");
+//             const room = await getRoom(request.id);
+//             if(room){
+//                 const code = await getRoomCode(room.id);
+//                 if(code) {
+//                     router.push(`/sessions/${request.session.id}/room/${code}`);
+//                 }
+//             }
+//         }
+//    // }
+
+//   //  const reject = async () => {
+//         await springbase.collection("sessionrequests").update(request.id, {
+//             status: "REJECTED"
+//         });
+//   //  }
+
     return (
         <div className="hero-content flex-col items-start lg:flex-row gap-10 rounded-md border w-full">
             <img
@@ -93,9 +106,13 @@ export default function Request({request}: {request: any}) {
                     <div className=" w-full">
                         <div className="ml-auto flex flex-col md:flex-row lg:flex-row ">
                             <button className="btn btn-accent mr-5 w-full md:w-[200px] lg:w-[200px]"
-                                onClick={accept}
+                                //onClick={accept}
+                                onClick={handleAccept}
                             >Accept</button>
-                            <button className="btn btn-error w-full md:w-[200px] lg:w-[200px] " onClick={reject}>Reject</button>
+                            <button className="btn btn-error w-full md:w-[200px] lg:w-[200px] " 
+                            //onClick={reject}
+                            onClick={handleReject}
+                            >Reject</button>
                         </div>
                     </div> : <div></div>
                 }

@@ -3,51 +3,73 @@
 import { makeJoinRequest } from "@/lib/session/sessions";
 import { useEffect, useState } from "react";
 
-export default function RequesToJoin({ sessionId }: { sessionId: string }) {
-    const [modal, setModal] = useState(null as HTMLDialogElement | null);
+export default function RequestToJoin({ sessionId }: { sessionId: string }) {
+    const [modal, setModal] = useState<HTMLDialogElement | null>(null);
 
     useEffect(() => {
-        setModal(document.getElementById("modal") as HTMLDialogElement);
+        const modalElement = document.getElementById("modal") as HTMLDialogElement;
+        setModal(modalElement);
     }, []);
 
     async function handleSubmit(event: any) {
         event.preventDefault();
         const request = await makeJoinRequest(event, sessionId);
-        if(request){
+        if (request) {
             modal?.close();
-        }
-        else{
-            alert("There's been a problem while creating the request");
+        } else {
+            alert("There's been a problem while creating the request.");
         }
     }
-    if(!modal){
-        <div>Loading</div>
-    }
-    return (
-        <div>
-            <button className="btn btn-warning" onClick={() => {
-                modal?.showModal();
-            }}> Request a Session </button> : <div></div>
 
-            <dialog id="modal" className="modal">
-                <div className="modal-box w-11/12 max-w-5xl">
-                    <div className="flex flex-col gap-3">
-                        <h1 className="font-bold text-xl">Make a Request to Join the Session</h1>
-                        <form id="form" className="form form-bordered p-2" onSubmit={handleSubmit}>
-                            <label className="flex items-start gap-3">
-                                <span className="label w-1/5">Description</span>
-                                <textarea name="description" className="textarea textarea-bordered w-4/5 min-h-40" placeholder="What do you wanna talk about?"></textarea>
+    return (
+        <div className="flex flex-col items-center">
+            {/* Button to open modal */}
+            <button 
+                className="btn bg-teal-500 text-white hover:bg-teal-700 transition-all px-6 py-3 rounded-lg"
+                onClick={() => modal?.showModal()}
+            >
+                Request to Join
+            </button>
+
+            {/* Modal */}
+            <dialog 
+                id="modal" 
+                className="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4"
+                style={{ backdropFilter: 'blur(4px)' }}
+            >
+                <div className="modal-box bg-white rounded-lg shadow-lg p-6 max-w-lg w-full">
+                    <form id="form" onSubmit={handleSubmit} className="space-y-4">
+                        <h1 className="text-2xl font-bold text-teal-700 mb-4">Request to Join the Session</h1>
+                        
+                        <div className="flex flex-col gap-2">
+                            <label className="flex flex-col md:flex-row gap-2 items-center">
+                                <span className="w-full md:w-1/4 text-teal-700 font-semibold">Description:</span>
+                                <textarea 
+                                    name="description" 
+                                    className="textarea textarea-bordered w-full px-3 py-2 border border-teal-300 rounded-lg focus:border-teal-500 min-h-[100px]" 
+                                    placeholder="Describe your reason for joining this session"
+                                    required
+                                ></textarea>
                             </label>
-                        </form>
-                    </div>
-                    <div className="modal-action">
-                        <button className="btn btn-success" form="form" type="submit">
-                            Make Request
-                        </button>
-                        <form method="dialog">
-                            <button className="btn">Cancel</button>
-                        </form>
-                    </div>
+                        </div>
+
+                        <div className="modal-action flex justify-end gap-3 mt-4">
+                            <button 
+                                form="form" 
+                                type="submit" 
+                                className="btn bg-teal-500 text-white hover:bg-teal-700 transition-all px-6 py-2 rounded-lg"
+                            >
+                                Submit Request
+                            </button>
+                            <button 
+                                type="button" 
+                                className="btn bg-gray-300 text-gray-700 hover:bg-gray-400 transition-all px-6 py-2 rounded-lg"
+                                onClick={() => modal?.close()}
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </dialog>
         </div>
