@@ -13,6 +13,7 @@ public class CorsConfig {
 
     private final List<String> origins = Arrays.asList("http://localhost:3000");
     
+    @SuppressWarnings("unused")
     @Bean
     public CorsFilter corsFilter(){
         CorsConfiguration corsConfiguration = new CorsConfiguration();  
