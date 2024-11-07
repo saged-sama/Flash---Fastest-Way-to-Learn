@@ -37,10 +37,10 @@ In this magical land of `Flash`, everyone gets to share their wacky ways of lear
     git clone https://github.com/saged-sama/Flash---Fastest-Way-to-Learn.git
     ```
 - Make sure you have `PostgreSQL` server installed on the local system or you can use a cloud service who knows.
-- Create a database named `flash` or whatever in your postgres server
+- Create a database in your postgres server
     ```sql
     -- login to postgres cli and run --
-    CREATE DATABASE flash; -- or whatever name you like
+    CREATE DATABASE <Your Database Name>; -- or whatever name you like
     ```
 - Add the database url, username, and password to `spring-backend`'s `application.properties`:
     ```bash
@@ -48,7 +48,7 @@ In this magical land of `Flash`, everyone gets to share their wacky ways of lear
     spring.datasource.username=<Your PostgreSQL server username>
     spring.datasource.password=<Your PostgreSQL user password>
     ```
-- Go to [100msLive Dashboard](https://dashboard.100ms.live/developer). Set the environment variables for the `100msLive` API:
+- Go to [100msLive Dashboard](https://dashboard.100ms.live/developer) and get your keys and secrets. Set the environment variables in your project for the `100msLive` API:
 
     ```bash
     # linux or bash
@@ -56,15 +56,22 @@ In this magical land of `Flash`, everyone gets to share their wacky ways of lear
     export app_secret=<Your Key>
     export management_token=<Your Key>
     export template_id=<A template ID>
-
+    export jwt_secret=$(openssl rand -base64 32)
+    ```
+    
+    On windows, make sure you have downloaded and installed [OpenSSL](https://slproweb.com/products/Win32OpenSSL.html)
+    ```
     # windows cmd
     set access_key=<Your Key>
     set app_secret=<Your Key>
     set management_token=<Your Key>
     set template_id=<A template ID>
-
+    for /f "tokens=*" %i in ('openssl rand -base64 32') do set jwt_secret=%i
     ```
-- Run `SpringBoot` backend
+- Run the application using mvn:
+    ```bash
+    mvn spring-boot:run
+    ```
 - Go to `next-frontend`, install dependencies and run the frontend:
     ```
     npm install
