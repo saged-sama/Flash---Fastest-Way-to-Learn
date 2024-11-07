@@ -19,7 +19,7 @@ public class GenericWebSocketHandler extends TextWebSocketHandler {
     // Store sessions by entity type (users, posts, etc.)
     private final Map<String, List<WebSocketSession>> entitySessions = new HashMap<>();
 
-    @SuppressWarnings("null")
+    @SuppressWarnings({ "null", "unused" })
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         // Get the entity type from the path

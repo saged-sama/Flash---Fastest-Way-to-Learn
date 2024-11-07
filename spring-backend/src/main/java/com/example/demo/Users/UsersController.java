@@ -20,7 +20,10 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
+import com.example.demo.Auth.JwtUtils;
 import com.example.demo.Websocket.GenericWebSocketHandler;
+
+import io.swagger.v3.oas.annotations.Operation;
 
 @Configuration
 @EnableWebSocket
@@ -35,6 +38,9 @@ public class UsersController implements WebSocketConfigurer {
 
     @Autowired
     private GenericWebSocketHandler webSocketHandler;
+
+    @Autowired
+    private JwtUtils jwtUtils;
 
     @GetMapping("/records")
     public ResponseEntity<List<Users>> getUsers() {
@@ -56,12 +62,12 @@ public class UsersController implements WebSocketConfigurer {
         return ResponseEntity.ok(user);
     }
 
-    @PostMapping("/records")
+    @PostMapping(value = "/records", consumes = "multipart/form-data")
+    @Operation
     public ResponseEntity<Users> createUser(
-        @ModelAttribute Users user, 
-        @RequestParam("avatarFile") MultipartFile avatarFile
+        @ModelAttribute UsersRegisterDto user
     ) throws IOException {
-        Users newUser = userService.createUser(user, avatarFile);
+        Users newUser = userService.registerUser(user);
         webSocketHandler.notifyEntityUpdate(entity, "create");
         return ResponseEntity.ok(newUser);
     }
@@ -73,11 +79,23 @@ public class UsersController implements WebSocketConfigurer {
         @RequestParam(value = "avatarFile", required = false) MultipartFile avatarFile
     ) throws IOException {
         Users existingUser = userService.getUser(id);
-        user.setEmailVerified(existingUser.isEmailVerified());
+        user.setEmailVerified(existingUser.getEmailVerified());
         Users updatedUser = userService.updateUser(id, user, avatarFile);
 
         webSocketHandler.notifyEntityUpdate(entity, "update");
         return ResponseEntity.ok(updatedUser);
+    }
+
+    @PostMapping("/auth-with-password")
+    public ResponseEntity<String> authenticateUser(
+        @ModelAttribute UsersLoginDto user
+    ) {
+        Users authenticatedUser = userService.authenticate(user);
+        if(authenticatedUser == null) {
+            return ResponseEntity.badRequest().body("Invalid credentials");
+        }
+        String authToken = jwtUtils.generateJwtToken(authenticatedUser);
+        return ResponseEntity.ok(authToken);
     }
 
     @DeleteMapping("/records/{id}")

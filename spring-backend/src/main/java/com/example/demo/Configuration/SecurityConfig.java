@@ -1,44 +1,51 @@
-// package com.example.demo.Configuration;
+package com.example.demo.Configuration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 
-// import org.springframework.context.annotation.Bean;
-// import org.springframework.context.annotation.Configuration;
-// import org.springframework.security.authentication.AuthenticationProvider;
-// import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
-// import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-// import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-// import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-// import org.springframework.security.config.http.SessionCreationPolicy;
-// import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-// import org.springframework.security.crypto.password.PasswordEncoder;
-// import org.springframework.security.web.SecurityFilterChain;
+import com.example.demo.Users.UsersSecurityDetailsService;
 
-// import lombok.RequiredArgsConstructor;
 
-// @Configuration
-// @EnableWebSecurity
-// @EnableMethodSecurity
-// @RequiredArgsConstructor
-// public class SecurityConfig {
-//     private final AuthenticationProvider authenticationProvider;
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
 
-//     @Bean
-//     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//         return http
-//                 .csrf(AbstractHttpConfigurer::disable)
-//                 .authorizeHttpRequests(req -> 
-//                     req
-//                     .anyRequest()
-//                     .authenticated()
-//                 )
-//             .sessionManagement(session -> 
-//                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//             )
-//             .authenticationProvider(authenticationProvider)
-//             .build();
-//     }
+    private final UsersSecurityDetailsService usersService;
 
-//     @Bean
-//     public PasswordEncoder passwordEncoder() {
-//         return new BCryptPasswordEncoder();
-//     }
-// }
+    public SecurityConfig(UsersSecurityDetailsService usersService) {
+        this.usersService = usersService;
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.csrf(AbstractHttpConfigurer::disable)  
+            .authorizeHttpRequests((authorize) -> 
+            authorize
+                .requestMatchers("/**").permitAll()
+                .anyRequest().authenticated()
+        );
+        return http.build();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(){
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(usersService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
+
+        return new ProviderManager(authenticationProvider);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
+}

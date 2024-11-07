@@ -96,4 +96,8 @@ public class RoomData {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    public void setAuthToken(String authToken) {
+        this.authToken = authToken;
+    }
 }

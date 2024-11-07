@@ -55,7 +55,43 @@ public class SessionRequests {
 
     public Status status = Status.PENDING;
 
+    public String getId(){
+        return id;
+    }
+
+    public void setId(String id){
+        this.id = id;
+    }
+
+    public void setStatus(Status status){
+        this.status = status;
+    }
+
     public Status getStatus(){
         return status;
+    }
+
+    public void setDescription(String description){
+        this.description = description;
+    }
+
+    public String getDescription(){
+        return description;
+    }
+
+    public void setUser(Users user){
+        this.user = user;
+    }
+
+    public Users getUser(){
+        return user;
+    }
+    
+    public void setSession(Sessions session){
+        this.session = session;
+    }
+
+    public Sessions getSession(){
+        return session;
     }
 }

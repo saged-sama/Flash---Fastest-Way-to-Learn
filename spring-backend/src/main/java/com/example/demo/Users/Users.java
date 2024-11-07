@@ -1,14 +1,20 @@
 package com.example.demo.Users;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,7 +33,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "email" }) })
-public class Users {
+public class Users implements UserDetails {
     
     // We'll define the id field for all entities
     // All IDs should be a generated UUID
@@ -48,6 +54,9 @@ public class Users {
 
     private String name;
     private String avatar;      // profile picture
+
+    @Enumerated(EnumType.STRING)
+    private UsersRoles role;
 
     // We'll define the following two fields for all entities
     @CreationTimestamp
@@ -72,7 +81,7 @@ public class Users {
         this.email = email;
     }
 
-    public boolean isEmailVerified() {
+    public boolean getEmailVerified() {
         return emailVerified;
     }
 
@@ -80,6 +89,7 @@ public class Users {
         this.emailVerified = emailVerified;
     }
 
+    @Override
     public String getUsername() {
         return username;
     }
@@ -112,6 +122,14 @@ public class Users {
         this.avatar = avatar;
     }
 
+    public UsersRoles getRole() {
+        return role;
+    }
+
+    public void setRole(UsersRoles role) {
+        this.role = role;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -126,5 +144,30 @@ public class Users {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }
