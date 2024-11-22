@@ -32,7 +32,7 @@ export default function Request({ request }: { request: any }) {
                     if (room) {
                         const code = await getRoomCode(room.id);
                         if (code) {
-                            router.push(`/sessions/${request.session.id}/room/${code}`);
+                            router.push(`/subs/sessions/${request.session.id}/room/${code}`);
                         }
                     }
                 }
@@ -53,7 +53,7 @@ export default function Request({ request }: { request: any }) {
             if (room) {
                 const code = await getRoomCode(room.id);
                 if (code) {
-                    router.push(`/sessions/${request.session.id}/room/${code}`);
+                    router.push(`/subs/sessions/${request.session.id}/room/${code}`);
                 }
             }
         }
