@@ -1,55 +1,67 @@
 'use client';
 
 import { makeJoinRequest } from "@/lib/session/sessions";
-import { useEffect, useState } from "react";
+import { Button, Modal, Form, Input, message } from "antd";
+import { useState } from "react";
 
-export default function RequesToJoin({ sessionId }: { sessionId: string }) {
-    const [modal, setModal] = useState(null as HTMLDialogElement | null);
+export default function RequestToJoin({ sessionId }: { sessionId: string }) {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [form] = Form.useForm();
 
-    useEffect(() => {
-        setModal(document.getElementById("modal") as HTMLDialogElement);
-    }, []);
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
 
-    async function handleSubmit(event: any) {
-        event.preventDefault();
-        const request = await makeJoinRequest(event, sessionId);
-        if(request){
-            modal?.close();
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
+
+    const handleSubmit = async () => {
+        try {
+            const values = await form.validateFields();
+            console.log(values);
+            const request = await makeJoinRequest(values, sessionId);
+            if (request) {
+                message.success("Request created successfully!");
+                setIsModalOpen(false);
+            } else {
+                message.error("There's been a problem while creating the request");
+            }
+        } catch (error) {
+            message.error("Please fill out the form correctly.");
         }
-        else{
-            alert("There's been a problem while creating the request");
-        }
-    }
-    if(!modal){
-        <div>Loading</div>
-    }
+    };
+
     return (
         <div>
-            <button className="btn btn-warning" onClick={() => {
-                modal?.showModal();
-            }}> Request a Session </button> : <div></div>
+            {/* Button to trigger the modal */}
+            <Button type="primary" onClick={showModal}>
+                Request a Session
+            </Button>
 
-            <dialog id="modal" className="modal">
-                <div className="modal-box w-11/12 max-w-5xl">
-                    <div className="flex flex-col gap-3">
-                        <h1 className="font-bold text-xl">Make a Request to Join the Session</h1>
-                        <form id="form" className="form form-bordered p-2" onSubmit={handleSubmit}>
-                            <label className="flex items-start gap-3">
-                                <span className="label w-1/5">Description</span>
-                                <textarea name="description" className="textarea textarea-bordered w-4/5 min-h-40" placeholder="What do you wanna talk about?"></textarea>
-                            </label>
-                        </form>
-                    </div>
-                    <div className="modal-action">
-                        <button className="btn btn-success" form="form" type="submit">
-                            Make Request
-                        </button>
-                        <form method="dialog">
-                            <button className="btn">Cancel</button>
-                        </form>
-                    </div>
-                </div>
-            </dialog>
+            {/* Modal */}
+            <Modal
+                title="Make a Request to Join the Session"
+                open={isModalOpen}
+                onCancel={handleCancel}
+                onOk={handleSubmit}
+                okText="Make Request"
+                cancelText="Cancel"
+            >
+                <Form form={form} layout="vertical">
+                    {/* Description Field */}
+                    <Form.Item
+                        label="Description"
+                        name="description"
+                        rules={[{ required: true, message: "Please provide a description." }]}
+                    >
+                        <Input.TextArea
+                            placeholder="What do you want to talk about?"
+                            autoSize={{ minRows: 4 }}
+                        />
+                    </Form.Item>
+                </Form>
+            </Modal>
         </div>
     );
 }

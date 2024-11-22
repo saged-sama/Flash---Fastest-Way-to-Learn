@@ -1,114 +1,127 @@
 'use client';
+
 import { springbase } from "@/lib/springbase";
 import { getCurrentUser, getTimePassedSince } from "@/lib/utils";
 import { createRoom, getRoom, getRoomCode } from "@/lib/session/sessions";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Button, Modal, Typography, Avatar, Space, message } from "antd";
+import { Check, X } from "lucide-react";
 
-export default function Request({request}: {request: any}) {
+const { Text, Paragraph } = Typography;
+
+export default function Request({ request }: { request: any }) {
+    console.log(request);
     const router = useRouter();
     const [timePassed, setTimePassed] = useState<string>(getTimePassedSince(request.createdAt));
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     useEffect(() => {
-        setInterval(() => {
+        const interval = setInterval(() => {
             setTimePassed(getTimePassedSince(request.createdAt));
         }, 30000);
 
-        if(getCurrentUser() !== request.session.owner.id){
+        if (getCurrentUser() !== request.session.owner.id) {
             const ws = springbase.collection("sessionrequests").subscribe();
             ws?.onUpdate(async () => {
                 const req = await springbase.collection("sessionrequests").getOne(request.id, {}, false);
-                if(req.status === "ACCEPTED"){
-                    const modal = document.getElementById("waitingModal") as HTMLDialogElement;
-                    modal?.showModal();
-                    console.log("Orreh Eine aisi to modal koi?")
+                if (req.status === "ACCEPTED") {
+                    setIsModalOpen(true);
+                    console.log("Orreh Eine aisi to modal koi?");
                     const room = await getRoom(request.id);
-                    if(room){
+                    if (room) {
                         const code = await getRoomCode(room.id);
-                        if(code) {
+                        if (code) {
                             router.push(`/sessions/${request.session.id}/room/${code}`);
                         }
                     }
                 }
             });
         }
+
+        return () => clearInterval(interval); // Cleanup on component unmount
     }, []);
 
     const accept = async () => {
         const formData = new FormData();
-        formData.append("status", "ACCEPTED")
+        formData.append("status", "ACCEPTED");
         const sessreq = await springbase.collection("sessionrequests").update(request.id, formData);
-        if(sessreq.status === "ACCEPTED"){
-            const modal = document.getElementById("waitingModal") as HTMLDialogElement;
-            modal?.showModal();
-            console.log("Aissala eine modal aya porse");
+        if (sessreq.status === "ACCEPTED") {
+            message.success("Request accepted successfully!");
+            setIsModalOpen(true);
             const room = await getRoom(request.id);
-            if(room){
+            if (room) {
                 const code = await getRoomCode(room.id);
-                if(code) {
+                if (code) {
                     router.push(`/sessions/${request.session.id}/room/${code}`);
                 }
             }
         }
-    }
+    };
 
     const reject = async () => {
         await springbase.collection("sessionrequests").update(request.id, {
-            status: "REJECTED"
+            status: "REJECTED",
         });
-    }
+        message.info("Request rejected.");
+    };
+
     return (
-        <div className="hero-content flex-col items-start lg:flex-row gap-10 rounded-md border w-full">
-            <img
+        <div className="w-full p-4 border rounded-md flex flex-col lg:flex-row gap-5">
+            {/* User Avatar */}
+            <Avatar
+                size={64}
                 src={springbase.collection("users").file(request.user.id, request.user.avatar)}
-                className=" rounded-full md:h-40 w-40 object-cover" />
-            <div className="w-full">
-                <h1 className="text-xl font-bold text-center md:text-center lg:text-start ">Requested By: <span className="text-accent">{request.user.name}</span></h1>
-                <p className="py-6 w-1/2">
-                    {request.description}
-                </p>
-                <div className="flex items-center gap-5 text-xs">
-                    <p className="text-xs"> Created: {timePassed}</p>
-                    <p className="text-xs flex gap-1 items-center"> Current Status: {request.status}
-                    {/* <div className="w-2 h-2 ml-4 bg-green-500 rounded-full animate-blink mt-1 "></div> */}
-                    {/* {request.status === "Ongoing" && (  
-                        <div className="w-2 h-2 ml-4 bg-green-500 rounded-full animate-blink mt-1"></div>
-                    )}
+            />
 
-                    {request.status === "PENDING" && (
-                        <div className="ml-2">
-                            <MdOutlinePendingActions className="text-blue-400" />
-                        </div>
-                    )}
+            <div className="flex justify-between w-full">
+                <div className="flex flex-col gap-1">
+                    {/* User Info */}
+                    <div className="flex gap-1">
+                        <h1 className="font-bold">Requested By: </h1>
+                        <h1 className="">{request.user.name}</h1>
+                    </div>
+                    <h1 className="mt-2">{request.description}</h1>
 
-                    {request.status === "ACCEPTED" && (
-                        <div className="ml-2">
-                            <IoMdDoneAll className="text-green-600" />
-                        </div>
-
-                    )} */}
-                    </p>
-                </div>
-                {
-                    (getCurrentUser() === request.session.owner.id && request.status === "PENDING") ?
-                    <div className=" w-full">
-                        <div className="ml-auto flex flex-col md:flex-row lg:flex-row ">
-                            <button className="btn btn-accent mr-5 w-full md:w-[200px] lg:w-[200px]"
-                                onClick={accept}
-                            >Accept</button>
-                            <button className="btn btn-error w-full md:w-[200px] lg:w-[200px] " onClick={reject}>Reject</button>
-                        </div>
-                    </div> : <div></div>
-                }
-            </div>
-
-            <dialog id="waitingModal" className="modal">
-                <div className="modal-box">
-                    <div className="flex flex-col justify-center gap-2 items-center">
-                        <span>Your Session is Starting. Please Wait While We Get the Session Ready</span>
-                        <span className="loading loading-bars loading-sm"></span>
+                    {/* Time and Status */}
+                    <div className="flex w-full gap-4 mt-2 text-xs">
+                        <h1>Created: {timePassed}</h1>
+                        <h1>Status: {request.status}</h1>
                     </div>
                 </div>
-            </dialog>
+
+                {/* Accept/Reject Buttons */}
+                {getCurrentUser() === request.session.owner.id && request.status === "PENDING" && (
+                    <div className="mt-4 flex gap-2">
+                        <Button type="primary" onClick={accept}>
+                            <Check className="w-4 h-4 font-bold" />
+                        </Button>
+                        <Button danger onClick={reject}>
+                            <X className="w-4 h-4"/>
+                        </Button>
+                    </div>
+                )}
+            </div>
+
+            {/* Modal */}
+            <Modal
+                title="Please Wait"
+                open={isModalOpen}
+                footer={null}
+                closable={false}
+            >
+                <div className="text-center">
+                    <Paragraph>Your session is starting. Please wait while we get it ready.</Paragraph>
+                    <div className="mt-2">
+                        <div className="ant-spin-dot ant-spin-dot-spin">
+                            <span className="ant-spin-dot-item" />
+                            <span className="ant-spin-dot-item" />
+                            <span className="ant-spin-dot-item" />
+                            <span className="ant-spin-dot-item" />
+                        </div>
+                    </div>
+                </div>
+            </Modal>
         </div>
-    )
+    );
 }

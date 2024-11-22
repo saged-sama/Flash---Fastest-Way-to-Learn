@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import RequestToJoin from "@/components/session/RequestToJoin";
 import { springbase } from "@/lib/springbase";
 import { getCurrentUser } from "@/lib/utils";
+import { Button } from "antd";
 
 export default function SessionRequests({ session }: { session: any }) {
     const [requests, setRequests] = useState<any[]>([]);
@@ -35,15 +36,20 @@ export default function SessionRequests({ session }: { session: any }) {
     return (
         <div className="flex flex-col items-center w-full">
             <div className="flex justify-between items-end w-full p-3 border-b">
-                <h1 className='text-xl font-extrabold text-center'>Total Request : {requests.length}</h1>
+                <h1 className='text-sm font-extrabold text-center'>Total Requests : {requests.length}</h1>
                 {
-                    session.owner.id !== getCurrentUser() ?
+                    session.owner.id !== getCurrentUser() || true ?
                         <RequestToJoin sessionId={session.id} /> : <div></div>
                 }
             </div>
+            <div className="flex justify-end w-full gap-1 py-1">
+                <Button type="primary">All</Button>
+                <Button>Finished</Button>
+                <Button>Rejected</Button>
+            </div>
             {requests.length === 0 ?
                 <div className="flex justify-center items-center w-full h-96">
-                    <h1 className="text-2xl font-bold text-center">No Requests Yet</h1>
+                    <h1 className="font-bold text-center">[No Requests Yet]</h1>
                 </div> :
 
                 <div className="flex flex-col w-full items-start text-left gap-5 p-3">

@@ -31,7 +31,7 @@ export default function Sessions({params}: {params: any}){
             </div>
 
             <div className="flex items-center justify-center w-3/5 p-3">
-                Some Stats and Other Stuff. Will add later.
+                [Some Stats and Other Stuff. Will add later]
             </div>
 
             <div className="w-3/5 p-3">

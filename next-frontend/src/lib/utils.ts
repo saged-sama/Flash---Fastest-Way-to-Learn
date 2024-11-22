@@ -50,3 +50,7 @@ export function getDateTimeFromString(date: string){
 export function getCurrentUser(){
   return localStorage.getItem("userId") as string;
 }
+
+export function getRandomInteger(min: number, max: number){
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
