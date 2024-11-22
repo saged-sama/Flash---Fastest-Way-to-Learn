@@ -1,9 +1,10 @@
 'use client';
-import ActiveSession from "@/components/activeSession/activeSessions";
+import ActiveSession from "@/components/session/activeSessions";
 import { springbase } from "@/lib/springbase";
 import { useEffect, useState } from "react";
 import CreateNewSession from "@/components/session/createNewSession";
 import { getActiveSessions } from "@/lib/session/sessions";
+import { green } from "@ant-design/colors";
 
 export default function Active() {
 
@@ -41,19 +42,16 @@ export default function Active() {
     }
 
     return (
-        <div className="flex flex-col justify-center items-center gap-10 p-10">
-            <div className="flex items-center justify-center gap-5">
-                <h1 className="text-6xl text-center "> Active Sessions </h1>
-                {/* Blinking green signal */}
-                <div className="w-4 h-4 bg-green-500 rounded-full animate-blink "></div>
+        <div className="flex flex-col justify-center items-center px-5 w-full">
+            <div className="flex items-center justify-between w-full p-2 border-b">
+                <h1>Active Sessions</h1>
+                <CreateNewSession />
             </div>
 
-            <CreateNewSession />
-
-            <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <div className="container mx-auto grid grid-cols-2 lg:grid-cols-4 gap-5 py-5">
                 {
                     activeSessions.map((item, index) => (
-                            <ActiveSession session={item} key={index}></ActiveSession>
+                        <ActiveSession session={item} key={index}></ActiveSession>
                     ))
                 }
             </div>

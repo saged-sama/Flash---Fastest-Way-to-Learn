@@ -11,9 +11,11 @@ export async function getSessionInfo(id: string) {
     return await springbase.collection("sessions").getOne(id, {}, false);
 }
 
-export async function createNewSession(event: any){
-    const formData = new FormData(event.target as HTMLFormElement);
+export async function createNewSession(formData: FormData){
 
+    console.log("Creating new session");
+    console.log(formData.get("title"));
+    console.log(formData.get("description"));
     // Gotta change the userId
     formData.append("userId", getCurrentUser());
 

@@ -1,9 +1,10 @@
-import Header from "../components/common/header/Header";  // Adjust the import path as necessary
+'use client'
 import Home from "../components/home/Home";  // Renaming the Home component to avoid name conflict
 import About from "../components/about/About";
 import CourseHome from "../components/allcourses/CourseHome";
+import Header from "@/components/common/header/Header";
 
-export default function App() {  // Renaming the page component to avoid conflict
+const App: React.FC = () => {  // Renaming the page component to avoid conflict
   return (
     <div>
       <Header />
@@ -14,3 +15,4 @@ export default function App() {  // Renaming the page component to avoid conflic
   );
 }
 
+export default App;

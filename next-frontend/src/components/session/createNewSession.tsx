@@ -1,56 +1,71 @@
 'use client';
 import { createNewSession } from "@/lib/session/sessions";
+import { Button, Form, Input, Modal } from "antd";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { theme } from "antd";
+
+const { useToken } = theme;
 
 export default function CreateNewSession() {
+    const { token } = useToken();
+    const [open, setOpen] = useState(false);
+    const [confirmLoading, setConfirmLoading] = useState(false);
     const router = useRouter();
-    const [modal, setModal] = useState<HTMLDialogElement | null>(null);
 
-    useEffect(() => {
-        const modal = document.getElementById('modal') as HTMLDialogElement;
-        setModal(modal);
-    }, []);
+    const showModal = () => {
+        setOpen(true);
+    };
 
-    const handleSubmit = async (e: any) => {
-        e.preventDefault();
-        const session = await createNewSession(e);
+    const closeModal = () => {
+        setOpen(false);
+    }
+
+    const handleSubmit = async () => {
+        const form = document.getElementById("sessionCreationForm") as HTMLFormElement;
+        setConfirmLoading(true);
+        const session = await createNewSession(new FormData(form));
+        setConfirmLoading(false);
+        setOpen(false);
         router.push(`/sessions/${session.id}`);
     }
 
     
     return (
         <div className="flex flex-col">
-            {/* You can open the modal using document.getElementById('ID').showModal() method */}
-            <button className="btn btn-accent" onClick={()=> modal?.showModal()}>Create Your Own Session</button>
-            <dialog id="modal" className="modal">
-            <div className="modal-box w-11/12 max-w-5xl" >
-                <form id="form" onSubmit={handleSubmit}>
-                    <h1 className="font-bold">
-                        Create a New Session
-                    </h1>
-                    <div className="flex flex-col gap-3 p-3 pb-0">
-                        <label className="flex gap-3 w-full">
-                            <h1 className="w-2/6">Session Title:</h1>
-                            <input type="text" name="title" className="input input-bordered w-full" required placeholder="Title of Your Session"/>
-                        </label>
-                        <label className="flex gap-3 w-full">
-                            <h1 className="w-2/6">Session Description:</h1>
-                            <textarea name="Description" className="textarea textarea-bordered w-full" placeholder="Describe the primary topic of this session"></textarea>
-                        </label>
-                    </div>
-                </form>
-                <div className="modal-action">
-                    <button form="form" type="submit" className="btn btn-success">
-                        Create
-                    </button>
-                    <form method="dialog">
-                        {/* if there is a button, it will close the modal */}
-                        <button className="btn btn-neutral">Cancel</button>
-                    </form>
+            
+
+            <Button type="default" onClick={showModal}>
+                Surface
+            </Button>
+            <Modal
+                title="Surface and Give Sessions"
+                open={open}
+                confirmLoading={confirmLoading}
+                onCancel={closeModal}
+                footer={[
+                    <Button key="surface" type="primary" onClick={handleSubmit}>Surface</Button>,
+                    <Button key="cancel" type="default" onClick={closeModal}>Cancel</Button>
+                ]}
+            >
+                <div style={{ backgroundColor: token.colorWarning, padding: "10px"}}>
+                    <p>Surfacing will make you visible to everyone. Interested party will then be able to request you for a session.</p>
                 </div>
-            </div>
-            </dialog>
+                <form id="sessionCreationForm" className="flex flex-col gap-4 py-2">
+                    <label className="flex gap-4">
+                        <h1>Title:</h1>
+                        {/* <div className="flex flex-col gap-2 w-full"> */}
+                            <Input name="title" placeholder="Session Space Tilte" />
+                            {/* <p className="text-xs">Your session space will be visible to others with this Title</p> */}
+                        {/* </div> */}
+                    </label>
+                    <label className="flex gap-4 items-start">
+                        <h2>Description:</h2>
+                        <Input.TextArea name="description" placeholder="Describe What Topic You're Interested to Give Sessions on" />
+                    </label>
+                </form>
+            </Modal>
         </div>
+        
   );
 }

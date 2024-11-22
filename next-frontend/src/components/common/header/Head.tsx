@@ -1,14 +1,13 @@
 import React from "react"
+import Title from "./Title"
 
 const Head = () => {
   return (
     <>
       <section className="py-5 text-white bg-gray-800"> {/* Converted head section styles */}
         <div className="container mx-auto flex justify-between items-center"> {/* Converted flexSB */}
-          <div className="logo">
-            <h1 className="text-[35px] font-black">FLASH</h1> {/* Converted font-size and font-weight */}
-            <span>Learn Anything Faster Than Ever</span>
-          </div>
+          
+          <Title fontsize={35}/>
 
           <div className="social flex space-x-4"> {/* Flexbox with spacing for icons */}
             <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">

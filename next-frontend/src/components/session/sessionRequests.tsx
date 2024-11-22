@@ -1,5 +1,5 @@
 'use client';
-import Request from "@/components/request/Request"
+import Request from "@/components/session/Request"
 import { getJoinRequests } from "@/lib/session/sessions";
 import { useEffect, useState } from "react";
 import RequestToJoin from "@/components/session/RequestToJoin";
