@@ -35,7 +35,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         this.user = user;
     }
 
-    @SuppressWarnings("null")
     @Override
     protected void doFilterInternal(
         @NonNull HttpServletRequest request,

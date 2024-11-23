@@ -4,7 +4,6 @@ import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +17,6 @@ import org.springframework.web.socket.WebSocketSession;
 public class WebSocketController implements WebSocketHandler {
     private final WebSocketService webSocketService = WebSocketService.getInstance();
 
-    @SuppressWarnings("null")
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         Map<String, String> params = session.getUri().getQuery() != null ? splitQuery(session.getUri().getQuery()) : null;
@@ -31,19 +29,16 @@ public class WebSocketController implements WebSocketHandler {
         }
     }
 
-    @SuppressWarnings("null")
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
         System.out.println("Message received: " + message.getPayload());
     }
 
-    @SuppressWarnings("null")
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
         System.err.println("Transporter error: " + exception.getMessage());
     }
 
-    @SuppressWarnings("null")
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
         webSocketService.removeSession(session.getId(), closeStatus);
