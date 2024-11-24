@@ -24,12 +24,18 @@ export default function Login() {
 
   return (
     <div className="w-96 px-3 py-6 border" style={{ backgroundColor: "#ffffff" }}>
+      <div className="flex justify-center w-full mb-5">
+        <h1 className="font-bold text-xl">Sign In</h1>
+      </div>
       <AuthFormProto
         onSubmit={onSubmit}
         onSubmitFailed={onSubmitFailed}
         formInputFields={[]}
         submitButtonText="Sign Up"
       />
+      <div className="flex justify-center w-full mb-2" style={{ color: token.colorPrimary }}>
+        Forgot Password?
+      </div>
       <div className="flex justify-center gap-1 w-full">
         Don't have an account? <Link href="/auth/register" style={{ color: token.colorPrimary }}>Sign Up</Link>
       </div>

@@ -23,7 +23,7 @@ export default function AuthFormProto({
             ]}
             className="w-full"
         >
-            <Input placeholder="Your Email here"/>
+            <Input placeholder="Your Email Here"/>
         </Form.Item>,
         <Form.Item
             name="password"
