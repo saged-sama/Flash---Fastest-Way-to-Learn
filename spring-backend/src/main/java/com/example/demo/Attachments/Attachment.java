@@ -1,7 +1,6 @@
 package com.example.demo.Attachments;
 
 import com.example.demo.Courses.Course;
-import com.example.demo.Users.Users;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

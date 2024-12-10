@@ -1,7 +1,6 @@
 "use client"
 
 import * as z from "zod";
-import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
@@ -20,6 +19,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { createCourse } from "@/lib/course/course";
 
 
 const formSchema = z.object({
@@ -39,11 +39,15 @@ const TeacherCreatePage = () => {
 
     const { isSubmitting, isValid } = form.formState;
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
+        console.log("Submitted values:", values);
         try {
-            const response = await axios.post("api/course", values)
-            router.push(`/course/teacher/courses/${response.data.id}`)
-        } catch {
-            toast.error("Something went wrong")
+            const course = await createCourse(values.title);
+            console.log("Created Course: ", course)
+            router.push(`/course/teacher/courses/${course.id}`)
+            toast.success("Course created successfully")
+        } catch (error) {
+            console.error(error);
+            toast.error("Something went wrong while creating the course")
         }
     }
 
@@ -101,4 +105,3 @@ const TeacherCreatePage = () => {
 }
 
 export default TeacherCreatePage
-
