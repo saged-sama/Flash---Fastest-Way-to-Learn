@@ -52,5 +52,12 @@ export function getCurrentUser(){
 }
 
 export function getRandomInteger(min: number, max: number){
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+export const formatPrice = (price:number) => {
+    return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD"
+    }).format(price);
 }
