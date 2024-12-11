@@ -29,12 +29,9 @@ export default function CreateNewSession() {
         setOpen(false);
         router.push(`/sessions/${session.id}`);
     }
-
     
     return (
         <div className="flex flex-col">
-            
-
             <Button type="default" onClick={showModal}>
                 Surface
             </Button>
@@ -66,6 +63,5 @@ export default function CreateNewSession() {
                 </form>
             </Modal>
         </div>
-        
   );
 }
