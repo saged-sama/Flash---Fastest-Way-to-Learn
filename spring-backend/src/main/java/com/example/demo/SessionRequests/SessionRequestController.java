@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -14,21 +13,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.socket.config.annotation.EnableWebSocket;
-import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
-import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
 import com.example.demo.Sessions.SessionsService;
 import com.example.demo.Sessions.Sessions;
 import com.example.demo.Users.UsersService;
-import com.example.demo.Websocket.GenericWebSocketHandler;
 
-@Configuration
-@EnableWebSocket
 @RestController
 @RequestMapping("/api/collections/sessionrequests")
-public class SessionRequestController implements WebSocketConfigurer {
+public class SessionRequestController{
 
+    @SuppressWarnings("unused")
     private final String entity = "sessionrequests";
 
     @Autowired
@@ -39,9 +33,6 @@ public class SessionRequestController implements WebSocketConfigurer {
 
     @Autowired
     private UsersService userService;
-
-    @Autowired
-    private GenericWebSocketHandler webSocketHandler;
 
     @GetMapping("/records")
     public ResponseEntity<List<SessionRequests>> getSessionRequests(@RequestParam String sessionId) {
@@ -64,7 +55,6 @@ public class SessionRequestController implements WebSocketConfigurer {
         sessionRequest.setSession(sessionService.getSession(sessionId));
         sessionRequest.setUser(userService.getUser(userId));
         SessionRequests createdSessionRequest = sessionRequestsService.createSessionRequest(sessionRequest);
-        webSocketHandler.notifyEntityUpdate(entity, "create");
         return ResponseEntity.ok(createdSessionRequest);
     }
 
@@ -72,15 +62,6 @@ public class SessionRequestController implements WebSocketConfigurer {
     public ResponseEntity<SessionRequests> updateSessionRequest(@ModelAttribute SessionRequests sessionRequest, @PathVariable String id) throws IOException {
         System.out.println(sessionRequest.getStatus());
         SessionRequests updatedSessionRequest = sessionRequestsService.updateSessionRequest(id, sessionRequest);
-        webSocketHandler.notifyEntityUpdate(entity, "update");
         return ResponseEntity.ok(updatedSessionRequest);
     }
-
-    @SuppressWarnings("null")
-    @Override
-    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(webSocketHandler, "/ws/" + entity)
-                .setAllowedOrigins("*");
-    }
-
 }

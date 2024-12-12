@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,28 +15,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.socket.config.annotation.EnableWebSocket;
-import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
-import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
 import com.example.demo.Auth.JwtUtils;
-import com.example.demo.Websocket.GenericWebSocketHandler;
 
 import io.swagger.v3.oas.annotations.Operation;
 
-@Configuration
-@EnableWebSocket
 @RestController
 @RequestMapping("/api/collections/users/")
-public class UsersController implements WebSocketConfigurer {
+public class UsersController {
 
+    @SuppressWarnings("unused")
     private final String entity = "users";
 
     @Autowired
     private UsersService userService;
-
-    @Autowired
-    private GenericWebSocketHandler webSocketHandler;
 
     @Autowired
     private JwtUtils jwtUtils;
@@ -68,7 +59,6 @@ public class UsersController implements WebSocketConfigurer {
         @ModelAttribute UsersRegisterDto user
     ) throws IOException {
         Users newUser = userService.registerUser(user);
-        webSocketHandler.notifyEntityUpdate(entity, "create");
         return ResponseEntity.ok(newUser);
     }
 
@@ -82,7 +72,6 @@ public class UsersController implements WebSocketConfigurer {
         user.setEmailVerified(existingUser.getEmailVerified());
         Users updatedUser = userService.updateUser(id, user, avatarFile);
 
-        webSocketHandler.notifyEntityUpdate(entity, "update");
         return ResponseEntity.ok(updatedUser);
     }
 
@@ -105,14 +94,6 @@ public class UsersController implements WebSocketConfigurer {
 
         userService.deleteUser(id);
         
-        webSocketHandler.notifyEntityUpdate(entity, "delete");
         return ResponseEntity.ok("User deleted successfully");
-    }
-
-    @SuppressWarnings("null")
-    @Override
-    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(webSocketHandler, "/ws/" + entity)
-                .setAllowedOrigins("*");
     }
 }

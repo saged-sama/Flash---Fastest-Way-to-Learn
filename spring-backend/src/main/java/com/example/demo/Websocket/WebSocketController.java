@@ -3,9 +3,10 @@ package com.example.demo.Websocket;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketHandler;
@@ -21,12 +22,17 @@ public class WebSocketController implements WebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         Map<String, String> params = session.getUri().getQuery() != null ? splitQuery(session.getUri().getQuery()) : null;
 
-        if (params != null && params.containsKey("clientId")) {
-            webSocketService.addSession(params.get("clientId"), session);
+        System.out.println("Connection established: " + params);
+
+        String clientId = null;
+        if(params != null) {
+            clientId = params.get("clientId");
         }
         else{
-            session.close(CloseStatus.NOT_ACCEPTABLE);
+            clientId = session.getId();
         }
+
+        webSocketService.addSession(clientId, session);
     }
 
     @Override
@@ -52,11 +58,24 @@ public class WebSocketController implements WebSocketHandler {
     private Map<String, String> splitQuery(String query) {
         return Map.of(query.split("=")[0], query.split("=")[1]);
     }
-    
-    @GetMapping("/")
-    public ResponseEntity<Subscription> getSubscription(@RequestParam String clientId) {
-        return ResponseEntity.ok(webSocketService.getSubscription(clientId));
+
+    @PostMapping("/subscribe")
+    public ResponseEntity<String> subscribe(@ModelAttribute SubscriptionDto subscriptionDto) {
+        webSocketService.addSubscription(
+            subscriptionDto.getClientId(),
+            subscriptionDto.getTopic(),
+            subscriptionDto.getAction()
+        );
+
+        String structuredMessage = "{\"topic\":\"" + subscriptionDto.getTopic() + "\",\"action\":\"" + subscriptionDto.getAction() + "\",\"clientID\":\"" + subscriptionDto.getClientId() + "\"}";
+        
+        System.out.println("Subscribed to: " + structuredMessage);
+        
+        return ResponseEntity.ok(structuredMessage);
     }
 
-
+    @PatchMapping("/unsubscribe")
+    public void unsubscribe(String clientId, String topic, String action) {
+        webSocketService.removeSubscription(clientId, topic, action);
+    }
 }

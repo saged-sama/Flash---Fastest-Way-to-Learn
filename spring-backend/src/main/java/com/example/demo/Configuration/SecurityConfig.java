@@ -10,8 +10,11 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.example.demo.Auth.JwtAuthFilter;
 import com.example.demo.Users.UsersSecurityDetailsService;
+import com.example.demo.Websocket.WebSocketFilter;
 
 
 @Configuration
@@ -19,9 +22,13 @@ import com.example.demo.Users.UsersSecurityDetailsService;
 public class SecurityConfig {
 
     private final UsersSecurityDetailsService usersService;
+    private final JwtAuthFilter jwtFilter;
+    private final WebSocketFilter webSocketFilter;
 
     public SecurityConfig(UsersSecurityDetailsService usersService) {
         this.usersService = usersService;
+        this.jwtFilter = new JwtAuthFilter();
+        this.webSocketFilter = new WebSocketFilter();
     }
 
     @Bean
@@ -31,7 +38,9 @@ public class SecurityConfig {
             authorize
                 .requestMatchers("/**").permitAll()
                 .anyRequest().authenticated()
-        );
+        ).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+        .addFilterAfter(webSocketFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 

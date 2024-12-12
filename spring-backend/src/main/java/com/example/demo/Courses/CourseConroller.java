@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.Categories.CategoryService;
 import com.example.demo.Users.UsersService;
 
-@Configuration
 @RestController
 @RequestMapping("/api/collections/course")
 public class CourseConroller {

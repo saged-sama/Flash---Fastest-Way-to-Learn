@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,8 +18,6 @@ import com.example.demo.Utilities.EntityUpdate;
 public class UsersService{
     @Autowired
     private UsersRepository usersRepository;
-
-    private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
 
     private final String tablename = "users";
@@ -28,7 +25,6 @@ public class UsersService{
     private final FileHandler fileHandler = new FileHandler();
 
     public UsersService(AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder) {
-        this.authenticationManager = authenticationManager;
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
@@ -73,17 +69,27 @@ public class UsersService{
     public Users authenticate(UsersLoginDto userLoginInfo){
         String password = userLoginInfo.getPassword();
         String username = userLoginInfo.getUsername();
+        String email = userLoginInfo.getEmail();
 
-        if(username == null){
-            Users user = usersRepository.findByEmail(userLoginInfo.getEmail()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-            username = user.getUsername();
+        Users user = null;
+
+        if(username != null){
+            user = usersRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+        } else if(email != null){
+            user = usersRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+        } else {
+            throw new UsernameNotFoundException("No username or email provided");
         }
-        
-        UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(password, username);
 
-        this.authenticationManager.authenticate(authReq);
+        String encodedPassword = user.getPassword();
+        boolean authenticated = passwordEncoder.matches(password, encodedPassword);
 
-        return usersRepository.findByUsername(username).get(); 
+        if(authenticated){
+            return user;
+        }
+        else{
+            return null;
+        }
     }
 
     public void deleteUser(String id) {
