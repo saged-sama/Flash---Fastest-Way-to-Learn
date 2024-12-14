@@ -85,9 +85,6 @@ public class WebSocketService {
                 + clientId + "\"}";
 
         sendMessage(clientId, structuredMessage);
-
-        System.out.println("Here are the subscriptions: " + subscriptions);
-        System.out.println("Here are the client_session_mapping: " + client_session_mapping);
     }
 
     public void removeSubscription(String clientId, String topic, String action) {
@@ -97,10 +94,7 @@ public class WebSocketService {
     }
 
     public void broadcast(String topic, String action, String message) {
-        System.out.println("Broadcasting message: " + message + " to topic: " + topic + " with action: " + action);
         Set<String> clientIds = subscriptions.get(topic + ":" + action);
-
-        System.err.println("Here are the client IDs: " + clientIds);
 
         if (clientIds == null || clientIds.isEmpty()) {
             return;

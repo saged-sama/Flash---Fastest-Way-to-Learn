@@ -1,17 +1,17 @@
-import { springbase } from "../springbase";
+import SpringBase from "../springbase/springbase";
 import { getCurrentUser } from "../utils";
 
-export async function getActiveSessions() {
+export async function getActiveSessions(springbase: SpringBase) {
     return await springbase.collection("sessions").getFullList({
         userId: getCurrentUser()
-    }, false);
+    }, true);
 }
 
-export async function getSessionInfo(id: string) {
-    return await springbase.collection("sessions").getOne(id, {}, false);
+export async function getSessionInfo(springbase: SpringBase, id: string) {
+    return await springbase.collection("sessions").getOne(id, {}, true);
 }
 
-export async function createNewSession(formData: FormData){
+export async function createNewSession(springbase: SpringBase, formData: FormData){
 
     console.log("Creating new session");
     console.log(formData.get("title"));
@@ -20,33 +20,33 @@ export async function createNewSession(formData: FormData){
     formData.append("userId", getCurrentUser());
 
     // Gotta change the auth to true
-    const session = await springbase.collection("sessions").create(formData, false);
+    const session = await springbase.collection("sessions").create(formData, true);
     return session;
 }
 
-export async function getJoinRequests(sessionId: string){
+export async function getJoinRequests(springbase: SpringBase, sessionId: string){
     return await springbase.collection("sessionrequests").getFullList({
         sessionId: sessionId
-    }, false);
+    }, true);
 }
 
-export async function makeJoinRequest(event: any, sessionId: string){
+export async function makeJoinRequest(springbase: SpringBase, event: any, sessionId: string){
     const formData = new FormData(event.target as HTMLFormElement);
     formData.append("userId", getCurrentUser());
     formData.append("sessionId", sessionId);
-    return await springbase.collection("sessionrequests").create(formData, false);
+    return await springbase.collection("sessionrequests").create(formData, true);
 }
 
-export async function createRoom(sessionRequestId: string){
+export async function createRoom(springbase: SpringBase, sessionRequestId: string){
     const formData = new FormData();
     formData.append("sessionRequestId", sessionRequestId);
     formData.append("userId", getCurrentUser());
-    const room = await springbase.collection("rooms").create(formData, false);
+    const room = await springbase.collection("rooms").create(formData, true);
     return room;
 }
 
-export async function getRoom(sessionRequestId: string){
-    return await springbase.collection("rooms").getOne(sessionRequestId, {}, false);
+export async function getRoom(springbase: SpringBase, sessionRequestId: string){
+    return await springbase.collection("rooms").getOne(sessionRequestId, {}, true);
 }
 
 export async function getRoomCode(roomId: string){

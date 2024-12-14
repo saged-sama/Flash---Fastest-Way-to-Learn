@@ -35,7 +35,6 @@ public class UsersController {
 
     @GetMapping("/records")
     public ResponseEntity<List<Users>> getUsers() {
-
         List<Users> users = userService.getUsers();
 
         return ResponseEntity.ok(users);
@@ -76,14 +75,18 @@ public class UsersController {
     }
 
     @PostMapping("/auth-with-password")
-    public ResponseEntity<String> authenticateUser(
+    public ResponseEntity<AuthTokenDto> authenticateUser(
         @ModelAttribute UsersLoginDto user
     ) {
+
+        System.out.println("Authenticating user: " + user);
+        AuthTokenDto authToken = new AuthTokenDto();
         Users authenticatedUser = userService.authenticate(user);
         if(authenticatedUser == null) {
-            return ResponseEntity.badRequest().body("Invalid credentials");
+            return ResponseEntity.badRequest().build();
         }
-        String authToken = jwtUtils.generateJwtToken(authenticatedUser);
+        String token = jwtUtils.generateJwtToken(authenticatedUser);
+        authToken.setToken(token);
         return ResponseEntity.ok(authToken);
     }
 

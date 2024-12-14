@@ -18,19 +18,23 @@ public class JwtUtils {
     private String secret;
 
     public String generateJwtToken(Users user){
+
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + 30L * 60 * 60 * 24 * 1000);
+
         return Jwts.builder()
             .claim("id", user.getId())
             .claim("name", user.getName())
             .claim("email", user.getEmail())
             .claim("avatar", user.getAvatar())
             .subject(user.getUsername())
-            .issuedAt(new Date(System.currentTimeMillis()))
-            .expiration(new Date(System.currentTimeMillis() + 30 * 60 * 60 * 24))
+            .issuedAt(now)
+            .expiration(expiryDate)
             .signWith(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)))
             .compact();
     }
 
-    private Claims extractAllClaims(String token){
+    public Claims extractAllClaims(String token){
         return Jwts.parser()
             .verifyWith(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)))
             .build()

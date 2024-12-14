@@ -1,35 +1,42 @@
 'use client';
 
 import AuthFormProto from "@/components/auth/authFormProto";
-import { springbase } from "@/lib/springbase";
-import { Form, Input, Button, message, theme } from "antd";
-import { Image, ImageUp } from "lucide-react";
+import { objectToFormData } from "@/lib/utils";
+import { Form, Input, message, theme } from "antd";
+import { ImageUp } from "lucide-react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { useState } from "react";
 
 export default function Register() {
   const { token } = theme.useToken();
-  const [form] = Form.useForm(); // Form instance
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null); // State to handle avatar preview
+  const [form] = Form.useForm();
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
 
   const onSubmit = async (values: any) => {
-    console.log(values);
-    let formData = new FormData();
-    Object.keys(values).forEach((key) => {
-      if(Array.isArray(values[key])){
-          values[key].forEach((items, index) => {
-            formData.append(`${key}[${index}]`, items);
-          });
+    const avatarFile = values.Avatar.target.files[0];
+    delete values.Avatar;
+
+    values = { ...values, avatarFile };
+    try{
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        body: objectToFormData(values),
+      });
+      if(res.ok){
+        const user = await res.json();
+        if(user){
+          message.success("Successfully Registered. Redirecting...");
+          const redirect = document.getElementById("loginpageredirect");
+          if(redirect){
+            redirect.click();
+          }
+        }
+        else{
+          message.error("Something went wrong. Please try again");
+        }
       }
-      else{
-        formData.append(key, values[key]);
-      }
-    });
-    formData.append("avatarFile", values.Avatar[0].originFileObj);
-    const response = await springbase.collection("users").create(formData);
-    if(response){
-      redirect("/auth/login");
+    }catch(err){
+      console.error(err);
     }
   };
 
@@ -59,7 +66,7 @@ export default function Register() {
       valuePropName="file"
     >
       <label className="cursor-pointer">
-        <div className="relative w-40 h-40 rounded-full border overflow-hidden">
+        <div className="relative w-40 h-40 rounded-full border-2 overflow-hidden">
           {avatarPreview ? (
             <img
               src={avatarPreview}
@@ -101,7 +108,7 @@ export default function Register() {
   ];
 
   return (
-    <div className="w-96 px-3 py-6 border" style={{ backgroundColor: "#ffffff" }}>
+    <div className="w-96 px-3 py-6 border rounded-md" style={{ backgroundColor: "#ffffff" }}>
       <div className="flex justify-center w-full mb-5">
         <h1 className="font-bold text-xl">Sign Up</h1>
       </div>
@@ -114,6 +121,8 @@ export default function Register() {
       <div className="flex justify-center gap-1 w-full">
         Already have an account? <Link href="/auth/login" style={{ color: token.colorPrimary }}>Sign In</Link>
       </div>
+
+      <Link href="/auth/login" className="hidden" id="loginpageredirect">Sign In</Link>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 export default function crud(incomingHeaders?: {[key: string]: string}){
     const headers: HeadersInit = {
         "Access-Control-Request-Headers": "content-type",
+        "Access-Control-Allow-Origin": "*",
         ...incomingHeaders
     }
     
@@ -34,7 +35,6 @@ export default function crud(incomingHeaders?: {[key: string]: string}){
             });
         
             if(response.ok){
-                // console.log(response);
                 return await response.json();
             } else {
                 throw new Error(response.statusText);

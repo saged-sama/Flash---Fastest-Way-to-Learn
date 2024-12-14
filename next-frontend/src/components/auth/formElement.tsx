@@ -1,5 +1,6 @@
 'use client';
-import { Button, Form } from "antd";
+import { Button, Form, theme } from "antd";
+import React from "react";
 
 export default function FormElement({
     onSubmit,
@@ -13,6 +14,7 @@ export default function FormElement({
     submitButtonText: string
 }){
     const [ form ] = Form.useForm();
+    const { token } = theme.useToken();
 
     const onFinish = (values: any) => {
         onSubmit(values);
@@ -43,10 +45,13 @@ export default function FormElement({
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
             autoComplete="on"
-            className="flex flex-col items-center"
+            className="flex flex-col items-center px-3 pt-3 rounded-md"
+            style={{
+                backgroundColor: token.colorPrimaryBg,
+            }}
         >
-            {formInputFields.map((el: any) => {
-                return (el);
+            {formInputFields.map((el: any, index: number) => {
+                return React.cloneElement(el, {key: index});
             })}
 
             <Form.Item className="w-full">

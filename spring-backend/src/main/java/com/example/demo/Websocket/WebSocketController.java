@@ -22,8 +22,6 @@ public class WebSocketController implements WebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         Map<String, String> params = session.getUri().getQuery() != null ? splitQuery(session.getUri().getQuery()) : null;
 
-        System.out.println("Connection established: " + params);
-
         String clientId = null;
         if(params != null) {
             clientId = params.get("clientId");
@@ -68,8 +66,6 @@ public class WebSocketController implements WebSocketHandler {
         );
 
         String structuredMessage = "{\"topic\":\"" + subscriptionDto.getTopic() + "\",\"action\":\"" + subscriptionDto.getAction() + "\",\"clientID\":\"" + subscriptionDto.getClientId() + "\"}";
-        
-        System.out.println("Subscribed to: " + structuredMessage);
         
         return ResponseEntity.ok(structuredMessage);
     }

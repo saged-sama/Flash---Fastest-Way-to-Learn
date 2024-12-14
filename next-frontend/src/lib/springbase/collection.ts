@@ -1,6 +1,6 @@
 import { jwtDecode } from "jwt-decode";
-import type AuthStore from "./authStore";
 import crud from "./crud";
+import { objectToFormData } from "../utils";
 
 function urlSearchParametersFromObject(obj: { [key: string]: any }) {
     return Object.keys(obj).map((key) => {
@@ -8,171 +8,200 @@ function urlSearchParametersFromObject(obj: { [key: string]: any }) {
     }).join('&');
 }
 
-export default class Collection{
-    private collectionName: string;
-    private baseurl: string;
-    private fileurl: string;
-    private authStore: AuthStore;
-    private webSocketUrl: string;
-    private ws: WebSocket | undefined;
+export default function Collection(collectionName: string, springbaseHandler: Function, initiateWebSocket: Function) {
+    const { baseUrl, authStore, clientId, handlers } = springbaseHandler();
 
-    constructor (baseUrl: string, collectionName: string, authStore: AuthStore){
-        if(baseUrl.endsWith("/")){
-            baseUrl = baseUrl.slice(0, -1);
-        }
-        this.collectionName = collectionName;
-        this.authStore = authStore;
-        this.baseurl = baseUrl + "/api/collections/" + this.collectionName;
-        this.fileurl = baseUrl + "/api/files/" + this.collectionName;
-        this.webSocketUrl = baseUrl.replace("http", "ws") + "/ws/" + this.collectionName;
-        this.ws = undefined;
-    }
+    const collectionBaseUrl = baseUrl + "/api/collections/" + collectionName;
+    const collectionFileUrl = baseUrl + "/api/files/" + collectionName;
 
-    async create(data: object | FormData, auth: boolean = true){
+    async function create(data: object | FormData, auth: boolean = true) {
         let headers: any = {
             "Access-Control-Request-Method": "POST"
         };
-        if(auth && this.authStore.isValid){
-            headers["Authorization"] = `Bearer ${this.authStore.token}`;
+        if (auth && authStore.isValid) {
+            headers = {
+                ...headers,
+                "Authorization": `Bearer ${authStore.token}`
+            }
         }
-        // console.log(headers, data);
-        return await crud(headers).POST(`${this.baseurl}/records`, data);
+        return await crud(headers).POST(`${collectionBaseUrl}/records`, data);
     }
 
-    async update(id: string, data: object, auth: boolean = true){
+    async function update(id: string, data: object, auth: boolean = true) {
         let headers: any = {
             "Access-Control-Request-Method": "PATCH"
         }
-        if(auth && this.authStore.isValid){
-            headers["Authorization"] = `Bearer ${this.authStore.token}`;
+        if (auth && authStore.isValid) {
+            headers = {
+                ...headers,
+                "Authorization": `Bearer ${authStore.token}`
+            }
         }
-        return await crud(headers).PATCH(`${this.baseurl}/records/${id}`, data);
+        return await crud(headers).PATCH(`${collectionBaseUrl}/records/${id}`, data);
     }
 
-    async delete(id: string, auth: boolean = true){
+    async function deleteOne(id: string, auth: boolean = true) {
         let headers: any = {
-            "Access-Control-Request-Method": "PATCH"
+            "Access-Control-Request-Method": "DELETE"
         }
-        if(auth && this.authStore.isValid){
-            headers["Authorization"] = `Bearer ${this.authStore.token}`;
+        if (auth && authStore.isValid) {
+            headers = {
+                ...headers,
+                "Authorization": `Bearer ${authStore.token}`
+            }
         }
-        return await crud(headers).DELETE(`${this.baseurl}/records/${id}`);
+        return await crud(headers).DELETE(`${collectionBaseUrl}/records/${id}`);
     }
 
-    async getOne(id: string, options?: object, auth: boolean = true){
-        let url = `${this.baseurl}/records/${id}`;
-        if(options){
+    async function getOne(id: string, options?: object, auth: boolean = true) {
+        let url = `${collectionBaseUrl}/records/${id}`;
+        if (options) {
             url += "?" + urlSearchParametersFromObject(options);
         }
         let headers: any = {
             "Access-Control-Request-Method": "GET"
         }
-        if(auth && this.authStore.isValid){
-            headers["Authorization"] = `Bearer ${this.authStore.token}`;
+        if (auth && authStore.isValid) {
+            headers = {
+                ...headers,
+                "Authorization": `Bearer ${authStore.token}`
+            }
         }
         return await crud(headers).GET(url);
     }
 
-    async getList(page: number, perPage: number, options?: object, auth: boolean = true){
-        let url = `${this.baseurl}/records?page=${page}&perPage=${perPage}`;
-        if(options){
+    async function getList(page: number, perPage: number, options?: object, auth: boolean = true) {
+        let url = `${collectionBaseUrl}/records?page=${page}&perPage=${perPage}`;
+        if (options) {
             url += "&" + urlSearchParametersFromObject(options);
         }
         let headers: any = {
             "Access-Control-Request-Method": "GET"
         }
-        if(auth && this.authStore.isValid){
-            headers["Authorization"] = `Bearer ${this.authStore.token}`;
+        if (auth && authStore.isValid) {
+            headers = {
+                ...headers,
+                "Authorization": `Bearer ${authStore.token}`
+            }
         }
         return await crud(headers).GET(url);
     }
 
-    async getFullList(options?: object, auth: boolean = true){
-        return await this.getList(1, 5000, options, auth);
+    async function getFullList(options?: object, auth: boolean = true) {
+        return await getList(1, 5000, options, auth);
     }
 
-    async getFirstListItem(filter: string, options?: object, auth: boolean = true){
+    async function getFirstListItem(filter: string, options?: object, auth: boolean = true) {
         options = { ...options, filter, skipTotal: 1 };
-        return (await this.getList(1, 1, options, auth));
+        return (await getList(1, 1, options, auth));
     }
 
-    subscribe() {
+    async function authWithPassword(email: string, password: string) {
+        const body =  objectToFormData({ email, password });
+        const resp = await crud().POST(`${collectionBaseUrl}/auth-with-password`, body);
+
+        if (!resp || !resp.token) {
+            authStore.token = undefined;
+            authStore.model = undefined;
+            authStore.isValid = false;
+            authStore.isAdmin = false;
+            return;
+        }
+
         try{
-            this.ws = new WebSocket(this.webSocketUrl);
-            const eventHandlers = {
-                create: new Function(),
-                update: new Function(),
-                delete: new Function(),
-            };
-
-            const onCreate = (func: Function) => {
-                eventHandlers.create = func;
-            }
-            
-            const onUpdate = (func: Function) => {
-                eventHandlers.update = func;
-            }
-
-            const onDelete = (func: Function) => {
-                eventHandlers.delete = func;
-            }
-
-            this.ws.onmessage = (event) => {
-                const data = event.data;
-                
-                switch(data){
-                    case "create":
-                        eventHandlers?.create();
-                        break;
-                    case "update":
-                        eventHandlers?.update();
-                        break;
-                    case "delete":
-                        eventHandlers?.delete();
-                        break;
-                    default:
-                        break;
-                }
-            }
-            
-            return {
-                onCreate,
-                onUpdate,
-                onDelete,
-            };
+            localStorage.setItem('springbase_auth', resp.token);
         }catch(err){
-            console.log(err);
+            console.log("Server");
+        }
+
+        authStore.token = resp.token;
+        const model: any = jwtDecode(authStore.token as string);
+        authStore.model = {
+            id: model?.id,
+            email: model?.email,
+            name: model?.name,
+            avatar: model?.avatar,
+            username: model?.sub
+        }
+        authStore.isValid = true;
+        authStore.isAdmin = authStore.model?.role === "ADMIN";
+
+        return resp;
+    }
+
+    function file(recordId: string, filename: string) {
+        return `${collectionFileUrl}/${recordId}/${filename}`;
+    }
+
+    function subscribe(id?: string, filter?: string){
+        initiateWebSocket();
+        let context = collectionBaseUrl.replace(baseUrl, "") + "/records";
+        if(id){
+            context += `/${id}`;
+        }
+
+        function onCreate(callback: Function){
+            crud().POST(`${baseUrl}/realtime/subscribe`, objectToFormData({ 
+                clientId: clientId, 
+                topic: context, 
+                action: "create"
+            }));
+            handlers[`${context} create`] = callback;
+        }
+
+        function onUpdate(callback: Function){
+            crud().POST(`${baseUrl}/realtime/subscribe`, objectToFormData({ 
+                clientId: clientId, 
+                topic: context, 
+                action: "update"
+            }));
+            handlers[`${context} update`] = callback;
+        }
+
+        function onDelete(callback: Function){
+            crud().POST(`${baseUrl}/realtime/subscribe`, objectToFormData({ 
+                clientId: clientId, 
+                topic: context, 
+                action: "delete"
+            }));
+            handlers[`${context} delete`] = callback;
+        }
+
+        return {
+            onCreate,
+            onUpdate,
+            onDelete
         }
     }
 
-    unsubscribe() {
-        this.ws?.close();
+    function unsubscribe(id?: string, action?: string, filter?: string){
+        let context = collectionBaseUrl.replace(baseUrl, "");
+        if(id){
+            context += `/${id}`;
+        }
+        
+        if(action){
+            delete handlers[`${context} ${action}`];
+        }
+        else{
+            delete handlers[`${context} read`];
+            delete handlers[`${context} create`];
+            delete handlers[`${context} update`];
+            delete handlers[`${context} delete`];
+        }
     }
 
-    async authWithPassword(email: string, password: string){
-        const resp = await crud().POST(`${this.baseurl}/auth-with-password`, { email, password });
-        if(!resp){
-            this.authStore.token = undefined;
-            this.authStore.model = undefined;
-            this.authStore.isValid = false;
-            this.authStore.isAdmin = false;
-        }
-        localStorage.setItem("springbase_auth", resp.access_token);
-
-        this.authStore.token = resp.access_token;
-        const model: any = jwtDecode(this.authStore.token as string);
-        this.authStore.model = {
-            id: model?.userId,
-            email: model?.sub,
-            role: model?.authorities,
-        }
-        this.authStore.isValid = true;
-        this.authStore.isAdmin = this.authStore.model?.role === "ADMIN";
-
-        return resp.springbase_auth;
-    }
-
-    file(recordId: string, filename: string){
-        return `${this.fileurl}/${recordId}/${filename}`;
+    return {
+        create,
+        update,
+        deleteOne,
+        getOne,
+        getList,
+        getFullList,
+        getFirstListItem,
+        authWithPassword,
+        file,
+        subscribe,
+        unsubscribe
     }
 }

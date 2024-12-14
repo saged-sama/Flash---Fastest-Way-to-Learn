@@ -7,7 +7,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-// import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,6 +35,10 @@ public class UsersService{
         return usersRepository.findById(id).orElse(null);
     }
 
+    public Users getUserByUsername(String username) {
+        return usersRepository.findByUsername(username).orElse(null);
+    }
+
     public Users updateUser(String id, Users user, MultipartFile avatarFile) {
         String avatar = null;
         if (avatarFile != null) {
@@ -60,8 +63,11 @@ public class UsersService{
         
         if (newuser != null) {
             newuser.setRole(UsersRoles.ROLE_USER);
-            String avatar = fileHandler.saveFile(user.getAvatarFile(), this.tablename, newuser.getId());
-            newuser.setAvatar(avatar);
+            MultipartFile avatarFile = user.getAvatarFile();
+            if(avatarFile != null){
+                String avatar = fileHandler.saveFile(user.getAvatarFile(), this.tablename, newuser.getId());
+                newuser.setAvatar(avatar);
+            }
         }
         return usersRepository.save(newuser);
     }

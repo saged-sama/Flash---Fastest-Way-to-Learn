@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
 
 export default class AuthStore {
@@ -7,14 +8,10 @@ export default class AuthStore {
     public isAdmin: boolean = false;
 
     constructor() {
-        // const springbase_auth = localStorage.getItem('springbase_auth');
-        // if (springbase_auth) {
-            // const auth = JSON.parse(springbase_auth);
         this.token = ""
         this.model = {}
         this.isValid = false;
         this.isAdmin = false;
-        // }
     }
 
     loadFromStorage() {
@@ -23,9 +20,11 @@ export default class AuthStore {
             this.token = springbase_auth;
             const model: any = jwtDecode(this.token as string);
             this.model = {
-                id: model.userId,
-                email: model.sub,
-                roles: model.authorities,
+                id: model.id,
+                email: model.email,
+                name: model.name,
+                avatar: model.avatar,
+                username: model.sub
             }
             this.isValid = this.checkTokenValidity();
             this.isAdmin = this.model?.roles?.includes('ROLES_ADMIN');
@@ -38,25 +37,19 @@ export default class AuthStore {
         }
     }
 
-    loadFromCookie(cookie: string) {
-        const tokenCookie = cookie.split('; ').find(row => row.startsWith('token='));
-
-        if (!tokenCookie) {
-            this.token = undefined;
-            this.model = undefined;
-            this.isValid = false;
-            return;
-        }
-
-        this.token = tokenCookie.split('=')[1];
+    loadFromToken(token: string) {
+        if(!token) return;
+        this.token = token;
         try {
             this.isValid = this.checkTokenValidity();
             if(!this.isValid) throw new Error("JWT invalid");
             const model: any = jwtDecode(this.token as string);
             this.model = {
-                id: model.userid,
+                id: model.id,
                 email: model.email,
-                roles: model.authorities,
+                name: model.name,
+                avatar: model.avatar,
+                username: model.sub
             }
         } catch (e) {
             console.error('Invalid token or decoding failed', e);
@@ -112,16 +105,10 @@ export default class AuthStore {
         return cookie;
     }
 
-    save(options?: {
-        expires?: string,
-        path?: string,
-        domain?: string,
-        secure?: boolean,
-        httpOnly?: boolean,
-        maxAge?: number,
-        sameSite?: string
-    }) {
-        this.exportToCookie(options);
+    save(expires?: number) {
+        Cookies.set("token", this.token ? this.token : "", {
+            expires: expires ? expires : 30
+         });
     }
 
     clear() {
@@ -130,5 +117,6 @@ export default class AuthStore {
         this.model = undefined;
         this.isValid = false;
         this.isAdmin = false;
+        localStorage.removeItem('springbase_auth');
     }
 }

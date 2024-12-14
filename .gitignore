@@ -1,2 +1,3 @@
 **projectfiles**
 .vscode
+/spring-backend/src/main/resources

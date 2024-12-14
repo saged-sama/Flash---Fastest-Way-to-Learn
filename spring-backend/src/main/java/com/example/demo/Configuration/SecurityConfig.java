@@ -1,4 +1,5 @@
 package com.example.demo.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,22 +22,39 @@ import com.example.demo.Websocket.WebSocketFilter;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final UsersSecurityDetailsService usersService;
-    private final JwtAuthFilter jwtFilter;
-    private final WebSocketFilter webSocketFilter;
+    @Autowired
+    private UsersSecurityDetailsService usersService;
 
-    public SecurityConfig(UsersSecurityDetailsService usersService) {
-        this.usersService = usersService;
-        this.jwtFilter = new JwtAuthFilter();
-        this.webSocketFilter = new WebSocketFilter();
-    }
+    @Autowired
+    private JwtAuthFilter jwtFilter;
 
+    @Autowired
+    private WebSocketFilter webSocketFilter;
+
+    @SuppressWarnings("unused")
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)  
+        http.csrf(AbstractHttpConfigurer::disable)
+            .cors(CorsConfigurer -> {
+                CorsConfigurer.configurationSource(request -> {
+                    var cors = new org.springframework.web.cors.CorsConfiguration();
+                    cors.setAllowedOrigins(java.util.List.of("http://localhost:3000"));
+                    cors.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    cors.setAllowedHeaders(java.util.List.of("*"));
+                    return cors;
+                });
+            })
             .authorizeHttpRequests((authorize) -> 
             authorize
-                .requestMatchers("/**").permitAll()
+                .requestMatchers("/swagger-ui/**").permitAll()
+                .requestMatchers("/v3/api-docs/**").permitAll()
+                .requestMatchers("/api/collections/users/records").permitAll()
+                .requestMatchers("/api/collections/users/auth-with-password").permitAll()
+                .requestMatchers("/api/files/**").permitAll()
+                .requestMatchers("/realtime/**").permitAll()
+                .requestMatchers("/api/**").authenticated()
+                .requestMatchers("/ws/**").permitAll()
+                // .requestMatchers("/**").permitAll()
                 .anyRequest().authenticated()
         ).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
         .addFilterAfter(webSocketFilter, UsernamePasswordAuthenticationFilter.class);

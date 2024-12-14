@@ -1,4 +1,5 @@
 import Navbar from "@/components/common/header/Navbar";
+import Sidebar from "@/components/session/sidebar";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
