@@ -32,17 +32,18 @@ public class SessionSettingsService {
     }
 
     private SessionSettings createDefaultSettings(Users user){
-        return SessionSettings.builder()
-            .user(user)
-            .aboutSessionOwner("About the session owner")
-            .scheduledSessionBehavior(ScheduledSessionBehavior.ASK)
-            .notifyScheduledSessionBefore(5L)
-            .notifyThroughEmail(true)
-            .maximumAllowedParticipantsPerRoom(3)
-            .canViewWaitingList(true)
-            .canViewParticipantsList(true)
-            .canViewCurrentSessionParticipants(false)
-            .build();
+        return 
+            new SessionSettings.Builder()
+                .user(user)
+                .sessionBanner("Welcome Banner")
+                .aboutSessionOwner("Experienced Educator")
+                .scheduledSessionBehavior(ScheduledSessionBehavior.ASK)
+                .notifyScheduledSessionBefore(5L)
+                .notifyThroughEmail(true)
+                .maximumAllowedParticipantsPerRoom(3)
+                .canViewWaitingList(true)
+                .displaySessionStatistics(false)
+                .build();
     }
 
     public Iterable<SessionSettings> getAllSessionSettings(Users user){

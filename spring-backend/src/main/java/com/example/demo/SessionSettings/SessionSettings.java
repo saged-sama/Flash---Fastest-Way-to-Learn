@@ -11,12 +11,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @Entity
-@Builder
 public class SessionSettings {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -30,122 +36,113 @@ public class SessionSettings {
     private String aboutSessionOwner;
 
     @Enumerated(EnumType.STRING)
-    @Builder.Default
-    private ScheduledSessionBehavior scheduledSessionBehavior = ScheduledSessionBehavior.ASK;
+    private ScheduledSessionBehavior scheduledSessionBehavior;
 
-    @Builder.Default
-    private Long notifyScheduledSessionBefore = 5L;
-    @Builder.Default
-    private boolean notifyThroughEmail = true;
+    private Long notifyScheduledSessionBefore;
+    private boolean notifyThroughEmail;
 
     @Min(value = 1)
     @Max(value = 5)
-    @Builder.Default
-    private int maximumAllowedParticipantsPerRoom = 3;
+    private int maximumAllowedParticipantsPerRoom;
 
-    @Builder.Default
-    private boolean canViewWaitingList = true;
-    @Builder.Default
-    private boolean canViewParticipantsList = true;
-    @Builder.Default
-    private boolean canViewCurrentSessionParticipants = false;
-    @Builder.Default
-    private boolean displaySessionStatistics = true;
+    private boolean canViewWaitingList;
+    private boolean canViewParticipantsList;
+    private boolean canViewCurrentSessionParticipants;
+    private boolean displaySessionStatistics;
 
-    public String getId() {
-        return id;
+    // Private constructor for the Builder
+    private SessionSettings(Builder builder) {
+        this.id = builder.id;
+        this.user = builder.user;
+        this.sessionBanner = builder.sessionBanner;
+        this.aboutSessionOwner = builder.aboutSessionOwner;
+        this.scheduledSessionBehavior = builder.scheduledSessionBehavior;
+        this.notifyScheduledSessionBefore = builder.notifyScheduledSessionBefore;
+        this.notifyThroughEmail = builder.notifyThroughEmail;
+        this.maximumAllowedParticipantsPerRoom = builder.maximumAllowedParticipantsPerRoom;
+        this.canViewWaitingList = builder.canViewWaitingList;
+        this.canViewParticipantsList = builder.canViewParticipantsList;
+        this.canViewCurrentSessionParticipants = builder.canViewCurrentSessionParticipants;
+        this.displaySessionStatistics = builder.displaySessionStatistics;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    public static class Builder {
+        private String id;
+        private Users user;
+        private String sessionBanner;
+        private String aboutSessionOwner;
+        private ScheduledSessionBehavior scheduledSessionBehavior = ScheduledSessionBehavior.ASK;
+        private Long notifyScheduledSessionBefore = 5L;
+        private boolean notifyThroughEmail = true;
+        private int maximumAllowedParticipantsPerRoom = 3;
+        private boolean canViewWaitingList = true;
+        private boolean canViewParticipantsList = true;
+        private boolean canViewCurrentSessionParticipants = false;
+        private boolean displaySessionStatistics = true;
 
-    public Users getUser() {
-        return user;
-    }
+        public Builder id(String id) {
+            this.id = id;
+            return this;
+        }
 
-    public void setUser(Users user) {
-        this.user = user;
-    }
+        public Builder user(Users user) {
+            this.user = user;
+            return this;
+        }
 
-    public String getSessionBanner() {
-        return sessionBanner;
-    }
+        public Builder sessionBanner(String sessionBanner) {
+            this.sessionBanner = sessionBanner;
+            return this;
+        }
 
-    public void setSessionBanner(String sessionBanner) {
-        this.sessionBanner = sessionBanner;
-    }
+        public Builder aboutSessionOwner(String aboutSessionOwner) {
+            this.aboutSessionOwner = aboutSessionOwner;
+            return this;
+        }
 
-    public String getAboutSessionOwner() {
-        return aboutSessionOwner;
-    }
+        public Builder scheduledSessionBehavior(ScheduledSessionBehavior scheduledSessionBehavior) {
+            this.scheduledSessionBehavior = scheduledSessionBehavior;
+            return this;
+        }
 
-    public void setAboutSessionOwner(String aboutSessionOwner) {
-        this.aboutSessionOwner = aboutSessionOwner;
-    }
+        public Builder notifyScheduledSessionBefore(Long notifyScheduledSessionBefore) {
+            this.notifyScheduledSessionBefore = notifyScheduledSessionBefore;
+            return this;
+        }
 
-    public ScheduledSessionBehavior getScheduledSessionBehavior() {
-        return scheduledSessionBehavior;
-    }
+        public Builder notifyThroughEmail(boolean notifyThroughEmail) {
+            this.notifyThroughEmail = notifyThroughEmail;
+            return this;
+        }
 
-    public void setScheduledSessionBehavior(ScheduledSessionBehavior scheduledSessionBehavior) {
-        this.scheduledSessionBehavior = scheduledSessionBehavior;
-    }
+        public Builder maximumAllowedParticipantsPerRoom(int maximumAllowedParticipantsPerRoom) {
+            this.maximumAllowedParticipantsPerRoom = maximumAllowedParticipantsPerRoom;
+            return this;
+        }
 
-    public Long getNotifyScheduledSessionBefore() {
-        return notifyScheduledSessionBefore;
-    }
+        public Builder canViewWaitingList(boolean canViewWaitingList) {
+            this.canViewWaitingList = canViewWaitingList;
+            return this;
+        }
 
-    public void setNotifyScheduledSessionBefore(Long notifyScheduledSessionBefore) {
-        this.notifyScheduledSessionBefore = notifyScheduledSessionBefore;
-    }
+        public Builder canViewParticipantsList(boolean canViewParticipantsList) {
+            this.canViewParticipantsList = canViewParticipantsList;
+            return this;
+        }
 
-    public boolean isNotifyThroughEmail() {
-        return notifyThroughEmail;
-    }
+        public Builder canViewCurrentSessionParticipants(boolean canViewCurrentSessionParticipants) {
+            this.canViewCurrentSessionParticipants = canViewCurrentSessionParticipants;
+            return this;
+        }
 
-    public void setNotifyThroughEmail(boolean notifyThroughEmail) {
-        this.notifyThroughEmail = notifyThroughEmail;
-    }
+        public Builder displaySessionStatistics(boolean displaySessionStatistics) {
+            this.displaySessionStatistics = displaySessionStatistics;
+            return this;
+        }
 
-    public int getMaximumAllowedParticipantsPerRoom() {
-        return maximumAllowedParticipantsPerRoom;
-    }
-
-    public void setMaximumAllowedParticipantsPerRoom(int maximumAllowedParticipantsPerRoom) {
-        this.maximumAllowedParticipantsPerRoom = maximumAllowedParticipantsPerRoom;
-    }
-
-    public boolean isCanViewWaitingList() {
-        return canViewWaitingList;
-    }
-
-    public void setCanViewWaitingList(boolean canViewWaitingList) {
-        this.canViewWaitingList = canViewWaitingList;
-    }
-
-    public boolean isCanViewParticipantsList() {
-        return canViewParticipantsList;
-    }
-
-    public void setCanViewParticipantsList(boolean canViewParticipantsList) {
-        this.canViewParticipantsList = canViewParticipantsList;
-    }
-
-    public boolean isCanViewCurrentSessionParticipants() {
-        return canViewCurrentSessionParticipants;
-    }
-
-    public void setCanViewCurrentSessionParticipants(boolean canViewCurrentSessionParticipants) {
-        this.canViewCurrentSessionParticipants = canViewCurrentSessionParticipants;
-    }
-
-    public boolean isDisplaySessionStatistics() {
-        return displaySessionStatistics;
-    }
-
-    public void setDisplaySessionStatistics(boolean displaySessionStatistics) {
-        this.displaySessionStatistics = displaySessionStatistics;
+        public SessionSettings build() {
+            return new SessionSettings(this);
+        }
     }
 }
 
