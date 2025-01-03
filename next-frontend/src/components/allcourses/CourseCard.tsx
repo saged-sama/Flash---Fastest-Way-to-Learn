@@ -5,33 +5,36 @@ import Heading from "../common/heading/heading";
 const CoursesCard = () => {
   return (
     <>
-      <Heading subtitle="Our Courses" title="Explore Our Popular Online Courses" />
+      <div className="container mx-auto items-center flex justify-center mb-10 ">
+
+        <Heading subtitle="Our Courses" title="Explore Our Popular Online Courses" />
+      </div>
       <section className="py-12 bg-gray-100">
         <div className="container mx-auto flex overflow-x-auto space-x-8 pb-4"> {/* Added flex and overflow-x-auto */}
           {coursesCard.map((val, index) => (
             <div key={index} className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 flex-none"> {/* Added flex-none */}
-              <div className="flex items-center mb-6">
-                <div className="w-20 h-20 bg-customGreen rounded-full p-2">
+              <div className="flex mb-6 justify-start  ">
+                {/* <div className="w-20 h-20 bg-customGreen rounded-full p-2 border border-red-600">
                   <img
                     src={val.cover}
                     alt={val.coursesName}
                     className="w-full h-full object-cover rounded-full"
                   />
-                </div>
-                <div className="ml-6 text-left">
+                </div> */}
+                <div className="">
                   <h1 className="text-2xl font-semibold mb-2 text-black">{val.coursesName}</h1>
-                  <div className="flex items-center text-customGreen mb-2">
+                  <div className="flex text-customGreen mb-2">
                     <i className="fa fa-star"></i>
                     <i className="fa fa-star"></i>
                     <i className="fa fa-star"></i>
                     <i className="fa fa-star"></i>
                     <i className="fa fa-star"></i>
-                    <span className="ml-2 text-sm text-gray-600">(5.0)</span>
+                    <span className=" text-sm text-gray-600">(5.0)</span>
                   </div>
                   <div className="text-gray-500">
                     {val.courTeacher.map((details, index) => (
                       <div key={index} className="flex items-center mb-2">
-                        <div className="w-12 h-12">
+                        <div className="rounded-full w-12 h-12">
                           <img
                             src={details.dcover}
                             alt={details.name}
@@ -52,7 +55,7 @@ const CoursesCard = () => {
                   {val.priceAll} / {val.pricePer}
                 </h3>
               </div>
-              <button className="w-full bg-white text-customGreen py-2 rounded-lg border border-customGreen hover:bg-customGreen hover:text-white transition-colors transform hover:scale-105 hover:shadow-lg">
+              <button className="w-full bg-white text-customGreen py-2 rounded-lg border border-customGreen hover:bg-orange-300 hover:font-semibold  transition-colors transform hover:scale-105 hover:shadow-lg">
                 ENROLL NOW!
               </button>
             </div>

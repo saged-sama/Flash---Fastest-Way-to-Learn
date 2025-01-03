@@ -6,10 +6,10 @@ import Navbar from "./Navbar";
 const Header: React.FC = () => {
 
   return (
-    <>
-      <Head />
+    <div className=''>
+      < Head />
       <Navbar />
-    </>
+    </div>
   );
 };
 
