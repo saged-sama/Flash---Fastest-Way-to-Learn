@@ -10,6 +10,8 @@ declare global {
         bgcolor?: string;
         textcolor?: string;
     }
+
+    type MenuItem = Required<MenuProps>["items"][number];
 }
 
 export {};

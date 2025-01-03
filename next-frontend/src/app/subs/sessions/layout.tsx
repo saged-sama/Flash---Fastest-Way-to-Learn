@@ -1,21 +1,10 @@
-// import CurrentUserDP from "@/components/common/subsNavbar/currentUserDP";
-import Sidebar from "@/components/session/sidebar";
+import SessionsLayout from "@/components/session/layoutForSessionsDir";
 
-export default function SessionsLayout({ children }: Readonly<{children: React.ReactNode;}>){
+export default function Layout({ children }: Readonly<{children: React.ReactNode;}>){
+
     return (
-        <html>
-            <body>
-                <div className="flex w-full h-full">
-                    <div className="w-1/6 h-full">
-                        <Sidebar />
-                    </div>
-                    <div className="w-5/6">
-                        {/* <CurrentUserDP /> */}
-                        {children}
-                    </div>
-                </div>
-            </body>
-        </html>
+        <SessionsLayout>
+            {children}
+        </SessionsLayout>
     )
-
 }

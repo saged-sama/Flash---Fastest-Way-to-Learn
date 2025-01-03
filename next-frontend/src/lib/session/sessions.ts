@@ -2,9 +2,7 @@ import SpringBase from "../springbase/springbase";
 import { getCurrentUser } from "../utils";
 
 export async function getActiveSessions(springbase: SpringBase) {
-    return await springbase.collection("sessions").getFullList({
-        userId: getCurrentUser()
-    }, true);
+    return await springbase.collection("sessions").getFullList();
 }
 
 export async function getSessionInfo(springbase: SpringBase, id: string) {

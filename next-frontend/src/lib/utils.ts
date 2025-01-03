@@ -69,3 +69,7 @@ export function objectToFormData(obj: any){
   }
   return formData;
 }
+
+export function toCamelCase(str: string){
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}

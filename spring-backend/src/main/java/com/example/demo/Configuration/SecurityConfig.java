@@ -38,8 +38,8 @@ public class SecurityConfig {
             .cors(CorsConfigurer -> {
                 CorsConfigurer.configurationSource(request -> {
                     var cors = new org.springframework.web.cors.CorsConfiguration();
-                    cors.setAllowedOrigins(java.util.List.of("http://localhost:3000"));
-                    cors.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    cors.setAllowedOrigins(java.util.List.of("*"));
+                    cors.setAllowedMethods(java.util.List.of("*"));
                     cors.setAllowedHeaders(java.util.List.of("*"));
                     return cors;
                 });

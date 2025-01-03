@@ -1,4 +1,4 @@
-package com.example.demo.Component;
+package com.example.demo.Utilities;
 
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;

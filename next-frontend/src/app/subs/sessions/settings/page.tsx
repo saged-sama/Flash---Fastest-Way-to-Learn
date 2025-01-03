@@ -1,7 +1,7 @@
-import AllSessions from "@/components/session/allSessions";
 import SessionsLayout from "@/components/session/sessionLayout";
+import SessionSettings from "@/components/session/sessionSettings";
 
-export default function Active() {
+export default function Settings(){
     const breadcrumbs = [
         {
             title: "Subscripted",
@@ -10,12 +10,12 @@ export default function Active() {
             title: "Sessions"
         },
         {
-            title: "Sessions"
+            title: "Settings"
         }
     ];
     return (
         <SessionsLayout breadcrumbs={breadcrumbs}>
-            <AllSessions />
+            <SessionSettings />
         </SessionsLayout>
-    );
+    )
 }

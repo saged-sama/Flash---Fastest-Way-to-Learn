@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.Component.ApiRequestClient;
 import com.example.demo.SessionRequests.SessionRequests;
 import com.example.demo.SessionRequests.SessionRequestsRepository;
+import com.example.demo.Utilities.ApiRequestClient;
 import com.example.demo.Utilities.HmsLiveSessionHandler;
 
 @Service

@@ -8,9 +8,10 @@ import java.util.List;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-
+@Component
 public class FileHandler implements FileHandlerInterface {
     private String uploadDir = "projectfiles/";
 

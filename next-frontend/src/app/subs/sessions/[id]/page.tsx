@@ -1,42 +1,28 @@
 'use client';
+import SessionsLayout from "@/components/session/sessionLayout";
+import { usePathname } from "next/navigation";
 
-import { getSessionInfo } from "@/lib/session/sessions";
-import { useEffect, useState } from "react";
-import SessionInfo from "@/components/session/sessionInfo";
-import SessionRequests from "@/components/session/sessionRequests";
+export default function Session(){
+    const pathname = usePathname();
 
-export default function Sessions({params}: {params: any}){
-    const [session, setSession] = useState<any>(null);
-
-    useEffect(() => {
-        const getCurrentSessionInfoF = async () => {
-            const sess = await getSessionInfo(params.id);
-            setSession(sess);
+    const breadcrumbs = [
+        {
+            title: "Subscripted",
+        },
+        {
+            title: "Sessions"
+        },
+        {
+            title: pathname.split("/").pop() as string
         }
+    ]
 
-        getCurrentSessionInfoF();
-    }, [])
-
-    if(!session){
-        return (
-            <div>
-                Loading...
-            </div>
-        )
-    }
     return (
-        <div className="flex flex-col items-center gap-10 p-5">
-            <div className="w-3/5 p-3 border-b">
-                <SessionInfo session={session}/>
-            </div>
+        <SessionsLayout breadcrumbs={breadcrumbs}>
+            {/* <SessionSettings /> */}
+            <div>
 
-            <div className="flex items-center justify-center w-3/5 p-3">
-                [Some Stats and Other Stuff. Will add later]
             </div>
-
-            <div className="w-3/5 p-3">
-                <SessionRequests session={session}/>
-            </div>
-        </div>
-    );
+        </SessionsLayout>
+    )
 }
