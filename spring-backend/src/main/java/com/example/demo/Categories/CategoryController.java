@@ -6,9 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -21,8 +22,15 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @PostMapping("/records")
-    public ResponseEntity<Category> createCourse(@ModelAttribute Category category) {
+    public ResponseEntity<Category> createCourse(@RequestParam String name) {
+        Category category = new Category();
+        category.setName(name);
         return ResponseEntity.ok(categoryService.createCategory(category));
+    }
+
+    @GetMapping("/records/{categoryId}")
+    public ResponseEntity<Category> getCategory(@PathVariable String categoryId) {
+        return ResponseEntity.ok(categoryService.getCategory(categoryId));
     }
 
     @GetMapping("/records")

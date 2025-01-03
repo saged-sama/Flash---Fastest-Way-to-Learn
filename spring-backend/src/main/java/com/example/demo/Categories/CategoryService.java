@@ -24,4 +24,5 @@ public class CategoryService {
         categories.sort(Comparator.comparing(Category::getName)); 
         return categories;
     }
+    
 }

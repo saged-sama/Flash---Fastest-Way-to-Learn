@@ -1,7 +1,7 @@
-import { springbase } from "../springbase";
+import SpringBase from "../springbase/springbase";
 import { getCurrentUser } from "../utils"; // Assuming you have a utility function to get current user
 
-export async function createCourse(courseTitle: string) {
+export async function createCourse(springbase: SpringBase ,courseTitle: string) {
     console.log("Creating new course");
     console.log("Course title: ", courseTitle);
     
@@ -11,11 +11,11 @@ export async function createCourse(courseTitle: string) {
     // Add course title
     formData.append("title", courseTitle);
     
-    // Gotta change the userId
-    formData.append("userId", getCurrentUser());
+    // // Gotta change the userId
+    // formData.append("userId", getCurrentUser());
 
     // Gotta change the auth to false
-    const course = await springbase.collection("course").create(formData, false);
+    const course = await springbase.collection("course").create(formData);
     return course;
 }
 
@@ -24,7 +24,7 @@ export async function updateCourse(courseId: string, courseData: {
     description?: string, 
     price?: number, 
     categoryId?: string,
-    imageUrl?: string,
+    imageFile?: File,
     isPublished?: boolean
 }) {
     console.log("Updating course");
@@ -50,8 +50,9 @@ export async function updateCourse(courseId: string, courseData: {
         formData.append("categoryId", courseData.categoryId);
     }
     
-    if (courseData.imageUrl) {
-        formData.append("imageUrl", courseData.imageUrl);
+    if (courseData.imageFile) {
+        console.log("Image file: ", courseData.imageFile)
+        formData.append("imageFile", courseData.imageFile);
     }
     
     if (courseData.isPublished !== undefined) {
@@ -73,6 +74,48 @@ export async function getCourse(courseId: string){
     // }
 
     const course = await springbase.collection("course").getOne(courseId, {}, false);
+    console.log("Get course response: ", course)
+
+    // if (!course) {
+    //     return null;
+    // }
+    
+    return course;
+}
+
+export async function getCourses(published: boolean = false, userId?: string, categoryId?: string, title?: string) {
+    console.log("Getting courses by users");
+    if (userId) {
+        const courses = await springbase.collection("course").getFullList({userId, published}, false);
+        console.log("1. Get courses response: ", courses);
+        return courses;
+    }
+    else if (categoryId != null && title == null) {
+        const courses = await springbase.collection("course").getFullList({published, categoryId}, false);
+        console.log("2. Get courses response: ", courses);
+        return courses;
+    } else if (categoryId == null && title != null) {
+        const courses = await springbase.collection("course").getFullList({published, title}, false);
+        console.log("3. Get courses response: ", courses);
+        return courses;
+    } else if (categoryId != null && title != null) {
+        const courses = await springbase.collection("course").getFullList({published, categoryId, title}, false);
+        console.log("4. Get courses response: ", courses);
+        return courses;
+    } else {
+        const courses = await springbase.collection("course").getFullList({published}, false);
+        console.log("5. Get courses response: ", courses);
+        return courses;
+    }
+}
+
+export async function deleteCourse(courseId: string){
+    // const userId = getCurrentUser();
+    // if (!userId) {
+    //     return null;
+    // }
+
+    const course = await springbase.collection("course").delete(courseId, false);
 
     // if (!course) {
     //     return null;

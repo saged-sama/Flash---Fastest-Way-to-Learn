@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -15,7 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.Auth.AuthUtils;
 import com.example.demo.Categories.CategoryService;
+import com.example.demo.Files.FileHandler;
+import com.example.demo.Users.Users;
 import com.example.demo.Users.UsersService;
 
 @RestController
@@ -23,18 +28,26 @@ import com.example.demo.Users.UsersService;
 public class CourseConroller {
     @Autowired
     private CourseService courseService;
-    
+
     @Autowired
     private UsersService userService;
 
     @Autowired
     private CategoryService categoryService;
 
+    private final FileHandler fileHandler = new FileHandler();
+
+    private final String tablename = "course";
+
     @PostMapping("/records")
-    public ResponseEntity<CourseDTO> createCourse(@RequestParam String title, @RequestParam String userId) throws IOException {
-        System.out.println("Title: " + title);
-        Course course = Course.builder().title(title).isPublished(false).price(0.0f).build();
-        course.setOwner(userService.getUser(userId));
+    public ResponseEntity<CourseDTO> createCourse(@RequestParam String title)
+            throws IOException {
+        Course course = new Course(title);
+        Users user = AuthUtils.getAuthUser(SecurityContextHolder.getContext());
+        if (user == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        course.setOwner(userService.getUser(user.getId()));
         Course createdCourse = courseService.createCourse(course);
         return ResponseEntity.ok(new CourseDTO(createdCourse));
     }
@@ -46,21 +59,40 @@ public class CourseConroller {
     }
 
     @GetMapping("/records")
-    public ResponseEntity<List<CourseDTO>> getCourses() {
-        List<Course> courses = courseService.getCourses();
-        List<CourseDTO> courseDTOs = new ArrayList<CourseDTO>();
+    public ResponseEntity<List<CourseDTO>> getCourses(@RequestParam(required = false) String userId,
+            @RequestParam Boolean published,
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String categoryId) {
+        System.out.println("Inside Get Course");
+        System.out.println("UserId " + userId);
+        System.out.println("CategoryId " +  categoryId);
+        List<Course> courses = new ArrayList<Course>(); 
+        if (userId != null && !userId.isEmpty()) {
+            Users user = userService.getUser(userId);
+            courses = courseService.getCoursesByOwner(user);
+            for(Course course: courses) {
+                System.out.println(course.getCategory());
+            }
+        } else {
+            courses = courseService.getCourses(published, categoryId, title);
+        }
+
+        List<CourseDTO> courseDTOs = new ArrayList<>();
         for (Course course : courses) {
             courseDTOs.add(new CourseDTO(course));
         }
         return ResponseEntity.ok(courseDTOs);
     }
 
-    @PatchMapping("/records/{courseId}")
-    public ResponseEntity<CourseDTO> updateCourse(@ModelAttribute CourseUpdateDTO courseUpdateDTO, @PathVariable String courseId, @RequestParam String userId) {
+    @PatchMapping(value = "/records/{courseId}", consumes = "multipart/form-data")
+    public ResponseEntity<CourseDTO> updateCourse(@ModelAttribute CourseUpdateDTO courseUpdateDTO,
+            @PathVariable String courseId, @RequestParam String userId) {
         Course existingCourse = courseService.getCourse(courseId);
         if (existingCourse == null) {
             return null;
         }
+
+        System.out.println("Course update DTO: " + courseUpdateDTO.toString());
 
         if (courseUpdateDTO.getTitle() != null) {
             existingCourse.setTitle(courseUpdateDTO.getTitle());
@@ -71,8 +103,11 @@ public class CourseConroller {
         if (courseUpdateDTO.getCategoryId() != null) {
             existingCourse.setCategory(categoryService.getCategory(courseUpdateDTO.getCategoryId()));
         }
-        if (courseUpdateDTO.getImageUrl() != null) {
-            existingCourse.setImageUrl(courseUpdateDTO.getImageUrl());
+        if (courseUpdateDTO.getImageFile() != null) {
+            String imageUrl = fileHandler.saveFile(courseUpdateDTO.getImageFile(), this.tablename,
+                    existingCourse.getId());
+            System.out.println("imageUrl: " + imageUrl);
+            existingCourse.setImageUrl(imageUrl);
         }
         if (courseUpdateDTO.getPrice() != null) {
             existingCourse.setPrice(courseUpdateDTO.getPrice());
@@ -82,5 +117,15 @@ public class CourseConroller {
         }
 
         return ResponseEntity.ok(new CourseDTO(courseService.updateCourse(existingCourse)));
+    }
+
+    @DeleteMapping("/records/{courseId}")
+    public ResponseEntity<String> deleteChapter(@PathVariable String courseId) {
+        try {
+            courseService.deleteCourse(courseId);
+            return ResponseEntity.ok("Chapter deleted successfully");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

@@ -48,7 +48,8 @@ export function getDateTimeFromString(date: string){
 }
 
 export function getCurrentUser(){
-  return localStorage.getItem("userId") as string;
+    return "f236752b-e42b-4684-b688-7ed55727beb1"
+//   return localStorage.getItem("userId") as string;
 }
 
 export function getRandomInteger(min: number, max: number){
