@@ -3,6 +3,7 @@ import { getPurchase } from "./purchase";
 import { getCategory } from "./category";
 import { getChapters } from "./chapter";
 import { getProgress } from "./get-progress";
+import SpringBase from "../springbase/springbase";
 
 type CourseWithCategoryWithProgress = Course & {
   category: Category;
@@ -15,11 +16,10 @@ type DashboardCourses = {
   coursesInProgress: CourseWithCategoryWithProgress[];
 };
 
-export const getDashboardCourses = async (
-  userId: string
-): Promise<DashboardCourses> => {
+export const getDashboardCourses = async (springbase: SpringBase ): Promise<DashboardCourses> => {
+
   try {
-    const purchases = await getPurchase(userId);
+    const purchases = await getPurchase(springbase!);
 
     console.log("Inside fetch courses");
     console.log("Fetched purchases: ", purchases);
@@ -27,16 +27,16 @@ export const getDashboardCourses = async (
     const courses: CourseWithCategoryWithProgress[] = await Promise.all(
       purchases.map(async (purchase: any) => {
         const course = purchase.course;
-      
-        const category = await getCategory(course.categoryId);
-        const chapters = await getChapters(course.id, true);
+
+        const category = await getCategory(springbase!, course.categoryId);
+        const chapters = await getChapters(springbase!, course.id, true);
         const chapterIds = chapters.map(
           (chapter: { id: string }) => chapter.id
         );
         console.log("Course: ", course);
         console.log("Category: ", category);
 
-        const progressPercentage = await getProgress(userId, course.id);
+        const progressPercentage = await getProgress(course.id, springbase!);
 
         return {
           ...course,

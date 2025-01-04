@@ -2,29 +2,32 @@ import { getChapter } from "@/lib/course/chapter";
 import { getCourse } from "@/lib/course/course";
 import { getPurchase } from "@/lib/course/purchase";
 import { getUserProgress } from "@/lib/course/user-progress";
+import SpringBase from "../springbase/springbase";
 
 interface GetChapterProps {
     userId: string;
     courseId: string;
     chapterId: string;
+    springbase: SpringBase;
 }
 
 export const getChapterData = async ({
     userId,
     courseId,
-    chapterId
+    chapterId,
+    springbase,
 }: GetChapterProps) => {
     try {
-        const purchase = await getPurchase(userId, courseId);
-        const course = await getCourse(courseId);
-        const chapter = await getChapter(chapterId);
+        const purchase = await getPurchase(springbase!, courseId);
+        const course = await getCourse(springbase!, courseId);
+        const chapter = await getChapter(springbase!, chapterId);
 
         if (!course || !chapter) {
             throw new Error("Chapter or course not found");
         }
 
-        const nextChapter = await getChapter(chapterId, true);
-        const userProgress = await getUserProgress(userId, chapterId);
+        const nextChapter = await getChapter(springbase!, chapterId, true);
+        const userProgress = await getUserProgress(springbase!, chapterId);
 
         return {
             chapter,

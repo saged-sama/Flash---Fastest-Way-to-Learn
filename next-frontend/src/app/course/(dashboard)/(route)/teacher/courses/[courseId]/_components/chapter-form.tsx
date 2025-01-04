@@ -17,16 +17,16 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PlusCircle } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import {
   createChapter,
-  getChapters,
   updateChapter,
 } from "@/lib/course/chapter";
 import { ChaptersList } from "./chapters-list";
+import { useSpringBase } from "@/context/SpringBaseContext";
 
 const formSchema = z.object({
   title: z.string().min(1, {
@@ -51,6 +51,11 @@ export const ChapterForm = ({
   const [isCreating, setIsCreating] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
+  const { springbase } = useSpringBase();
+  useEffect(() => {
+    if (!springbase) return;
+  }, [springbase]);
+
   const toggleCreating = () => setIsCreating((current) => !current);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -65,11 +70,11 @@ export const ChapterForm = ({
       setIsUpdating(true);
       for (const chapter of updateData) {
         console.log(chapter);
-        const updatedChapter = await updateChapter({
+        const updatedChapter = await updateChapter(springbase!, courseId, {
           chapterId: chapter.id,
           position: chapter.position + 1,
         });
-        console.log("Updated chapter: ", updateChapter);
+        console.log("Updated chapter: ", updatedChapter);
       }
       toast.success("Chapters reordered");
       router.refresh();
@@ -89,7 +94,7 @@ export const ChapterForm = ({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     console.log("Submitted values:", values);
     try {
-      const chapter = await createChapter(values.title, courseId);
+      const chapter = await createChapter(springbase!, values.title, courseId);
       console.log("created chapter: ", chapter);
 
       //   Call the onUpdate callback if provided

@@ -42,11 +42,11 @@ public class CourseConroller {
     @PostMapping("/records")
     public ResponseEntity<CourseDTO> createCourse(@RequestParam String title)
             throws IOException {
-        Course course = new Course(title);
         Users user = AuthUtils.getAuthUser(SecurityContextHolder.getContext());
         if (user == null) {
             return ResponseEntity.badRequest().build();
         }
+        Course course = new Course(title);
         course.setOwner(userService.getUser(user.getId()));
         Course createdCourse = courseService.createCourse(course);
         return ResponseEntity.ok(new CourseDTO(createdCourse));
@@ -59,18 +59,22 @@ public class CourseConroller {
     }
 
     @GetMapping("/records")
-    public ResponseEntity<List<CourseDTO>> getCourses(@RequestParam(required = false) String userId,
+    public ResponseEntity<List<CourseDTO>> getCourses(@RequestParam(required = false) Boolean userId,
             @RequestParam Boolean published,
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String categoryId) {
         System.out.println("Inside Get Course");
         System.out.println("UserId " + userId);
-        System.out.println("CategoryId " +  categoryId);
-        List<Course> courses = new ArrayList<Course>(); 
-        if (userId != null && !userId.isEmpty()) {
-            Users user = userService.getUser(userId);
+        System.out.println("CategoryId " + categoryId);
+        List<Course> courses = new ArrayList<Course>();
+        if (userId != null && userId == true) {
+            Users user = AuthUtils.getAuthUser(SecurityContextHolder.getContext());
+            if (user == null) {
+                return ResponseEntity.badRequest().build();
+            }
+
             courses = courseService.getCoursesByOwner(user);
-            for(Course course: courses) {
+            for (Course course : courses) {
                 System.out.println(course.getCategory());
             }
         } else {
@@ -86,13 +90,27 @@ public class CourseConroller {
 
     @PatchMapping(value = "/records/{courseId}", consumes = "multipart/form-data")
     public ResponseEntity<CourseDTO> updateCourse(@ModelAttribute CourseUpdateDTO courseUpdateDTO,
-            @PathVariable String courseId, @RequestParam String userId) {
-        Course existingCourse = courseService.getCourse(courseId);
-        if (existingCourse == null) {
-            return null;
+            @PathVariable String courseId) {
+        Users user = AuthUtils.getAuthUser(SecurityContextHolder.getContext());
+
+        if (user == null) {
+            return ResponseEntity.badRequest().build();
         }
 
-        System.out.println("Course update DTO: " + courseUpdateDTO.toString());
+        Course existingCourse = courseService.getCourse(courseId);
+        if (existingCourse == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        System.out.println("Course update DTO: " + courseUpdateDTO.getDescription());
+        System.out.println(existingCourse.getOwner().getId());
+        System.out.println(user.getId());
+
+        if (!existingCourse.getOwner().equals(user)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        System.out.println("Course update DTO: " + courseUpdateDTO.getDescription());
 
         if (courseUpdateDTO.getTitle() != null) {
             existingCourse.setTitle(courseUpdateDTO.getTitle());
@@ -120,7 +138,18 @@ public class CourseConroller {
     }
 
     @DeleteMapping("/records/{courseId}")
-    public ResponseEntity<String> deleteChapter(@PathVariable String courseId) {
+    public ResponseEntity<String> deleteCourse(@PathVariable String courseId) {
+        Users user = AuthUtils.getAuthUser(SecurityContextHolder.getContext());
+        if (user == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Course course = courseService.getCourse(courseId);
+
+        if (!course.getOwner().equals(user)) {
+            return ResponseEntity.badRequest().build();
+        }
+
         try {
             courseService.deleteCourse(courseId);
             return ResponseEntity.ok("Chapter deleted successfully");

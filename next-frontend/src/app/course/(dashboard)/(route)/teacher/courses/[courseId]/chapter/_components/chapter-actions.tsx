@@ -2,6 +2,7 @@
 
 import { ConfirmModal } from "@/components/course/modals/confirm-modal";
 import { Button } from "@/components/ui/button";
+import { useSpringBase } from "@/context/SpringBaseContext";
 import {
   deleteChapter,
   getChapters,
@@ -10,7 +11,7 @@ import {
 import { updateCourse } from "@/lib/course/course";
 import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 interface ChapterActionProps {
@@ -31,11 +32,16 @@ export const ChapterActions = ({
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
+  const { springbase } = useSpringBase();
+  useEffect(() => {
+    if (!springbase) return;
+  }, [springbase]);
+
   const onClick = async () => {
     try {
       setIsLoading(true);
       if (!isPublished) {
-        const chapter = await updateChapter({
+        const chapter = await updateChapter(springbase!, courseId, {
           chapterId: chapterId,
           isPublished: true,
         });
@@ -47,7 +53,7 @@ export const ChapterActions = ({
           onUpdate(chapter.isPublished);
         }
       } else {
-        const chapter = await updateChapter({
+        const chapter = await updateChapter(springbase!, courseId, {
           chapterId: chapterId,
           isPublished: false,
         });
@@ -59,12 +65,12 @@ export const ChapterActions = ({
           onUpdate(chapter.isPublished);
         }
 
-        const chapters = await getChapters(chapterId, true);
+        const chapters = await getChapters(springbase!, chapterId, true);
 
         if (!chapters || chapters.length === 0) {
           console.log("No published chapters available.");
 
-          const course = await updateCourse(courseId, {
+          const course = await updateCourse(springbase!, courseId, {
             isPublished: false,
           });
           console.log("Updated course: ", course);
@@ -82,15 +88,15 @@ export const ChapterActions = ({
   const onDelete = async () => {
     try {
       setIsLoading(true);
-      await deleteChapter(chapterId);
+      await deleteChapter(springbase!, chapterId);
       toast.success("Chapter deleted");
 
-      const chapters = await getChapters(chapterId, true);
+      const chapters = await getChapters(springbase!, chapterId, true);
 
       if (!chapters || chapters.length === 0) {
         console.log("No published chapters available.");
 
-        const course = await updateCourse(courseId, {
+        const course = await updateCourse(springbase!, courseId, {
           isPublished: false,
         });
         console.log("Updated course: ", course);

@@ -15,17 +15,15 @@ import {
 } from "@/components/ui/form";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Pencil } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { Textarea } from "@/components/ui/textarea";
-import { updateCourse } from "@/lib/course/course";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { updateChapter } from "@/lib/course/chapter";
 import { Editor } from "@/components/course/editor";
 import { Preview } from "@/components/course/preview";
+import { useSpringBase } from "@/context/SpringBaseContext";
 
 const formSchema = z.object({
   description: z.string().min(1, {
@@ -51,6 +49,11 @@ export const ChapterDescriptionForm = ({
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
 
+  const { springbase } = useSpringBase();
+    useEffect(() => {
+      if (!springbase) return;
+    }, [springbase]);
+
   const toggleEdit = () => setIsEditing((current) => !current);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -63,7 +66,7 @@ export const ChapterDescriptionForm = ({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     console.log("Submitted values:", values);
     try {
-      const chapter = await updateChapter({
+      const chapter = await updateChapter(springbase!, courseId, {
         chapterId: chapterId,
         description: values.description,
       });

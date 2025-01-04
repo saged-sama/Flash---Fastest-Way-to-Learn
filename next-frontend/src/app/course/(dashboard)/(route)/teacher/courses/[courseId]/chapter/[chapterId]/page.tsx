@@ -10,9 +10,9 @@ import Link from "next/link";
 import { ChapterDescriptionForm } from "../_components/chapter-description-form";
 import { ChapterAccessForm } from "../_components/chapter-access-form";
 import { ChapterVideoForm } from "../_components/chapter-video-form";
-import { springbase } from "@/lib/springbase";
 import { Banner } from "@/components/course/banner";
 import { ChapterActions } from "../_components/chapter-actions";
+import { useSpringBase } from "@/context/SpringBaseContext";
 
 const TeacherChapterIdPage = ({
   params,
@@ -22,16 +22,19 @@ const TeacherChapterIdPage = ({
   const router = useRouter();
   const [chapter, setChapter] = useState<any>(null);
 
+  const { springbase } = useSpringBase();
+
   useEffect(() => {
+    if (!springbase) return;
     const fetchChapterDetails = async () => {
-      const fetchedChapter = await getChapter(params.chapterId);
+      const fetchedChapter = await getChapter(springbase!, params.chapterId);
 
       if (!fetchedChapter) {
         router.push("/course");
       }
 
       if (fetchedChapter.videoUrl) {
-        fetchedChapter.videoUrl = springbase
+        fetchedChapter.videoUrl = springbase!
           .collection("chapter")
           .file(fetchedChapter.id, fetchedChapter.videoUrl);
       }
@@ -41,7 +44,7 @@ const TeacherChapterIdPage = ({
     };
 
     fetchChapterDetails();
-  }, [params.chapterId]);
+  }, [params.chapterId, springbase]);
 
   if (!chapter) {
     return <div>Loading...</div>;
@@ -163,7 +166,7 @@ const TeacherChapterIdPage = ({
               onUpdate={(newVideoUrl) =>
                 setChapter((prev: any) => ({
                   ...prev,
-                  videoUrl: springbase
+                  videoUrl: springbase!
                     .collection("chapter")
                     .file(chapter.id, newVideoUrl),
                 }))

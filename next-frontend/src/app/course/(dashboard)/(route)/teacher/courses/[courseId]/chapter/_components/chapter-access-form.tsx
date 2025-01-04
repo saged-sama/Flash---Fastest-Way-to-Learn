@@ -14,12 +14,13 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { updateChapter } from "@/lib/course/chapter";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useSpringBase } from "@/context/SpringBaseContext";
 
 const formSchema = z.object({
   isFree: z.boolean().default(false),
@@ -43,6 +44,11 @@ export const ChapterAccessForm = ({
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
 
+  const { springbase } = useSpringBase();
+    useEffect(() => {
+      if (!springbase) return;
+    }, [springbase]);
+
   const toggleEdit = () => setIsEditing((current) => !current);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -57,7 +63,7 @@ export const ChapterAccessForm = ({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     console.log("Submitted values:", values);
     try {
-      const chapter = await updateChapter({
+      const chapter = await updateChapter(springbase!, courseId, {
         chapterId: chapterId,
         isFree: values.isFree,
       });

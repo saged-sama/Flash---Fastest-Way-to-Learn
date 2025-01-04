@@ -1,5 +1,6 @@
 package com.example.demo.StripeCustomer;
 
+import com.example.demo.Auth.AuthUtils;
 import com.example.demo.Courses.Course;
 import com.example.demo.Courses.CourseService;
 import com.example.demo.Purchase.PurchaseService;
@@ -8,6 +9,7 @@ import com.example.demo.Users.UsersService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,7 +18,7 @@ public class StripeController {
 
     @Autowired
     private StripeCustomerService stripeCustomerService;
-    
+
     @Autowired
     private CourseService courseService;
 
@@ -28,19 +30,17 @@ public class StripeController {
 
     @PostMapping("/records")
     public ResponseEntity<StripeResponse> createCheckoutSession(
-            @RequestParam String courseId,
-            @RequestParam String userId) {
+            @RequestParam String courseId) {
         try {
             Course course = courseService.getCourse(courseId);
-            
+
             if (course == null) {
                 throw new RuntimeException("Course not found");
             }
 
-            Users user = userService.getUser(userId);
-
+            Users user = AuthUtils.getAuthUser(SecurityContextHolder.getContext());
             if (user == null) {
-                throw new RuntimeException("User not found");
+                return ResponseEntity.badRequest().build();
             }
 
             StripeResponse response = stripeCustomerService.checkoutProducts(course, user);

@@ -1,7 +1,6 @@
 "use client";
 
 import { Banner } from "@/components/course/banner";
-import { springbase } from "@/lib/springbase";
 import { getCurrentUser } from "@/lib/utils";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -11,6 +10,7 @@ import { Preview } from "@/components/course/preview";
 import { Separator } from "@/components/ui/separator";
 import { CourseProgressButton } from "./_components/course-progress-button";
 import { getChapterData } from "@/lib/course/get-chapter";
+import { useSpringBase } from "@/context/SpringBaseContext";
 
 const ChapterIdPage = ({
   params,
@@ -27,13 +27,17 @@ const ChapterIdPage = ({
   const [loading, setLoading] = useState(true);
   const [completeOnEnd, setCompleteOnEnd] = useState(false);
 
+  const { springbase } = useSpringBase();
+
   useEffect(() => {
+    if (!springbase) return;
     const fetchChapterData = async () => {
       try {
         const result = await getChapterData({
           userId: getCurrentUser(),
           courseId: params.courseId,
           chapterId: params.chapterId,
+          springbase: springbase!,
         });
         setData(result);
 
@@ -42,9 +46,8 @@ const ChapterIdPage = ({
         // Logic for completeOnEnd
         const { purchase, userProgress } = result;
         const isCompleteOnEnd =
-          purchase.length != 0 &&
-          userProgress != null && 
-          userProgress.isCompleted == false;
+          purchase.length != 0 ||
+          (userProgress != null && userProgress.isCompleted == false);
         setCompleteOnEnd(isCompleteOnEnd);
 
         console.log("userProgress: ", userProgress);
@@ -58,7 +61,7 @@ const ChapterIdPage = ({
     };
 
     fetchChapterData();
-  }, [params.courseId, params.chapterId]);
+  }, [params.courseId, params.chapterId, springbase]);
 
   if (loading) {
     return <div>Loading chapters...</div>;
@@ -74,7 +77,8 @@ const ChapterIdPage = ({
     return redirect("/course");
   }
 
-  const isLocked = (chapter.isFree == null || chapter.isFree == false) && purchase.length == 0;
+  const isLocked =
+    (chapter.isFree == null || chapter.isFree == false) && purchase.length == 0;
   console.log("isLocked: ", isLocked);
 
   return (
@@ -99,7 +103,7 @@ const ChapterIdPage = ({
             nextChapterId={nextChapter?.id}
             isLocked={isLocked}
             completeOnEnd={completeOnEnd}
-            videoUrl={springbase
+            videoUrl={springbase!
               .collection("chapter")
               .file(chapter.id, chapter.videoUrl)}
           />
@@ -113,6 +117,7 @@ const ChapterIdPage = ({
                 courseId={params.courseId}
                 nextChapterId={nextChapter?.id}
                 isCompleted={!!userProgress?.isCompleted}
+                springbase={springbase!}
               />
             ) : (
               <CourseEnrollButton

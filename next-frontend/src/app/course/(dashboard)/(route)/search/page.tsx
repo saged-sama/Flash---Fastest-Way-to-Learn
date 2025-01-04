@@ -7,6 +7,7 @@ import { SearchInput } from "@/components/course/search-input";
 import { CourseList } from "@/components/course/course-list";
 import { Category, Course } from "@/app/course/models/model";
 import { fetchCourses } from "@/lib/course/fetch-courses";
+import { useSpringBase } from "@/context/SpringBaseContext";
 
 type CourseWithCategoryWithProgress = Course & {
   category: Category | null;
@@ -25,11 +26,14 @@ const CourseSearchPage = ({ searchParams }: SearchPageProps) => {
   const [categories, setCategories] = useState([]);
   const [courses, setCourses] = useState<CourseWithCategoryWithProgress[]>([]);
 
+  const { springbase } = useSpringBase();
+
   useEffect(() => {
+    if (!springbase) return;
     const fetchData = async () => {
       try {
-        const fetchedCategories = await getCategories();
-        const fetchedCourses = await fetchCourses({ ...searchParams });
+        const fetchedCategories = await getCategories(springbase!);
+        const fetchedCourses = await fetchCourses({ ...searchParams, springbase});
         setCategories(fetchedCategories);
         setCourses(fetchedCourses);
         console.log("Categories: ", fetchedCategories);
@@ -40,7 +44,7 @@ const CourseSearchPage = ({ searchParams }: SearchPageProps) => {
     };
 
     fetchData();
-  }, [searchParams]);
+  }, [searchParams, springbase]);
 
   return (
     <>

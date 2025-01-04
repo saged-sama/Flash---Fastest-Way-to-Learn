@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.Auth.AuthUtils;
 import com.example.demo.Chapters.Chapter;
 import com.example.demo.Chapters.ChapterService;
 import com.example.demo.Users.Users;
@@ -42,7 +44,7 @@ public class UserProgressController {
         System.out.println("ChapterId: " + chapterId);
         System.out.println("UserId: " + userId);
         System.out.println("isCompleted: " + isCompleted);
-        
+
         if (chapter == null) {
             throw new RuntimeException("Chapter not found");
         }
@@ -51,8 +53,6 @@ public class UserProgressController {
         if (user == null) {
             throw new RuntimeException("User not found");
         }
-
-        
 
         // Check if the UserProgress record exists
         Optional<UserProgress> existingUserProgress = userProgressService.getUserProgress(userId, chapterId);
@@ -73,11 +73,16 @@ public class UserProgressController {
     }
 
     @GetMapping("/records")
-    public ResponseEntity<List<Chapter>> getCompletedChapters(@RequestParam String userId,
+    public ResponseEntity<List<Chapter>> getCompletedChapters(
             @RequestParam(required = false) List<String> publishedChapterIds) {
+        Users user = AuthUtils.getAuthUser(SecurityContextHolder.getContext());
+        if (user == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
         List<Chapter> chapters = new ArrayList<Chapter>();
         if (publishedChapterIds != null) {
-            chapters = userProgressService.getCompletedChapters(userId, publishedChapterIds);
+            chapters = userProgressService.getCompletedChapters(user.getId(), publishedChapterIds);
         }
         return ResponseEntity.ok(chapters);
     }

@@ -1,10 +1,11 @@
 "use client";
 
+import { useSpringBase } from "@/context/SpringBaseContext";
 import { updateUserProgress } from "@/lib/course/user-progress";
 import { getCurrentUser } from "@/lib/utils";
 import { Loader2, Lock } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import ReactPlayer from "react-player";
 
@@ -27,26 +28,34 @@ export const VideoPlayer = ({
 }: VideoPlayerProps) => {
   const [isReady, setIsReady] = useState(false);
 
+  const { springbase } = useSpringBase();
+  useEffect(() => {
+    if (!springbase) return;
+  }, [springbase]);
+
   const router = useRouter();
   const onEnd = async () => {
     try {
+      console.log("completeOnEnd: ", completeOnEnd);
 
-        console.log("completeOnEnd: ", completeOnEnd);
+      if (completeOnEnd) {
+        const userProgress = await updateUserProgress(
+          springbase!,
+          chapterId,
+          true
+        );
+        toast.success("Progress udpated");
+      }
 
-        if (completeOnEnd) {
-            const userProgress = await updateUserProgress(getCurrentUser(), chapterId, true);
-            toast.success("Progress udpated");
-        }
+      if (nextChapterId) {
+        router.push(`/course/courses/${courseId}/chapters/${nextChapterId}`);
+      }
 
-        if (nextChapterId) {
-            router.push(`/course/courses/${courseId}/chapters/${nextChapterId}`)
-        }
-
-        router.refresh();
+      router.refresh();
     } catch {
-        toast.error("Something went wrong");
+      toast.error("Something went wrong");
     }
-  }
+  };
 
   return (
     <div className="relative aspect-video">
@@ -62,13 +71,14 @@ export const VideoPlayer = ({
         </div>
       )}
       {!isLocked && (
-        <ReactPlayer 
-            url={videoUrl} 
-            controls width="100%" 
-            height="100%" 
-            onPlay={() => setIsReady(true)}    
-            onEnded={onEnd}  
-            playing={true}         
+        <ReactPlayer
+          url={videoUrl}
+          controls
+          width="100%"
+          height="100%"
+          onPlay={() => setIsReady(true)}
+          onEnded={onEnd}
+          playing={true}
         />
       )}
     </div>

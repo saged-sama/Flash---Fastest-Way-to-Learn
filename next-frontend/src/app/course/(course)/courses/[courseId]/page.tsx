@@ -3,14 +3,18 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getChapters } from "@/lib/course/chapter";
+import { useSpringBase } from "@/context/SpringBaseContext";
 
 const CourseIdPage = ({ params }: { params: { courseId: string } }) => {
   const router = useRouter();
 
+  const { springbase } = useSpringBase();
+
   useEffect(() => {
+    if (!springbase) return;
     const fetchAndRedirect = async () => {
       try {
-        const chapters = await getChapters(params.courseId, true);
+        const chapters = await getChapters(springbase!, params.courseId, true);
 
         if (chapters.length > 0) {
           router.push(`/course/courses/${params.courseId}/chapters/${chapters[0].id}`);
@@ -25,7 +29,7 @@ const CourseIdPage = ({ params }: { params: { courseId: string } }) => {
     };
 
     fetchAndRedirect();
-  }, [params.courseId, router]);
+  }, [params.courseId, router, springbase]);
 
   // Optionally show a loading state
   return <div>Loading...</div>;

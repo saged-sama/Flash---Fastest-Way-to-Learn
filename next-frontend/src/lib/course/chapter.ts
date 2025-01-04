@@ -1,64 +1,41 @@
-import { springbase } from "../springbase";
+import SpringBase from "../springbase/springbase";
 
-export async function createChapter(chapterTitle: string, courseId: string) {
+export async function createChapter(springbase: SpringBase, chapterTitle: string, courseId: string) {
     console.log("Creating new chapter");
     console.log("Chapter title: ", chapterTitle);
     
-    // Create a FormData object to send course information
     const formData = new FormData();
     
-    // Add course title
     formData.append("title", chapterTitle);
     
-    // Gotta change the userId
     formData.append("courseId", courseId);
 
-    // Gotta change the auth to false
-    const course = await springbase.collection("chapter").create(formData, false);
+    const course = await springbase.collection("chapter").create(formData);
     return course;
 }
 
-export async function getChapters(courseId: string, published: boolean = false) {
+export async function getChapters(springbase: SpringBase, courseId: string, published: boolean = false) {
     const options = { courseId, published }; // Add the `published` filter
-    const response = await springbase.collection("chapter").getFullList(options, false);
+    const response = await springbase.collection("chapter").getFullList(options);
     console.log("Get chapters response: ", response);
     return response || [];
 }
 
-export async function getChapter(chapterId: string, nextChapter?: boolean){
-    // const userId = getCurrentUser();
-    // if (!userId) {
-    //     return null;
-    // }
-
+export async function getChapter(springbase: SpringBase, chapterId: string, nextChapter?: boolean){
     if (nextChapter == null) {
-        const chapter = await springbase.collection("chapter").getOne(chapterId, {}, false);
+        const chapter = await springbase.collection("chapter").getOne(chapterId, {});
         return chapter;
     } else {
-        const chapter = await springbase.collection("chapter").getOne(chapterId, {nextChapter}, false);
+        const chapter = await springbase.collection("chapter").getOne(chapterId, {nextChapter});
         return chapter;
-    }
-
-    // if (!course) {
-    //     return null;
-    // }   
+    } 
 }
 
-export async function deleteChapter(chapterId: string){
-    // const userId = getCurrentUser();
-    // if (!userId) {
-    //     return null;
-    // }
-
-    await springbase.collection("chapter").deleteOne(chapterId, false);
-
-    // if (!course) {
-    //     return null;
-    // }
-    
+export async function deleteChapter(springbase: SpringBase, chapterId: string){
+    await springbase.collection("chapter").deleteOne(chapterId);   
 }
 
-export async function updateChapter(chapterData: {
+export async function updateChapter(springbase: SpringBase, courseId: string, chapterData: {
     chapterId: string;
     title?: string;
     description?: string;
@@ -104,10 +81,10 @@ export async function updateChapter(chapterData: {
         formData.append("isFree", chapterData.isFree.toString());
     }
     
-    // Add userId for authentication
-    formData.append("chapterId", chapterData.chapterId.toString());
+    formData.append("chapterId", chapterData.chapterId);
+    formData.append("courseId", courseId);
 
     // Update the course using springbase
-    const updatedChapter = await springbase.collection("chapter").update(chapterData.chapterId, formData, false);
+    const updatedChapter = await springbase.collection("chapter").update(chapterData.chapterId, formData);
     return updatedChapter;
 }

@@ -22,7 +22,7 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @PostMapping("/records")
-    public ResponseEntity<Category> createCourse(@RequestParam String name) {
+    public ResponseEntity<Category> createCategory(@RequestParam String name) {
         Category category = new Category();
         category.setName(name);
         return ResponseEntity.ok(categoryService.createCategory(category));

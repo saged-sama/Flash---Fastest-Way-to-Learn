@@ -11,11 +11,11 @@ import { ImageForm } from "./_components/image-form";
 import { CategoryForm } from "./_components/category-form";
 import { getCategories } from "@/lib/course/category";
 import { PriceForm } from "./_components/price-form";
-import { springbase } from "@/lib/springbase";
 import { ChapterForm } from "./_components/chapter-form";
 import { getChapters } from "@/lib/course/chapter";
 import { Banner } from "@/components/course/banner";
 import { Actions } from "./_components/actions";
+import { useSpringBase } from "@/context/SpringBaseContext";
 
 const TeacherCourseIdPage = ({ params }: { params: { courseId: string } }) => {
   const router = useRouter();
@@ -25,10 +25,13 @@ const TeacherCourseIdPage = ({ params }: { params: { courseId: string } }) => {
   );
   const [chapters, setChapters] = useState<any[]>([]);
 
+  const { springbase } = useSpringBase();
+
   useEffect(() => {
+    if (!springbase) return;
     const fetchCourseDetails = async () => {
       // Fetch course
-      const fetchedCourse = await getCourse(params.courseId);
+      const fetchedCourse = await getCourse(springbase!, params.courseId);
       console.log("Fetched course: ", fetchedCourse);
 
       if (!fetchedCourse) {
@@ -36,7 +39,7 @@ const TeacherCourseIdPage = ({ params }: { params: { courseId: string } }) => {
       }
 
       if (fetchedCourse.imageUrl) {
-        fetchedCourse.imageUrl = springbase
+        fetchedCourse.imageUrl = springbase!
           .collection("course")
           .file(fetchedCourse.id, fetchedCourse.imageUrl);
       }
@@ -44,12 +47,12 @@ const TeacherCourseIdPage = ({ params }: { params: { courseId: string } }) => {
       setCourse(fetchedCourse);
 
       // Fetch categories
-      const fetchedCategories = await getCategories();
+      const fetchedCategories = await getCategories(springbase!);
       console.log("Categories: ", fetchedCategories);
       setCategories(fetchedCategories);
 
       // Fetch chapters
-      const fetchedChapters = await getChapters(fetchedCourse.id);
+      const fetchedChapters = await getChapters(springbase!, fetchedCourse.id);
       console.log("Chapters: ", fetchedChapters);
       setChapters(fetchedChapters);
     };
@@ -145,7 +148,7 @@ const TeacherCourseIdPage = ({ params }: { params: { courseId: string } }) => {
               onUpdate={(newImageUrl) => {
                 setCourse((prev: any) => ({
                   ...prev,
-                  imageUrl: springbase
+                  imageUrl: springbase!
                     .collection("course")
                     .file(course.id, newImageUrl),
                 }));

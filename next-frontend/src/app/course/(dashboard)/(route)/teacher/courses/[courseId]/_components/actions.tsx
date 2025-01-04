@@ -2,15 +2,11 @@
 
 import { ConfirmModal } from "@/components/course/modals/confirm-modal";
 import { Button } from "@/components/ui/button";
-import {
-  deleteChapter,
-  getChapters,
-  updateChapter,
-} from "@/lib/course/chapter";
+import { useSpringBase } from "@/context/SpringBaseContext";
 import { deleteCourse, updateCourse } from "@/lib/course/course";
 import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 interface ActionProps {
@@ -29,11 +25,16 @@ export const Actions = ({
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
+  const { springbase } = useSpringBase();
+  useEffect(() => {
+    if (!springbase) return;
+  }, [springbase]);
+
   const onClick = async () => {
     try {
       setIsLoading(true);
       if (!isPublished) {
-        const course = await updateCourse(courseId, {
+        const course = await updateCourse(springbase!, courseId, {
           isPublished: true,
         });
         console.log("Updated course: ", course);
@@ -44,7 +45,7 @@ export const Actions = ({
           onUpdate(course.isPublished);
         }
       } else {
-        const course = await updateCourse(courseId, {
+        const course = await updateCourse(springbase!, courseId, {
           isPublished: false,
         });
         console.log("Updated course: ", course);
@@ -67,7 +68,7 @@ export const Actions = ({
   const onDelete = async () => {
     try {
       setIsLoading(true);
-      await deleteCourse(courseId);
+      await deleteCourse(springbase!, courseId);
       toast.success("Chapter deleted");
 
       router.refresh();

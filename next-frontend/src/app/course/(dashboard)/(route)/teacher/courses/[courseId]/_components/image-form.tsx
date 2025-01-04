@@ -15,10 +15,11 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { ImageIcon, PlusCircle } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { updateCourse } from "@/lib/course/course";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { useSpringBase } from "@/context/SpringBaseContext";
 
 const formSchema = z.object({
   imageFile: z.instanceof(File, {
@@ -47,6 +48,11 @@ export const ImageForm = ({
 
   const toggleEdit = () => setIsEditing((current) => !current);
 
+  const { springbase } = useSpringBase();
+  useEffect(() => {
+    if (!springbase) return;
+  }, [springbase]);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
@@ -61,7 +67,7 @@ export const ImageForm = ({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     console.log("Submitted values:", values);
     try {
-      const course = await updateCourse(courseId, {
+      const course = await updateCourse(springbase!, courseId, {
         imageFile: values.imageFile,
       });
       console.log("Updated course: ", course);

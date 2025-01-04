@@ -1,10 +1,11 @@
-import { springbase } from "../springbase";
+import SpringBase from "../springbase/springbase";
 
-export async function updateUserProgress(userId: string, chapterId: string, isCompleted: boolean) {
+export async function updateUserProgress(springbase: SpringBase, chapterId: string, isCompleted: boolean) {
     console.log("Creating new user progress");
     console.log("Chapter id: ", chapterId);
-    console.log("User id: ", userId);
     console.log("isCompleted: ", isCompleted);
+
+    const userId = springbase.authStore.model.id;
     
     // Create a FormData object to send course information
     const formData = new FormData();
@@ -16,31 +17,24 @@ export async function updateUserProgress(userId: string, chapterId: string, isCo
     
     formData.append("isCompleted", isCompleted.toString());
 
-    const userProgress = await springbase.collection("user_progress").update(userId, formData, false);
+    const userProgress = await springbase.collection("user_progress").update(userId, formData);
     
     console.log("Updated user progress: ", userProgress);
     
     return userProgress;
 }
 
-export async function getCompletedChapters(userId: string, publishedChapterIds: string[]) {
+export async function getCompletedChapters(springbase: SpringBase, publishedChapterIds: string[]) {
     console.log("Getting completed chapters by users");
-        const chapters = await springbase.collection("user_progress").getFullList({userId, publishedChapterIds}, false);
+        const chapters = await springbase.collection("user_progress").getFullList({publishedChapterIds});
         console.log("Get completed chapters response: ", chapters);
         return chapters || [];
 }
 
-export async function getUserProgress(userId: string, chapterId: string){
-    // const userId = getCurrentUser();
-    // if (!userId) {
-    //     return null;
-    // }
-
-    const course = await springbase.collection("user_progress").getOne(userId, {chapterId}, false);
-
-    // if (!course) {
-    //     return null;
-    // }
-    
-    return course;
+export async function getUserProgress(springbase: SpringBase, chapterId: string){
+    const userId = springbase.authStore.model.id;
+    console.log("User id: ", userId);
+    const userProgress = await springbase.collection("user_progress").getOne(userId, {chapterId});
+    console.log("Received userProgress: ", userProgress);
+    return userProgress;
 }

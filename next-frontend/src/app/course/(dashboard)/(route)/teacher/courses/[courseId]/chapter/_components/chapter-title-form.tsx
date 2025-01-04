@@ -4,7 +4,6 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { updateCourse } from "@/lib/course/course";
 
 import {
   Form,
@@ -17,9 +16,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Pencil } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { updateChapter } from "@/lib/course/chapter";
+import { useSpringBase } from "@/context/SpringBaseContext";
 
 const formSchema = z.object({
   title: z.string().min(1, {
@@ -46,6 +46,11 @@ export const ChapterTitleForm = ({
   const [isEditing, setIsEditing] = useState(false);
   const [chapterTitle, setChapterTitle] = useState(initialData.title);
 
+  const { springbase } = useSpringBase();
+    useEffect(() => {
+      if (!springbase) return;
+    }, [springbase]);
+
   const toggleEdit = () => setIsEditing((current) => !current);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -57,7 +62,7 @@ export const ChapterTitleForm = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const chapter = await updateChapter({
+      const chapter = await updateChapter(springbase!, courseId, {
         chapterId: chapterId,
         title: values.title,
       });

@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -17,8 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.Auth.AuthUtils;
 import com.example.demo.Courses.Course;
 import com.example.demo.Courses.CourseService;
+import com.example.demo.Users.Users;
 
 @Configuration
 @RestController
@@ -31,12 +34,23 @@ public class ChapterController {
     private CourseService courseService;
 
     @PostMapping("/records")
-    public ResponseEntity<Chapter> createCourse(@RequestParam String title, @RequestParam String courseId)
+    public ResponseEntity<Chapter> createChapter(@RequestParam String title, @RequestParam String courseId)
             throws IOException {
+
+        Users user = AuthUtils.getAuthUser(SecurityContextHolder.getContext());
+        if (user == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Course course = courseService.getCourse(courseId);
+
+        if (!course.getOwner().equals(user)) {
+            return ResponseEntity.badRequest().build();
+        }
+
         Chapter chapter = new Chapter();
         chapter.setTitle(title);
 
-        Course course = courseService.getCourse(courseId);
         chapter.setCourse(course);
 
         Integer position = chapterService.getHighestChapterPosition(course);
@@ -78,13 +92,41 @@ public class ChapterController {
 
     @PatchMapping(value = "/records/{chapterId}", consumes = "multipart/form-data")
     public ResponseEntity<Chapter> updateChapter(@ModelAttribute ChapterDTO chapterDto,
-            @PathVariable String chapterId) {
+            @PathVariable String chapterId, 
+            @RequestParam String courseId) {
         System.out.println("Chapter DTO: " + chapterDto.toString());
+
+        Users user = AuthUtils.getAuthUser(SecurityContextHolder.getContext());
+        if (user == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Course course = courseService.getCourse(courseId);
+
+        if (!course.getOwner().equals(user)) {
+            return ResponseEntity.badRequest().build();
+        }
+
         return ResponseEntity.ok(chapterService.updateChapter(chapterId, chapterDto));
     }
 
     @DeleteMapping("/records/{chapterId}")
     public ResponseEntity<String> deleteChapter(@PathVariable String chapterId) {
+        Users user = AuthUtils.getAuthUser(SecurityContextHolder.getContext());
+        if (user == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Chapter chapter = chapterService.getChapter(chapterId);
+
+        if (chapter == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        if (!chapter.getCourse().getOwner().equals(user)) {
+            return ResponseEntity.badRequest().build();
+        }
+
         try {
             chapterService.deleteChapter(chapterId);
             return ResponseEntity.ok("Chapter deleted successfully");

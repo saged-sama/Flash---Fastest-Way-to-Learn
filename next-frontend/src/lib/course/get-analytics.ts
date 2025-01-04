@@ -1,5 +1,5 @@
-import { error } from "console";
 import { getPurchase } from "./purchase";
+import SpringBase from "../springbase/springbase";
 
 const groupByCourse = (purchases: any[]) => {
     const grouped: { [courseTitle: string]: number} = {};
@@ -14,9 +14,9 @@ const groupByCourse = (purchases: any[]) => {
     return grouped;
 }
 
-export const getAnalytics = async (userId: string) => {
+export const getAnalytics = async (springbase: SpringBase) => {
     try {
-        const purchases = await getPurchase(userId);
+        const purchases = await getPurchase(springbase!);
         const groupedEarnings = groupByCourse(purchases);
         
         const data = Object.entries(groupedEarnings).map(([courseTitle, total]) => ({

@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { Chapter, Course, UserProgress } from "@/app/course/models/model";
 import { getPurchase } from "@/lib/course/purchase";
-import { getCurrentUser } from "@/lib/utils";
 import { CourseSidebarItem } from "./course-sidebar-item";
 import { CourseProgress } from "@/components/course/course-progress";
+import { useSpringBase } from "@/context/SpringBaseContext";
 
 interface CourseSideBarProps {
   course: Course | null;
@@ -20,11 +20,18 @@ export const CourseSidebar = ({
 }: CourseSideBarProps) => {
   const [purchase, setPurchase] = useState<any[] | []>([]);
 
+  console.log("[Course sidebar] Course: ", course);
+  console.log("[Course sidebar] chapters: ", chapters);
+  console.log("[Course sidebar] progress: ", progress);
+
+  const { springbase } = useSpringBase();
+
   useEffect(() => {
+    if (!springbase) return;
     const fetchPurchase = async () => {
       if (course) {
         try {
-          const result = await getPurchase(getCurrentUser(), course.id);
+          const result = await getPurchase(springbase!, course.id);
           setPurchase(result);
           console.log("Course side bar Purchase: ", result);
         } catch (error) {
@@ -35,7 +42,7 @@ export const CourseSidebar = ({
     };
 
     fetchPurchase();
-  }, [course]);
+  }, [course, springbase]);
 
   return (
     <div className="h-full border-r flex flex-col overflow-y-auto bg-white shadow-sm">

@@ -1,47 +1,54 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { checkout } from "@/lib/course/checkout"
-import { formatPrice, getCurrentUser } from "@/lib/utils"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import toast from "react-hot-toast"
+import { Button } from "@/components/ui/button";
+import { useSpringBase } from "@/context/SpringBaseContext";
+import { checkout } from "@/lib/course/checkout";
+import { formatPrice, getCurrentUser } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 interface CourseEnrollButtonProps {
-    price: number,
-    courseId: string
+  price: number;
+  courseId: string;
 }
 
 export const CourseEnrollButton = ({
-    price,
-    courseId
+  price,
+  courseId,
 }: CourseEnrollButtonProps) => {
-    // const router = useRouter();
+  // const router = useRouter();
 
-    const [isLoading, setIsLoading] = useState(false);
-    
-    const handleClick = async () => {
-        try {
-            setIsLoading(true);
+  const [isLoading, setIsLoading] = useState(false);
 
-            const response = await checkout(getCurrentUser(), courseId);
+  const { springbase } = useSpringBase();
+  useEffect(() => {
+    if (!springbase) return;
+  }, [springbase]);
 
-            window.location.assign(response.sessionUrl);
-        } catch {
-            toast.error("Something went wrong");
-        } finally {
-            setIsLoading(false);
-        }
-        // router.push(`http://localhost:3000/course/courses/${courseId}/payment?success=1`)
+  const handleClick = async () => {
+    try {
+      setIsLoading(true);
+
+      const response = await checkout(springbase!, courseId);
+
+      window.location.assign(response.sessionUrl);
+    } catch {
+      toast.error("Something went wrong");
+    } finally {
+      setIsLoading(false);
     }
+    // router.push(`http://localhost:3000/course/courses/${courseId}/payment?success=1`)
+  };
 
-    return (
-        <Button
-            onClick={handleClick}
-            disabled={isLoading}
-            size="sm"
-            className="w-full md:w-auto">
-            Enroll for {formatPrice(price)}
-        </Button>
-    )
-}
+  return (
+    <Button
+      onClick={handleClick}
+      disabled={isLoading}
+      size="sm"
+      className="w-full md:w-auto"
+    >
+      Enroll for {formatPrice(price)}
+    </Button>
+  );
+};
