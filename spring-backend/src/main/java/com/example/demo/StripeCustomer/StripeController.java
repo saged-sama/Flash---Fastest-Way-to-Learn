@@ -5,7 +5,6 @@ import com.example.demo.Courses.Course;
 import com.example.demo.Courses.CourseService;
 import com.example.demo.Purchase.PurchaseService;
 import com.example.demo.Users.Users;
-import com.example.demo.Users.UsersService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +20,6 @@ public class StripeController {
 
     @Autowired
     private CourseService courseService;
-
-    @Autowired
-    private UsersService userService;
 
     @Autowired
     private PurchaseService purchaseService;
