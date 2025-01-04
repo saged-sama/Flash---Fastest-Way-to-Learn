@@ -1,6 +1,7 @@
 import React from "react";
 import { coursesCard } from "../../dummydata";
 import Heading from "../common/heading/heading";
+import { FaStar } from "react-icons/fa";
 
 const CoursesCard = () => {
   return (
@@ -22,14 +23,19 @@ const CoursesCard = () => {
                   />
                 </div> */}
                 <div className="">
-                  <h1 className="text-2xl font-semibold mb-2 text-black">{val.coursesName}</h1>
+                  <h1 className="text-2xl font-semibold mb-2 text-purple-900">{val.coursesName}</h1>
                   <div className="flex text-customGreen mb-2">
                     <i className="fa fa-star"></i>
                     <i className="fa fa-star"></i>
                     <i className="fa fa-star"></i>
                     <i className="fa fa-star"></i>
                     <i className="fa fa-star"></i>
-                    <span className=" text-sm text-gray-600">(5.0)</span>
+                    <span className=" m-1 text-sm flex text-gray-600">
+                      <FaStar className="text-orange-500" />
+                      <FaStar className="text-orange-500" />
+                      <FaStar className="text-orange-500" />
+                      <FaStar className="text-orange-500" />
+                      <FaStar className="text-orange-500" /></span>
                   </div>
                   <div className="text-gray-500">
                     {val.courTeacher.map((details, index) => (
@@ -55,7 +61,7 @@ const CoursesCard = () => {
                   {val.priceAll} / {val.pricePer}
                 </h3>
               </div>
-              <button className="w-full bg-white text-customGreen py-2 rounded-lg border border-customGreen hover:bg-orange-300 hover:font-semibold  transition-colors transform hover:scale-105 hover:shadow-lg">
+              <button className="w-full bg-green-600 text-white text-customGreen py-2 rounded-lg border border-customGreen hover:bg-gray-800 hover:font-semibold  transition-colors transform duration-500 ease-out hover:scale-105 hover:shadow-lg">
                 ENROLL NOW!
               </button>
             </div>

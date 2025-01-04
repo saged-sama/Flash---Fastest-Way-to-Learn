@@ -5,7 +5,14 @@ import { homeAbout } from "../../dummydata";
 
 import dynamic from 'next/dynamic';
 import animationData from '../../../public/animations/mentors.json';
+import { Bebas_Neue, Abel } from 'next/font/google';
 
+
+const bebasNeue = Bebas_Neue({
+  weight: '400', // Set the font weight to 400 (regular)
+  subsets: ['latin'], // Specify the character subsets 
+  display: 'swap', // Improve initial page load performance
+});
 
 const Player = dynamic(() => import('lottie-react'), { ssr: false });
 
@@ -30,7 +37,8 @@ const AboutCard = () => {
 
 
       <div className="container mx-auto items-center flex justify-center mb-10 ">
-        <Heading subtitle="LEARN FROM THE BEST" title="Expert Help, Online Classes, and AI Guidance!" />
+        <h1 className={` ${bebasNeue.className} text-6xl font-extrabold`}> <span className="text-purple-700">LEARN</span>  FROM THE <span className="text-orange-400">BEST</span> </h1>
+        {/* <Heading subtitle="LEARN FROM THE BEST" title="Expert Help, Online Classes, and AI Guidance!" /> */}
       </div>
       <section className="aboutHome py-2">
         <div className="container mx-auto flex flex-wrap justify-between items-center ">

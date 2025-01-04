@@ -1,14 +1,40 @@
 import React from "react";
 import Title from "./Title";
 
+import { Bebas_Neue, Abel } from 'next/font/google';
+import Link from 'next/link';
+
+const bebasNeue = Bebas_Neue({
+  weight: '400', // Set the font weight to 400 (regular)
+  subsets: ['latin'], // Specify the character subsets 
+  display: 'swap', // Improve initial page load performance
+});
+
+const abel = Abel({
+  weight: '400',
+  subsets: ['latin'],
+  display: 'swap',
+});
+
+
 const Head = () => {
   return (
     <>
       <section className="py-5 text-white bg-gray-800 transition-all duration-300 ease-in-out hover:bg-gray-900">
         <div className="container mx-auto flex justify-between items-center">
 
-          <Title fontsize={35} />
+          {/* <Title fontsize={35} /> */}
+          <Link href="/" className={`logo ${abel.className} container mx-auto`}>
+            <h1
+              style={{ fontSize: '35px' }}
+              className="font-extrabold text-orange-300"
+            >
+              FLASH
+            </h1>
+            <span>Learn Anything Faster Than Ever</span>
+          </Link>
 
+          {/* 
           <div className="social flex space-x-4">
             <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="transform transition-all duration-300 ease-in-out hover:scale-125">
               <svg className="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
@@ -31,7 +57,7 @@ const Head = () => {
                 <path d="M19.615 3.184C17.968 2.514 12 2.514 12 2.514s-5.968 0-7.615.67C3.229 3.524 2.568 4.229 2.364 5.25 2 7.193 2 12 2 12s0 4.807.364 6.75c.204 1.021.865 1.726 2.021 2.066 1.647.67 7.615.67 7.615.67s5.968 0 7.615-.67c1.157-.34 1.818-1.045 2.021-2.066.364-1.943.364-6.75.364-6.75s0-4.807-.364-6.75c-.204-1.021-.865-1.726-2.021-2.066zM9.545 15.568v-7.136L15.454 12l-5.909 3.568z" />
               </svg>
             </a>
-          </div>
+          </div> */}
 
         </div>
       </section>

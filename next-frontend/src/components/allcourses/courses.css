@@ -88,18 +88,18 @@
     line-height: 30px;
   }
   .online span {
-    background-color: #f8f8f8;
+    background-color: #2b2203;
     padding: 5px 20px;
     font-weight: 500;
     font-size: 15px;
-    color: #1eb2a6;
+    color: #e9f5f4;
     border-radius: 5px;
   }
   .online .box .show {
     opacity: 0;
   }
   .online .box:hover {
-    background-color: #1eb2a6;
+    background-color: #85168f;
     border-radius: 5px;
     cursor: pointer;
   }
