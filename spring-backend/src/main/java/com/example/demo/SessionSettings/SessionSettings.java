@@ -49,7 +49,6 @@ public class SessionSettings {
     private boolean canViewParticipantsList;
     private boolean canViewCurrentSessionParticipants;
     private boolean displaySessionStatistics;
-
     // Private constructor for the Builder
     private SessionSettings(Builder builder) {
         this.id = builder.id;

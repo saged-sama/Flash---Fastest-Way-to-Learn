@@ -6,6 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,7 +40,7 @@ public class SessionSettingsController {
     }
 
     @GetMapping("/records/{id}")
-    public ResponseEntity<SessionSettings> getRecord(String id){
+    public ResponseEntity<SessionSettings> getRecord(@PathVariable String id){
         SessionSettings sessionSettings = sessionSettingsService.getSessionSettings(id);
         if(sessionSettings == null){
             return ResponseEntity.badRequest().build();

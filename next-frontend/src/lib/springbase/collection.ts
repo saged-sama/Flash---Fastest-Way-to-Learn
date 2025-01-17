@@ -10,7 +10,7 @@ function urlSearchParametersFromObject(obj: { [key: string]: any }) {
 
 export default function Collection(collectionName: string, springbaseHandler: Function, initiateWebSocket: Function) {
     const { baseUrl, authStore, clientId, handlers } = springbaseHandler();
-
+    let webSocket: WebSocket | null = null;
     const collectionBaseUrl = baseUrl + "/api/collections/" + collectionName;
     const collectionFileUrl = baseUrl + "/api/files/" + collectionName;
 
@@ -70,7 +70,7 @@ export default function Collection(collectionName: string, springbaseHandler: Fu
         return await crud(headers).GET(url);
     }
 
-    async function getList(page: number, perPage: number, options?: object, auth: boolean = true) {
+    async function getList(page: number, perPage: number, options?: {filter?: string, sort?: string}, auth: boolean = true) {
         let url = `${collectionBaseUrl}/records?page=${page}&perPage=${perPage}`;
         if (options) {
             url += "&" + urlSearchParametersFromObject(options);
@@ -87,7 +87,7 @@ export default function Collection(collectionName: string, springbaseHandler: Fu
         return await crud(headers).GET(url);
     }
 
-    async function getFullList(options?: object, auth: boolean = true) {
+    async function getFullList(options?: {filter?: string, sort?: string}, auth: boolean = true) {
         return await getList(1, 5000, options, auth);
     }
 
@@ -133,55 +133,75 @@ export default function Collection(collectionName: string, springbaseHandler: Fu
         return `${collectionFileUrl}/${recordId}/${filename}`;
     }
 
-    function subscribe(id?: string, filter?: string){
-        initiateWebSocket();
+    async function subscribe(options: {id?: string, action?: string, filter?: string}, callback: Function){
+        webSocket = initiateWebSocket();
+        async function waitForSocket(){
+            return new Promise((resolve, reject) => {
+                if(webSocket?.readyState === 1){
+                    resolve(true);
+                }
+                else{
+                    setTimeout(() => {
+                        resolve(waitForSocket());
+                    }, 1000);
+                }
+            });
+        }
+
+        if(webSocket?.readyState !== 1){
+            await waitForSocket();
+        }
+
         let context = collectionBaseUrl.replace(baseUrl, "") + "/records";
-        if(id){
-            context += `/${id}`;
+        if(options.id){
+            context += `/${options.id}`;
         }
 
-        function onCreate(callback: Function){
-            crud().POST(`${baseUrl}/realtime/subscribe`, objectToFormData({ 
-                clientId: clientId, 
-                topic: context, 
-                action: "create"
-            }));
-            handlers[`${context} create`] = callback;
-        }
-
-        function onUpdate(callback: Function){
-            crud().POST(`${baseUrl}/realtime/subscribe`, objectToFormData({ 
-                clientId: clientId, 
-                topic: context, 
-                action: "update"
-            }));
-            handlers[`${context} update`] = callback;
-        }
-
-        function onDelete(callback: Function){
-            crud().POST(`${baseUrl}/realtime/subscribe`, objectToFormData({ 
-                clientId: clientId, 
-                topic: context, 
-                action: "delete"
-            }));
-            handlers[`${context} delete`] = callback;
-        }
-
-        return {
-            onCreate,
-            onUpdate,
-            onDelete
-        }
+        console.log("Subscribing to: ", context, webSocket);
+        webSocket?.send(JSON.stringify({
+            messageType: "subscribe",
+            topic: context,
+            action: options.action || "create"
+        }))
+        handlers[`${context} ${options.action || "create"}`] = callback;
     }
 
-    function unsubscribe(id?: string, action?: string, filter?: string){
-        let context = collectionBaseUrl.replace(baseUrl, "");
-        if(id){
-            context += `/${id}`;
+    async function unsubscribe(options: {id?: string, action?: string, filter?: string}){
+        webSocket = initiateWebSocket();
+        async function waitForSocket(){
+            return new Promise((resolve, reject) => {
+                if(webSocket?.readyState === 1){
+                    resolve(true);
+                }
+                else{
+                    setTimeout(() => {
+                        resolve(waitForSocket());
+                    }, 1000);
+                }
+            });
         }
+
+        if(webSocket?.readyState !== 1){
+            await waitForSocket();
+        }
+
+        let context = collectionBaseUrl.replace(baseUrl, "") + "/records";
+        if(options.id){
+            context += `/${options.id}`;
+        }
+
+        console.log("Unsubscribing from: ", context, webSocket);
+
+        webSocket?.send(JSON.stringify({
+            messageType: "unsubscribe",
+            topic: context,
+            action: options.action || "create"
+        }));
+
+        console.log("Unsubscribed from: ", context);
         
-        if(action){
-            delete handlers[`${context} ${action}`];
+        if(options.action){
+            delete handlers[`${context} ${options.action}`];
         }
         else{
             delete handlers[`${context} read`];

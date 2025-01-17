@@ -10,13 +10,10 @@ export default function SessionsLayout({ children }: Readonly<{children: React.R
 
     return (
         <Layout>
-            <Header style={{ display: 'flex', alignItems: 'center' }}>
-
-            </Header>
             <Layout style={{ background: token.colorBgContainer, borderRadius: token.borderRadiusLG, minHeight: '80vh' }}>
                 <Sider style={{
                     background: token.colorBgContainer,
-                }} width={300}>
+                }} width={300} className="py-3">
                     <SessionsSidebar />
                 </Sider>
                 <Layout style={{ padding: '0 24px 24px' }}>

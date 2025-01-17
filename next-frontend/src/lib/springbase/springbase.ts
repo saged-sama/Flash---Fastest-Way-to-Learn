@@ -1,16 +1,13 @@
 import Collection from "./collection";
 import AuthStore from "./authStore";
 
-function handleMessage(clientId: string, event: MessageEvent, handlers: {[key: string]: Function}) {
+function handleMessage(event: MessageEvent, handlers: {[key: string]: Function}) {
     const data = JSON.parse(event.data);
     const topic = data.topic;
     const action = data.action;
 
     if(topic === "default"){
-        const clId = data.clientId;
-        if(clId){
-            clientId = clId;
-        }
+        const clId = data.clientID;
     }
     else{
         handlers[topic + " " + action]?.call(data.message);
@@ -22,8 +19,7 @@ export default class SpringBase{
     public authStore: AuthStore;
     private webSocketUrl: string;
     private webSocket: WebSocket | null;
-    private handlers: {[key: string]: Function} = {};
-    private clientId: string;
+    public handlers: {[key: string]: Function} = {};
 
     constructor (baseUrl: string) {
         if(baseUrl.endsWith("/")){
@@ -32,7 +28,6 @@ export default class SpringBase{
         this.baseUrl = baseUrl;
         this.webSocketUrl = baseUrl.replace("http", "ws") + "/ws";
         this.authStore = new AuthStore();
-        this.clientId = crypto.randomUUID();
         this.webSocket = null;
     }
 
@@ -46,10 +41,7 @@ export default class SpringBase{
 
     private initiateWebSocket() {
         if(!this.webSocket){
-            if(this.authStore.isValid){
-                this.clientId = this.authStore.model.id;
-            }
-            this.webSocket = new WebSocket(this.webSocketUrl + "?clientId=" + this.clientId);
+            this.webSocket = new WebSocket(this.webSocketUrl);
     
             if(!this.webSocket){
                 console.error("Websocket Start Failed!!");
@@ -69,9 +61,10 @@ export default class SpringBase{
             }
     
             this.webSocket.onmessage = (event) => {
-                handleMessage(this.clientId, event, this.handlers);
+                handleMessage(event, this.handlers);
             }
         }
+        return this.webSocket;
     }
 
     close(){

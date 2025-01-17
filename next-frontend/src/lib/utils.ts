@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import SpringBase from "./springbase/springbase";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -47,9 +48,8 @@ export function getDateTimeFromString(date: string){
   return `${day} ${getMonthName(month)}, ${year} at ${getTimeAMPM(hour, minute)}`;
 }
 
-export function getCurrentUser(){
-    return "f236752b-e42b-4684-b688-7ed55727beb1"
-//   return localStorage.getItem("userId") as string;
+export function getCurrentUser(springbase: SpringBase){
+  return springbase?.authStore?.model.id;
 }
 
 export function getRandomInteger(min: number, max: number){

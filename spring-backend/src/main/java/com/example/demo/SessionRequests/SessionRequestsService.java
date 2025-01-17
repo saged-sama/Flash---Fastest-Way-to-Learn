@@ -1,12 +1,17 @@
 package com.example.demo.SessionRequests;
-import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.Rooms.Rooms;
 import com.example.demo.Rooms.RoomsService;
-import com.example.demo.Sessions.Sessions;
+import com.example.demo.Users.Users;
 import com.example.demo.Utilities.EntityUpdate;
+import com.example.demo.Utilities.QueryFilters;
 
 @Service
 public class SessionRequestsService {
@@ -18,26 +23,40 @@ public class SessionRequestsService {
     private SessionRequestsRepository sessionRequestsRepository;
 
     public SessionRequests createSessionRequest(SessionRequests sessionRequest) {
-        return sessionRequestsRepository.save(sessionRequest);
+        SessionRequests newSessionRequest = sessionRequestsRepository.save(sessionRequest);
+        return newSessionRequest;
     }
 
-    public List<SessionRequests> getSessionRequests(Sessions session) {
-        return sessionRequestsRepository.findBySession(session);
+    public Page<SessionRequests> getSessionRequests(int page, int perPage, String sort, String filter) {
+        Pageable pageable = PageRequest.of(page - 1, perPage, QueryFilters.parseSort(sort));
+        QueryFilters<SessionRequests> queryFilters = new QueryFilters<>();
+        Specification<SessionRequests> specification = queryFilters.buildSpecification(filter);
+        Page<SessionRequests> sessionRequests = sessionRequestsRepository.findAll(specification, pageable);
+        return sessionRequests;
     }
 
     public SessionRequests getSessionRequest(String sessionRequestId) {
         return sessionRequestsRepository.findById(sessionRequestId).orElse(null);
     }
 
-    public SessionRequests updateSessionRequest(String sessionId, SessionRequests sessionRequest) {
-        SessionRequests existingSession = sessionRequestsRepository.findById(sessionId).orElse(null);
-        if(existingSession.getStatus().equals(SessionRequests.Status.PENDING) && sessionRequest.getStatus().equals(SessionRequests.Status.ACCEPTED)){
+    public SessionRequests updateSessionRequest(String sessionRequestId, SessionRequests sessionRequest, Users user) {
+        SessionRequests existingSessionRequest = sessionRequestsRepository.findById(sessionRequestId).orElse(null);
+        Users sessionOwner = existingSessionRequest.getSession().getOwner();
+
+        if(!user.getId().equals(sessionOwner.getId())){
+            return null;
+        }
+
+        if(user.getId().equals(sessionOwner.getId())){
             @SuppressWarnings("unused")
-            Rooms room = roomsService.createRoom(existingSession.getUser().getId(), existingSession.getId());
-        }   
+            Rooms room = roomsService.createRoom(existingSessionRequest.getUser().getId(), existingSessionRequest.getId());
+            EntityUpdate.merge(existingSessionRequest, sessionRequest);
+        }
 
-        EntityUpdate.merge(existingSession, sessionRequest);
+        return sessionRequestsRepository.save(existingSessionRequest);
+    }
 
-        return sessionRequestsRepository.save(existingSession);
+    public void deleteSessionRequest(String sessionId) {
+        sessionRequestsRepository.deleteById(sessionId);
     }
 }

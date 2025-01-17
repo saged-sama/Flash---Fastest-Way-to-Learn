@@ -50,6 +50,7 @@ public class SecurityConfig {
                 .requestMatchers("/v3/api-docs/**").permitAll()
                 .requestMatchers("/api/collections/users/records").permitAll()
                 .requestMatchers("/api/collections/users/auth-with-password").permitAll()
+                .requestMatchers("/api/collections/users/email-verification").permitAll()
                 .requestMatchers("/api/files/**").permitAll()
                 .requestMatchers("/realtime/**").permitAll()
                 .requestMatchers("/api/**").authenticated()

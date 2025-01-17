@@ -1,8 +1,10 @@
 package com.example.demo.Users;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -12,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.Files.FileHandler;
 import com.example.demo.Utilities.EntityUpdate;
+import com.example.demo.Utilities.QueryFilters;
 
 @Service
 public class UsersService{
@@ -27,8 +30,12 @@ public class UsersService{
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
-    public List<Users> getUsers() {
-        return usersRepository.findAll();
+    public Page<Users> getUsers(int page, int perPage, String sort, String filter) {
+        Pageable pageable = PageRequest.of(page - 1, perPage, QueryFilters.parseSort(sort));
+        QueryFilters<Users> queryFilters = new QueryFilters<>();
+        Specification<Users> spec = queryFilters.buildSpecification(filter);
+        Page<Users> users = usersRepository.findAll(spec, pageable);
+        return users;
     }
 
     public Users getUser(String id) {

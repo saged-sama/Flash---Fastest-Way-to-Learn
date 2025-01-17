@@ -1,11 +1,14 @@
 package com.example.demo.SessionSettings;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.Files.FileHandler;
 import com.example.demo.Users.Users;
+import com.example.demo.Users.UsersService;
 import com.example.demo.Utilities.EntityUpdate;
 
 @Service
@@ -15,6 +18,9 @@ public class SessionSettingsService {
 
     @Autowired
     private FileHandler fileHandler;
+
+    @Autowired
+    private UsersService usersService;
 
     private String tableName = "sessionsettings";
 
@@ -57,7 +63,13 @@ public class SessionSettingsService {
     }
 
     public SessionSettings getSessionSettings(String id){
-        return sessionSettingsRepository.findById(id).orElse(null);
+        SessionSettings sessionSettings = sessionSettingsRepository.findManyByUser(usersService.getUser(id)).get(0);
+
+        if(sessionSettings == null){
+            sessionSettings = createDefaultSettings(usersService.getUser(id));
+        }
+
+        return sessionSettings;
     }
 
     public SessionSettings updateSessionSettings(SessionSettings sessionSettings, MultipartFile sessionBannerFile, MultipartFile sessionDisplayPhotoFile){

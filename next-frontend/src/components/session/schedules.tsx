@@ -5,7 +5,7 @@ import { useSpringBase } from "@/context/SpringBaseContext";
 import { objectToFormData } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
-export default function Surface() {
+export default function Schedules() {
     const [ settings, setSettings ] = useState<any>(null);
     const { springbase } = useSpringBase();
     const [form] = Form.useForm();
@@ -48,8 +48,8 @@ export default function Surface() {
             const formData = objectToFormData(values);
             const resp = await springbase?.collection("sessions").create(formData);
             if(resp.id){
-                message.success("You have surfaced. You will be redirected to your session page shortly");
-                router.push(`/subs/sessions/${resp.id}`);
+                message.success("You have scheduled the session successfully. You will be notified before the schedule");
+                // router.push(`/subs/sessions/${resp.id}`);
             }
             else{
                 message.error("You might have an ongoing session already");
@@ -87,7 +87,7 @@ export default function Surface() {
                 </Form.Item>
                 
                 <div className="flex flex-col items-end w-full px-3">    
-                    <Image src="/images/whale.png" alt="whale" width={50} height={50} preview={false}/>
+                    <Image src="/images/hourglass.png" alt="hourglass" width={50} height={50} preview={false} className="rotate-12"/>
                     <Button
                         htmlType="submit"
                         type="primary"
@@ -95,9 +95,9 @@ export default function Surface() {
                         onClick={() => {
                             form?.submit();
                         }}
-                    >Surface Now</Button>
+                    >Schedule Session</Button>
                     <p className="bg-orange-100 p-3 rounded-md text-sm text-start m-1">
-                        Surfacing will make you visible to everybody else
+                        You'll get notified before the schedule. Make sure you have the correct settings
                     </p>
                 </div>
             </div>
@@ -111,6 +111,18 @@ export default function Surface() {
                     />
                 </div>
             </Form.Item>
+
+            <Form.Item rules={[{ required: true,
+                message: "You need to specify a start time for scheduled sessions"
+             }]} name="startTime">
+                <div>
+                    <h1 className="font-bold">Start Time</h1>
+                    <Input
+                        type="datetime-local"
+                    />
+                </div>
+            </Form.Item>
+
             <Form.Item name="description" rules={[{ required: true, message: "You need a description for your session" }]}>
                 <div>
                     <h1 className="font-bold">Session Description</h1>

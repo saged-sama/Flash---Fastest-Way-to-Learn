@@ -5,6 +5,7 @@ import { Content, Header } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import ActiveSessions from "./activeSessions";
 import Surface from "./surface";
+import Schedules from "./schedules";
 
 export default function AllSessions(){
     const { token } = theme.useToken();
@@ -41,8 +42,8 @@ export default function AllSessions(){
                         margin: 0,
                     }}>
                         <div className="flex flex-col gap-10">
-                            <ActiveSessions title="Following"/>
-                            <ActiveSessions title="Top"/>
+                            <ActiveSessions title="Running"/>
+                            <ActiveSessions title="Scheduled"/>
                         </div>
                     </Content>
                     <Sider width={400} style={{ 
@@ -51,13 +52,13 @@ export default function AllSessions(){
                         borderRadius: token.borderRadiusLG
                     }} className="h-full border">
                         <Tabs
-                            defaultActiveKey="surface"
+                            defaultActiveKey="shedules"
                             type="card"
                             items={[
                                 {
                                     label: "Schedules",
                                     key: "schedules",
-                                    children: "schedules"
+                                    children: <Schedules />
                                 },
                                 {
                                     label: "Surface",

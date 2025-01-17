@@ -1,10 +1,5 @@
 'use client';
-import { springbase } from "@/lib/springbase";
-import Link from "next/link";
-import { Card, Col, Divider, Row, theme } from "antd";
-import { Circle, ListEnd, ListStart, Star, Users } from "lucide-react";
-import StarIcon from "../common/elements/buttons/stars/starIcon";
-import { getRandomInteger } from "@/lib/utils";
+import { Divider, theme } from "antd";
 import { useEffect, useState } from "react";
 import { useSpringBase } from "@/context/SpringBaseContext";
 import { getActiveSessions } from "@/lib/session/sessions";
@@ -21,11 +16,26 @@ export default function ActiveSessions({ title }: { title: string }) {
         }
 
         const getSessions = async () => {
-            const sess = await getActiveSessions(springbase);
+            const sess = await getActiveSessions(springbase, title === "Scheduled" ? {
+                filter: `state="SCHEDULED"`
+            } : {
+                filter: `state="STARTED"`
+            });
             setSessions(sess);
         }
 
+        springbase.collection("sessions").subscribe({
+            action: "create"
+        }, getSessions);
+        
         getSessions();
+
+        return () => {
+            console.log("Here we are now: ", springbase);
+            springbase.collection("sessions").unsubscribe({
+                action: "create"
+            });
+        }
     }, [springbase]);
 
     const style = {
@@ -45,7 +55,7 @@ export default function ActiveSessions({ title }: { title: string }) {
                 </div>
                 :
                 <div>
-                    <h1>No sessions available</h1>
+                    <h1>No '<b><i>{title}</i></b>' sessions</h1>
                 </div>
             }
         </div>

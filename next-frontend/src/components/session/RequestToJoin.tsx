@@ -1,12 +1,14 @@
 'use client';
 
+import { useSpringBase } from "@/context/SpringBaseContext";
 import { makeJoinRequest } from "@/lib/session/sessions";
 import { Button, Modal, Form, Input, message } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function RequestToJoin({ sessionId }: { sessionId: string }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [form] = Form.useForm();
+    const { springbase } = useSpringBase();
 
     const showModal = () => {
         setIsModalOpen(true);
@@ -16,11 +18,19 @@ export default function RequestToJoin({ sessionId }: { sessionId: string }) {
         setIsModalOpen(false);
     };
 
+    useEffect(() => {
+        if(!springbase){
+            return;
+        }
+    }, [springbase]);
+
     const handleSubmit = async () => {
+        if (!springbase) {
+            return;
+        }
         try {
             const values = await form.validateFields();
-            console.log(values);
-            const request = await makeJoinRequest(values, sessionId);
+            const request = await makeJoinRequest(springbase, values, sessionId);
             if (request) {
                 message.success("Request created successfully!");
                 setIsModalOpen(false);

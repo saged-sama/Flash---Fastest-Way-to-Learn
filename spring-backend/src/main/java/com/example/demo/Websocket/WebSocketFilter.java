@@ -24,7 +24,6 @@ public class WebSocketFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
 
         filterChain.doFilter(request, response);
-
         String topic = request.getRequestURI();
         String message = request.getMethod();
         String action = getAction(message);

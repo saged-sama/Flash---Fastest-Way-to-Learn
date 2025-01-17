@@ -1,17 +1,13 @@
 'use client';
 
-import { springbase } from "@/lib/springbase";
-import { theme } from "antd";
-import StarIcon from "../common/elements/buttons/stars/starIcon";
-import { ListEnd, ListStart, Settings, Star, Users } from "lucide-react";
-import { getRandomInteger } from "@/lib/utils";
+import { Star, Users } from "lucide-react";
 import { useSpringBase } from "@/context/SpringBaseContext";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import UserDet from "../common/userdet";
 
 export default function SessionInfo({ session }: { session: any }) {
-    const { token } = theme.useToken();
-    const [settings, setSettings] = useState<any>();
+    const [ settings, setSettings ] = useState<any>();
     const { springbase } = useSpringBase();
 
     useEffect(() => {
@@ -20,11 +16,12 @@ export default function SessionInfo({ session }: { session: any }) {
         }
 
         const getSettings = async () => {
-            const settings = await springbase.collection("sessionsettings").getFullList();
+            console.log("Session: ", session.owner.id);
+            const settings = await springbase.collection("sessionsettings").getOne(session.owner.id);
 
             if(settings){
                 console.log(settings);
-                setSettings(settings[0]);
+                setSettings(settings);
             }
         }
         getSettings();
@@ -61,10 +58,7 @@ export default function SessionInfo({ session }: { session: any }) {
                     <h1 className="text-lg font-bold">{session.title}</h1>
                     <p className="text-xs text-wrap">{session.description}</p>
                 </Link>
-                <Link href={`/user/${session.owner.id}`} className="flex gap-1 text-sm text-info hover:border hover:p-2 rounded-md" style={{ color:  token.colorInfoActive}}>
-                    <img src={springbase?.collection("users").file(session.owner.id, session.owner.avatar)} alt={session.owner.name} className="rounded-full w-5 h-5 object:covers"/>
-                    <span>{session.owner.name}</span>
-                </Link>
+                <UserDet user={session.owner}/>
             </div>
         </div>
     )
