@@ -70,7 +70,7 @@ export default function Collection(collectionName: string, springbaseHandler: Fu
         return await crud(headers).GET(url);
     }
 
-    async function getList(page: number, perPage: number, options?: {filter?: string, sort?: string, skipTotal?: boolean}, auth: boolean = true) {
+    async function getList(page: number, perPage: number, options?: any, auth: boolean = true) {
         let url = `${collectionBaseUrl}/records?page=${page}&perPage=${perPage}`;
         if (options) {
             url += "&" + urlSearchParametersFromObject(options);
@@ -88,7 +88,7 @@ export default function Collection(collectionName: string, springbaseHandler: Fu
         return await crud(headers).GET(url);
     }
 
-    async function getFullList(options?: {filter?: string, sort?: string, skipTotal?: boolean}, auth: boolean = true) {
+    async function getFullList(options?: any, auth: boolean = true) {
         return await getList(1, 5000, options, auth);
     }
 

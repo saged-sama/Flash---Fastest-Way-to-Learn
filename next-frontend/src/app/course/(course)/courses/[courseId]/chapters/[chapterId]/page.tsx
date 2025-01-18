@@ -34,7 +34,7 @@ const ChapterIdPage = ({
     const fetchChapterData = async () => {
       try {
         const result = await getChapterData({
-          userId: getCurrentUser(),
+          userId: getCurrentUser(springbase),
           courseId: params.courseId,
           chapterId: params.chapterId,
           springbase: springbase!,
