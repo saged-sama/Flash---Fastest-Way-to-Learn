@@ -1,8 +1,7 @@
-export function GET(){
+export function GET() {
     const headers = new Headers();
     headers.set("Set-Cookie", `token=; Path=/; SameSite=Strict; HttpOnly; Expires=${new Date(0).toUTCString()};`);
+    headers.set("Location", "/");
 
-    return new Response(JSON.stringify({
-        message: "Success"
-    }), { status: 200, headers, statusText: "OK" });
+    return new Response(null, { status: 307, headers });
 }

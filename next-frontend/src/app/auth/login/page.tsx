@@ -3,9 +3,11 @@
 import AuthFormProto from "@/components/auth/authFormProto";
 import { message, theme } from "antd";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function Login() {
   const { token } = theme.useToken();
+  const pathname = usePathname();
   const onSubmit = async (values: any) => {
     try {
       const res = await fetch("/api/auth/login", {

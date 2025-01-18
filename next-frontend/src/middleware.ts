@@ -3,9 +3,8 @@ import SpringBase from "./lib/springbase/springbase";
 
 export function middleware(req: NextRequest){
     const { pathname } = req.nextUrl;
-    
     const token = req.cookies.get("token");
-    const springbase = new SpringBase("http://localhost:8080");
+    const springbase = new SpringBase(process.env.backend_api_url || "http://localhost:8080");
 
     if(token){
         springbase.authStore.loadFromToken(token.value);
@@ -18,7 +17,7 @@ export function middleware(req: NextRequest){
     for(const path of LoginRequiredPaths){
         if(pathname.startsWith(path)){
             if(!springbase.authStore.isValid){
-                return NextResponse.redirect(new URL("/auth/login", req.url));
+                return NextResponse.redirect(new URL(`/auth/login`, req.url));
             }
         }
     }

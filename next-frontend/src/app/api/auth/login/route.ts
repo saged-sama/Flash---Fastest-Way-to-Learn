@@ -1,9 +1,9 @@
 import SpringBase from "@/lib/springbase/springbase";
 
 export async function POST(req: Request) {
-    const { email, password } = await req.json();
+    const { email, password, url } = await req.json();
 
-    const springbase = new SpringBase("http://localhost:8080");
+    const springbase = new SpringBase(process.env.backend_api_url || "http://localhost:8080");
   
     const res = await springbase.collection("users").authWithPassword(email, password);
     if(res && res.token){

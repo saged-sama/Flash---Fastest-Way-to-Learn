@@ -20,11 +20,10 @@ export default function SessionPage({ session, settings }: { session: any; setti
                     <SessionTitle session={session} settings={settings} />
                 </div>
                 <div className="flex gap-3">
-                    <div className="flex justify-center rounded-md w-2/3 h-full" style={containerStyle}>
-                        <CurrentSessionDetails session={session} />
+                    <div className="flex justify-center rounded-md w-2/3" style={containerStyle}>
                     </div>
                     <div className="rounded-md w-1/3 h-full" style={containerStyle}>
-                        <SessionRequests session={session}/>
+                        <CurrentSessionDetails session={session} />
                     </div>
                 </div>
             </div>
@@ -43,6 +42,7 @@ export default function SessionPage({ session, settings }: { session: any; setti
                     <SessionReaction session={session} allowReaction={true} />
                 </div>
                 <div style={containerStyle}>
+                    <SessionRequests session={session}/>
                 </div>
             </div>
         </div>

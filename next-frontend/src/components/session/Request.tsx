@@ -28,20 +28,7 @@ export default function Request({ request }: { request: any }) {
             springbase.collection("sessionrequests").subscribe({
                 id: request.id,
                 action: "update",
-            }, async () => {
-                const req = await springbase.collection("sessionrequests").getOne(request.id);
-                console.log("Request: ", req);
-                if (req && req.status === "ACCEPTED") {
-                    setIsModalOpen(true);
-                    const room = await getRoom(springbase, request.id);
-                    if (room) {
-                        const code = await getRoomCode(springbase, room.id);
-                        if (code) {
-                            router.push(`/subs/sessions/${request.session.id}/room/${code}`);
-                        }
-                    }
-                }
-            });
+            }, () => {});
         }
 
         return () => {
@@ -75,7 +62,7 @@ export default function Request({ request }: { request: any }) {
         });
         message.info("Request rejected.");
     };
-
+    
     return (
         <div className="w-full p-4 border rounded-md flex flex-col lg:flex-row gap-5">
             {/* User Avatar */}

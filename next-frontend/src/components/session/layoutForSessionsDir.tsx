@@ -3,6 +3,8 @@ import SessionsSidebar from "@/components/session/sessionsSidebar";
 import { Layout, theme } from "antd";
 import { Footer, Header } from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
+import { SidebarRoutes } from "./sidebar-routes";
+import { Sidebar } from "./sidebar";
 
 export default function SessionsLayout({ children }: Readonly<{children: React.ReactNode;}>){
 
@@ -14,7 +16,7 @@ export default function SessionsLayout({ children }: Readonly<{children: React.R
                 <Sider style={{
                     background: token.colorBgContainer,
                 }} width={300} className="py-3">
-                    <SessionsSidebar />
+                    <Sidebar />
                 </Sider>
                 <Layout style={{ padding: '0 24px 24px' }}>
                     {children}

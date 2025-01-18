@@ -1,11 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link"; // Next.js's Link component for navigation
 import { Bebas_Neue, Abel } from "next/font/google";
 import { GiTeacher } from "react-icons/gi";
 import logo_final from "../../../../public/images/logo_final.png";
 import { usePathname } from "next/navigation";
+import { useSpringBase } from "@/context/SpringBaseContext";
+import Avatar from "../avatarMenu/avatar";
+import { Dropdown, MenuProps } from "antd";
+import UserDet from "../userdet";
 
 const bebasNeue = Bebas_Neue({
   weight: "400", // Set the font weight to 400 (regular)
@@ -22,14 +26,39 @@ const abel = Abel({
 export default function Navbar() {
   const [click, setClick] = useState(false);
   const [showRoom, setShowRoom] = useState(false); // State to toggle Room component
-
+  const {springbase} = useSpringBase();
   const pathname = usePathname();
 
   // Toggles Room component visibility
   const toggleRoom = () => setShowRoom(!showRoom);
 
+  useEffect(() =>{
+    if(!springbase){
+      return;
+    }
+  }, [springbase]);
   // Toggles mobile menu visibility
   const handleClick = () => setClick(!click);
+  
+
+  const avatarItems: MenuProps['items'] = [
+    {
+      key: 'profile',
+      label: (
+        <Link href={`/users/${springbase?.authStore.model.id}`} className="">
+          <UserDet user={springbase?.authStore.model} />
+        </Link>
+      )
+    },
+    {
+      key: 'logout',
+      label: (
+        <Link href="/api/auth/logout">
+          <h1 className="text-red-400">Logout</h1>
+        </Link>
+      )
+    }
+  ];
 
   return (
     <header className="bg-gray-900  py-3 ">
@@ -119,6 +148,17 @@ export default function Navbar() {
             </Link>
           </div>
         )}
+        {(pathname !== "/" && springbase && springbase.authStore.isValid) && (
+            <Dropdown menu={{ items: avatarItems }} placement="bottomRight" className="flex justify-center items-center gap-2 cursor-pointer">
+              <div>
+                <Avatar />
+                <h1 className="text-white">
+                  {springbase.authStore.model.name}
+                </h1>
+              </div>
+            </Dropdown>
+          )
+        }
 
         {/* Mobile Menu Button */}
         {/* <button

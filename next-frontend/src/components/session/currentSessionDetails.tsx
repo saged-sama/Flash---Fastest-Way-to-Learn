@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Request from "./Request";
 import Link from "next/link";
 import { getRoom, getRoomCode } from "@/lib/session/sessions";
+import WarningText from "../common/warningText";
 
 export default function CurrentSessionDetails({ session }: { session: any}){
     const [currentSession, setCurrentSession] = useState<any>(null);
@@ -22,7 +23,7 @@ export default function CurrentSessionDetails({ session }: { session: any}){
                 filter: `session.id=${session.id} && status="ACCEPTED"`
             });
 
-            if(sess.items[0].user.id === springbase.authStore.model.id){
+            if(sess.items[0].user.id === springbase.authStore.model.id || session.owner.id === springbase.authStore.model.id){
                 const room = await getRoom(springbase, sess.items[0].id);
                 if(room){
                     const rCode = await getRoomCode(springbase, room.id);
@@ -42,8 +43,15 @@ export default function CurrentSessionDetails({ session }: { session: any}){
 
         getCurrentSession();
 
+        springbase.collection("sessionrequests").subscribe({
+            action: "update"
+        }, getCurrentSession);
+
         return () => {
             clearInterval(intv);
+            springbase.collection("sessionrequests").unsubscribe({
+                action: "update"
+            });
         }
 
     }, [springbase]);
@@ -55,12 +63,21 @@ export default function CurrentSessionDetails({ session }: { session: any}){
     );
 
     return (
-        <div className="flex items-center justify-center w-2/3 flex-col gap-2">
+        <div className={"flex items-center justify-center flex-col gap-2"}>
+            {currentSession.user.id === springbase?.authStore.model.id || session.owner.id === springbase?.authStore.model.id ? 
+                <WarningText>You are supposed to be in this session</WarningText> :
+                <h1 >You are not in this session</h1>}
             <div className="flex justify-between w-full">
                 <h1 className="font-bold">Current Room:</h1>
                 <h1><span className="font-bold">Started:</span> {timePassed}</h1>
             </div>
-            <Link className="w-full" href={springbase?.authStore.model.id === currentSession.user.id ? `/subs/sessions/${session.id}/room/${roomCode}` : `/subs/sessions/${session.id}`}>    
+            <Link className={
+                "w-full" + 
+                ((currentSession.user.id === springbase?.authStore.model.id || session.owner.id === springbase?.authStore.model.id) ? 
+                " border border-orange-300" : "")} 
+                href={(springbase?.authStore.model.id === currentSession.user.id || springbase?.authStore.model.id === session.owner.id) ? 
+                `/subs/sessions/${session.id}/room/${roomCode}` : `/subs/sessions/${session.id}`
+            }>    
                 <Request request={currentSession}/>
             </Link>
         </div>

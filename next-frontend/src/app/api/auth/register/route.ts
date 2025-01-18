@@ -3,7 +3,7 @@ import SpringBase from "@/lib/springbase/springbase";
 export async function POST(req: Request){
     const user = await req.formData();
 
-    const springbase = new SpringBase("http://localhost:8080");
+    const springbase = new SpringBase(process.env.backend_api_url || "http://localhost:8080");
     const res = await springbase.collection("users").create(user);
 
     if(res){
