@@ -1,11 +1,8 @@
 import SpringBase from "../springbase/springbase";
 import { getCurrentUser, objectToFormData } from "../utils";
 
-export async function getActiveSessions(springbase: SpringBase, options: any) {
-    return (await springbase.collection("sessions").getList(1, 6, {
-        ...options,
-        sort: 'createdAt'
-    }))?.items;
+export async function getActiveSessions(springbase: SpringBase, options: { filter?: string, sort?: string, skipTotal?: boolean }, page: number, perPage: number) {
+    return (await springbase.collection("sessions").getList(page, perPage, options));
 }
 
 export async function getSessionInfo(springbase: SpringBase, id: string) {

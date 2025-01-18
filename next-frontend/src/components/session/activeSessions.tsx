@@ -17,11 +17,15 @@ export default function ActiveSessions({ title }: { title: string }) {
 
         const getSessions = async () => {
             const sess = await getActiveSessions(springbase, title === "Scheduled" ? {
-                filter: `state="SCHEDULED"`
+                filter: `state="SCHEDULED"`,
+                sort: "createdAt",
+                skipTotal: false
             } : {
-                filter: `state="STARTED"`
-            });
-            setSessions(sess);
+                filter: `state="STARTED"`,
+                sort: "createdAt",
+                skipTotal: false
+            }, 1, 6);
+            setSessions(sess.items);
         }
 
         springbase.collection("sessions").subscribe({

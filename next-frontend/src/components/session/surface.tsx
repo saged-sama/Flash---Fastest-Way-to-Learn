@@ -4,6 +4,7 @@ import { Button, Form, Image, Input, message } from "antd";
 import { useSpringBase } from "@/context/SpringBaseContext";
 import { objectToFormData } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import WarningText from "../common/warningText";
 
 export default function Surface() {
     const [ settings, setSettings ] = useState<any>(null);
@@ -96,9 +97,7 @@ export default function Surface() {
                             form?.submit();
                         }}
                     >Surface Now</Button>
-                    <p className="bg-orange-100 p-3 rounded-md text-sm text-start m-1">
-                        Surfacing will make you visible to everybody else
-                    </p>
+                    <WarningText>Surfacing will make you visible to everybody else</WarningText>
                 </div>
             </div>
             <Form.Item rules={[{ required: true,

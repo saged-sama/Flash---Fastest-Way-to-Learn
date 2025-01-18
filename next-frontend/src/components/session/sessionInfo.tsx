@@ -1,10 +1,10 @@
 'use client';
 
-import { Star, Users } from "lucide-react";
 import { useSpringBase } from "@/context/SpringBaseContext";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import UserDet from "../common/userdet";
+import SessionReaction from "./sessioniReaction";
 
 export default function SessionInfo({ session }: { session: any }) {
     const [ settings, setSettings ] = useState<any>();
@@ -36,22 +36,7 @@ export default function SessionInfo({ session }: { session: any }) {
                     </figure>
                 </Link>
 
-                <div className="flex flex-col items-end gap-4">
-                    <div className="flex gap-3">
-                        <div className="text-xs flex gap-2">
-                            <span style={{ color: "#ffd700" }}><Star className="w-4 h-4" /></span>
-                            <h1>12</h1>
-                        </div>
-                        <div className="text-xs flex gap-2" style={{ color: "#000000" }}>
-                            <span style={{ color: "#000000" }}><Star className="w-4 h-4" style={{ textShadow: "2px" }}/></span>
-                            <h1>12</h1>
-                        </div>
-                    </div>
-                    <div className="text-xs flex gap-2">
-                        <Users className="w-4 h-4"/>
-                        <h1>12</h1>
-                    </div>
-                </div>
+                <SessionReaction session={session} allowReaction={false} />
             </div>
             <div className="flex flex-col gap-4 w-full">
                 <Link href={`/subs/sessions/${session.id}`} className="flex flex-col gap-1">

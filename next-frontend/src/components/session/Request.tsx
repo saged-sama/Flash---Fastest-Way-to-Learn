@@ -96,7 +96,7 @@ export default function Request({ request }: { request: any }) {
 
                     {/* Time and Status */}
                     <div className="flex w-full gap-4 mt-2 text-xs">
-                        <h1>Created: {timePassed}</h1>
+                        <h1>Requested: {timePassed}</h1>
                         <h1>Status: {request.status}</h1>
                     </div>
                 </div>

@@ -67,6 +67,7 @@ public class SessionSettingsService {
 
         if(sessionSettings == null){
             sessionSettings = createDefaultSettings(usersService.getUser(id));
+            sessionSettings = sessionSettingsRepository.save(sessionSettings);
         }
 
         return sessionSettings;

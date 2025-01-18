@@ -58,7 +58,7 @@ public class SessionsService {
     }
 
     public Sessions updateSession(Sessions session, Users user) {
-        if(user.getId() != session.getOwner().getId()){
+        if(!user.getId().equals(session.getOwner().getId())){
             return null;
         }
 
