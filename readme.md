@@ -84,6 +84,6 @@ We're a team from `CSEDU`
 
  - <b>Sarower Jahan Rafin</b>
  - <b>Mahmudul Hasan Yeamim</b>
- - <b>Abrar Yeasir</b>
+ - <b>Abrar Eyasir</b>
  - <b>Md Emon Khan</b>
  - <b>Mahmudul Hasan Sajid</b> 
