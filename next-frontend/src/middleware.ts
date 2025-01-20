@@ -10,7 +10,7 @@ export function middleware(req: NextRequest){
         springbase.authStore.loadFromToken(token.value);
     }
 
-    const LoginRequiredPaths = ['/subs'];
+    const LoginRequiredPaths: string[] = [];
 
     const res = NextResponse.next();
 

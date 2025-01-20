@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your Email - Flash</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff8e7;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 2px solid #ffa726;
+        }
+        .header {
+            text-align: center;
+            padding-bottom: 20px;
+        }
+        .header h1 {
+            color: #ff9800;
+            margin: 0;
+            font-size: 24px;
+        }
+        .header img {
+            max-width: 100px;
+            margin-bottom: 10px;
+        }
+        .content {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            margin-top: 20px;
+            background-color: #ff9800;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+        .button:hover {
+            background-color: #fb8c00;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://via.placeholder.com/100x100.png?text=Flash" alt="Flash Logo">
+            <h1>Welcome to Flash!</h1>
+        </div>
+        <div class="content">
+            <p>Hello {{name}},</p>
+            <p>Thank you for joining **Flash**! To complete your registration and start your journey with us, please verify your email address by clicking the button below:</p>
+            <a href="{{verificationLink}}" class="button">Verify Your Email</a>
+            <p>If the button doesn’t work, copy and paste the following link into your browser:</p>
+            <p><a href="{{verificationLink}}" style="color: #ff9800;">{{verificationLink}}</a></p>
+            <p>If you didn’t create an account with us, you can safely ignore this email.</p>
+        </div>
+        <div class="footer">
+            <p>&copy; 2025 Flash. Powered by the <strong>flash-team</strong>.</p>
+        </div>
+    </div>
+</body>
+</html>

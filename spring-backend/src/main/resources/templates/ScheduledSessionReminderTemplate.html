@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session Reminder - Flash</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff8e7;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 2px solid #ffa726;
+        }
+        .header {
+            text-align: center;
+            padding-bottom: 20px;
+        }
+        .header h1 {
+            color: #ff9800;
+            margin: 0;
+            font-size: 24px;
+        }
+        .header img {
+            max-width: 100px;
+            margin-bottom: 10px;
+        }
+        .content {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            margin-top: 20px;
+            background-color: #ff9800;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+        .button:hover {
+            background-color: #fb8c00;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://via.placeholder.com/100x100.png?text=Flash" alt="Flash Logo">
+            <h1>Scheduled Session Reminder</h1>
+        </div>
+        <div class="content">
+            <p>Hello {{name}},</p>
+            <p>This is a friendly reminder about your upcoming session on Flash:</p>
+            <p><strong>Title:</strong> {{title}}</p>
+            <p><strong>Date:</strong> {{date}}</p>
+            <p><strong>Time:</strong> {{time}}</p>
+            <p>You can join the session using the link below:</p>
+            <a href="{{link}}" class="button">Join Session</a>
+            <p>If the button doesn’t work, copy and paste the following link into your browser:</p>
+            <p><a href="{{link}}" style="color: #ff9800;">{{link}}</a></p>
+        </div>
+        <div class="footer">
+            <p>Need assistance? Contact us at <a href="mailto:flash.team.du@gmail.com" style="color: #ff9800;">flash.team.du@gmail.com</a>.</p>
+            <p>&copy; 2025 Flash. Powered by the <strong>flash-team</strong>.</p>
+        </div>
+    </div>
+</body>
+</html>

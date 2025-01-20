@@ -1,12 +1,12 @@
 "use client";
 
-import { BarChart, Compass, Layout, List, Settings } from "lucide-react";
+import { AlignHorizontalJustifyCenter, Compass, Settings } from "lucide-react";
 import { SidebarItem } from "./sidebar-item";
 import { usePathname } from "next/navigation";
 
 const routes = [
     {
-        icon: Layout,
+        icon: AlignHorizontalJustifyCenter,
         label: "Sessions",
         href: "/subs/sessions",
     },
