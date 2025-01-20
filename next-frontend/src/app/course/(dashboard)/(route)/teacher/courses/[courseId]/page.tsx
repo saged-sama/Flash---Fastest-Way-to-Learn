@@ -16,6 +16,9 @@ import { getChapters } from "@/lib/course/chapter";
 import { Banner } from "@/components/course/banner";
 import { Actions } from "./_components/actions";
 import { useSpringBase } from "@/context/SpringBaseContext";
+import { DifficultyLevelForm } from "./_components/difficulty-level-form";
+import { SkillsForm } from "./_components/skills-form";
+import { UUID } from "crypto";
 
 const TeacherCourseIdPage = ({ params }: { params: { courseId: string } }) => {
   const router = useRouter();
@@ -25,10 +28,23 @@ const TeacherCourseIdPage = ({ params }: { params: { courseId: string } }) => {
   );
   const [chapters, setChapters] = useState<any[]>([]);
 
+  const difficultyLevels = [
+    { label: "Beginner", value: "1" },
+    { label: "Intermediate", value: "2" },
+    { label: "Advanced", value: "3" },
+  ];
+
   const { springbase } = useSpringBase();
+
+  const getValueForLabel = (label: string) => {
+    const level = difficultyLevels.find((level) => level.label === label);
+    return level ? level.value : null; // Return "Unknown" if the value isn't found
+  };
 
   useEffect(() => {
     if (!springbase) return;
+
+
     const fetchCourseDetails = async () => {
       // Fetch course
       const fetchedCourse = await getCourse(springbase!, params.courseId);
@@ -46,6 +62,7 @@ const TeacherCourseIdPage = ({ params }: { params: { courseId: string } }) => {
 
       setCourse(fetchedCourse);
 
+
       // Fetch categories
       const fetchedCategories = await getCategories(springbase!);
       console.log("Categories: ", fetchedCategories);
@@ -60,6 +77,9 @@ const TeacherCourseIdPage = ({ params }: { params: { courseId: string } }) => {
     fetchCourseDetails();
   }, [params.courseId]);
 
+
+
+
   if (!course) {
     return <div>Loading...</div>;
   }
@@ -70,14 +90,16 @@ const TeacherCourseIdPage = ({ params }: { params: { courseId: string } }) => {
     course.imageUrl,
     course.price,
     course.categoryId,
-    
-    chapters?.some((chapter: { isPublished: boolean }) => chapter.isPublished) || false
+
+    chapters?.some(
+      (chapter: { isPublished: boolean }) => chapter.isPublished
+    ) || false,
   ];
 
-    const totalFields = requiredFields.length;
-    const completedFields = requiredFields.filter(Boolean).length;
+  const totalFields = requiredFields.length;
+  const completedFields = requiredFields.filter(Boolean).length;
 
-    const completionText = `(${completedFields}/${totalFields})`;
+  const completionText = `(${completedFields}/${totalFields})`;
 
   return (
     <>
@@ -100,7 +122,9 @@ const TeacherCourseIdPage = ({ params }: { params: { courseId: string } }) => {
               !course.imageUrl ||
               !course.title ||
               !course.description ||
-              !chapters?.some((chapter: { isPublished: boolean; }) => chapter.isPublished) ||
+              !chapters?.some(
+                (chapter: { isPublished: boolean }) => chapter.isPublished
+              ) ||
               chapters?.length === 0
             }
             courseId={params.courseId}
@@ -155,6 +179,7 @@ const TeacherCourseIdPage = ({ params }: { params: { courseId: string } }) => {
                 console.log("New imageUrl: ", newImageUrl);
               }}
             />
+
             <CategoryForm
               initialData={{ categoryId: course.categoryId }}
               courseId={course.id}
@@ -167,6 +192,31 @@ const TeacherCourseIdPage = ({ params }: { params: { courseId: string } }) => {
                   ...prev,
                   categoryId: newCategoryId,
                 }))
+              }
+            />
+
+            <DifficultyLevelForm
+              initialData={{
+                DifficultyLevelId: getValueForLabel(course.difficultyLevel),
+              }}
+              courseId={course.id}
+              options={difficultyLevels.map((difficulty) => ({
+                label: difficulty.label,
+                value: difficulty.value,
+              }))}
+              onUpdate={(newDifficultyLevel) =>
+                setCourse((prev: any) => ({
+                  ...prev,
+                  difficultyLevel: newDifficultyLevel,
+                }))
+              }
+            />
+
+            <SkillsForm
+              initialData={{ skills: course.skills }}
+              courseId={course.id}
+              onUpdate={(newSkills) =>
+                setCourse((prev: any) => ({ ...prev, skills: newSkills }))
               }
             />
           </div>
@@ -194,8 +244,10 @@ const TeacherCourseIdPage = ({ params }: { params: { courseId: string } }) => {
                   size="default"
                   icon={CircleDollarSign}
                 />
+
                 <h2 className="text-xl font-medium">Sell your course</h2>
               </div>
+
               <PriceForm
                 initialData={{ price: course.price }}
                 courseId={course.id}

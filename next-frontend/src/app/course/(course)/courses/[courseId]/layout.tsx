@@ -11,6 +11,7 @@ import { getProgress } from "@/lib/course/get-progress";
 import { useSpringBase } from "@/context/SpringBaseContext";
 import Header from "@/components/common/header/Header";
 import { ToasterProvider } from "@/components/providers/toaster-provider";
+import { objectToFormData } from "@/lib/utils";
 
 interface ChapterWithProgress extends Chapter {
   userProgress: UserProgress;
@@ -35,10 +36,61 @@ const CourseLayout = ({
   const { springbase } = useSpringBase();
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (!springbase) return;
+    if (!springbase) return;
 
+    // const saveInteraction = async() => {
+    //   const interaction = await springbase.collection("/api/collections/courseinteractions/records").create(objectToFormData({
+    //     courseId: params.courseId,
+    //     userId: springbase.authStore.model.id
+    //   }));
+    //   console.log("Interaction: ", interaction);
+    // }
+
+    // const saveInteraction = async () => {
+    //   try {
+    //     console.log("saveInteraction triggered");
+    
+    //     // Validate springbase and parameters
+    //     if (!springbase) {
+    //       console.error("Springbase is undefined");
+    //       return;
+    //     }
+    //     if (!params.courseId || !springbase.authStore?.model?.id) {
+    //       console.error("Missing courseId or userId");
+    //       return;
+    //     }
+    
+    //     console.log("Course ID:", params.courseId);
+    //     console.log("User ID:", springbase.authStore.model.id);
+    
+    //     const response = await fetch("/api/collections/courseinteractions/records", {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //       body: JSON.stringify({
+    //         courseId: params.courseId,
+    //         userId: springbase.authStore.model.id,
+    //       }),
+    //     });
+    
+    //     if (!response.ok) {
+    //       throw new Error(`Error: ${response.statusText}`);
+    //     }
+    
+    //     const interaction = await response.json();
+    //     console.log("Interaction saved:", interaction);
+    //   } catch (error) {
+    //     console.error("Failed to save interaction:", error);
+    //   }
+    // };
+
+
+    const fetchData = async () => {
       try {
+
+        console.log("Fetching data...");
+       // saveInteraction(); // Trigger saveInteraction
         setLoading(true);
 
         // Fetch course details and chapters
@@ -71,6 +123,7 @@ const CourseLayout = ({
       }
     };
 
+   
     fetchData();
   }, [springbase, params.courseId]);
 

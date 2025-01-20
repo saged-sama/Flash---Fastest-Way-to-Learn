@@ -22,6 +22,8 @@ export async function updateCourse(springbase: SpringBase, courseId: string, cou
     categoryId?: string,
     imageFile?: File,
     isPublished?: boolean
+    difficultyLevel?: string
+    skills?: string
 }) {
     console.log("Updating course");
     console.log("courseId: ", courseId);
@@ -34,9 +36,17 @@ export async function updateCourse(springbase: SpringBase, courseId: string, cou
     if (courseData.title) {
         formData.append("title", courseData.title);
     }
+
+    if (courseData.skills) {
+        formData.append("skills", courseData.skills);
+    }
     
     if (courseData.description) {
         formData.append("description", courseData.description);
+    }
+
+    if (courseData.difficultyLevel) {
+        formData.append("difficultyLevel", courseData.difficultyLevel);
     }
     
     if (courseData.price !== undefined) {

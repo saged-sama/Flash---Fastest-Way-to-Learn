@@ -12,6 +12,7 @@ import { CourseProgressButton } from "./_components/course-progress-button";
 import { getChapterData } from "@/lib/course/get-chapter";
 import { useSpringBase } from "@/context/SpringBaseContext";
 
+
 const ChapterIdPage = ({
   params,
 }: {
@@ -31,6 +32,48 @@ const ChapterIdPage = ({
 
   useEffect(() => {
     if (!springbase) return;
+
+    const saveInteraction = async () => {
+      try {
+        console.log("saveInteraction triggered");
+    
+        // Validate springbase and parameters
+        if (!springbase) {
+          console.error("Springbase is undefined");
+          return;
+        }
+        if (!params.courseId || !springbase.authStore?.model?.id) {
+          console.error("Missing courseId or userId");
+          return;
+        }
+    
+        console.log("Course ID:", params.courseId);
+        console.log("User ID:", springbase.authStore.model.id);
+    
+       
+        const response = await fetch("http://localhost:8080/api/collections/courseinteractions/records", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            courseId: params.courseId,
+            userId: springbase.authStore.model.id,
+          }),
+        });
+    
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`);
+        }
+    
+        const interaction = await response.json();
+        console.log("Interaction saved:", interaction);
+      } catch (error) {
+        console.error("Failed to save interaction:", error);
+      }
+    };
+
+
     const fetchChapterData = async () => {
       try {
         const result = await getChapterData({
@@ -40,6 +83,10 @@ const ChapterIdPage = ({
           springbase: springbase!,
         });
         setData(result);
+        console.log("Saving Information for Recommendation")
+        saveInteraction(); // Trigger saveInteraction
+        console.log("Hello from Abrar Eyasir")
+        
 
         console.log("courseData: ", result);
 

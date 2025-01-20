@@ -134,6 +134,16 @@ public class CourseConroller {
             existingCourse.setIsPublished(courseUpdateDTO.getIsPublished());
         }
 
+        if (courseUpdateDTO.getDifficultyLevel() != null) {
+            existingCourse.setDifficultyLevel(courseUpdateDTO.getDifficultyLevel());
+        }
+        if (courseUpdateDTO.getSkills() != null) {
+            existingCourse.setSkills(courseUpdateDTO.getSkills());
+        }
+        if (courseUpdateDTO.getCourseRating() != null) {
+            existingCourse.setCourseRating(courseUpdateDTO.getCourseRating());
+        }
+
         return ResponseEntity.ok(new CourseDTO(courseService.updateCourse(existingCourse)));
     }
 
@@ -157,4 +167,22 @@ public class CourseConroller {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+  @GetMapping("/all")
+   public ResponseEntity<List<CourseDTO>> getAllCourses() {
+    // Fetch all courses using the courseService
+    List<Course> courses = courseService.getAllCourses();
+    
+    // Convert the list of Course entities to a list of CourseDTOs
+    List<CourseDTO> courseDTOs = new ArrayList<>();
+    for (Course course : courses) {
+        courseDTOs.add(new CourseDTO(course));
+    }
+    
+    // Return the list of courses as the response
+    return ResponseEntity.ok(courseDTOs);
+}
+
+
+    
 }

@@ -7,6 +7,9 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class CourseDTO {
+    
+   
+
     private String id;
     private String ownerId;
     private String title;
@@ -17,8 +20,11 @@ public class CourseDTO {
     private String categoryId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private String difficultyLevel;
+    private String skills;
+    private Integer courseRating;
 
-    // Custom Constructor
+
     public CourseDTO(Course course) {
         this.id = course.getId();
         this.ownerId = course.getOwner() != null ? course.getOwner().getId() : null;
@@ -30,6 +36,9 @@ public class CourseDTO {
         this.categoryId = course.getCategory() != null ? course.getCategory().getId() : null;
         this.createdAt = course.getCreatedAt() != null ? course.getCreatedAt() : null;
         this.updatedAt = course.getUpdatedAt() != null ? course.getUpdatedAt() : null;
+        this.difficultyLevel = course.getDifficultyLevel(); 
+        this.skills = course.getSkills(); 
+        this.courseRating = course.getCourseRating(); 
     }
 
     public CourseDTO() {
@@ -115,4 +124,27 @@ public class CourseDTO {
         this.updatedAt = updatedAt;
     }
 
+    public String getDifficultyLevel() {
+        return difficultyLevel;
+    }
+
+    public void setDifficultyLevel(String difficultyLevel) {
+        this.difficultyLevel = difficultyLevel;
+    }
+
+    public String getSkills() {
+        return skills;
+    }
+
+    public void setSkills(String skills) {
+        this.skills = skills;
+    }
+
+    public Integer getCourseRating() {
+        return courseRating;
+    }
+
+    public void setCourseRating(Integer courseRating) {
+        this.courseRating = courseRating;
+    }
 }

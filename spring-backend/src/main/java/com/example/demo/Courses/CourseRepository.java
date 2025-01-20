@@ -28,5 +28,6 @@ public interface CourseRepository extends JpaRepository<Course, String> {
     List<Course> findPublishedCoursesByCategoryAndTitle(
             @Param("categoryId") String categoryId,
             @Param("title") String title);
-
+    @Query("SELECT c FROM Course c WHERE LOWER(c.title) = LOWER(:courseTitle)")
+    List<Course> findManyByTitle(String courseTitle);
 }

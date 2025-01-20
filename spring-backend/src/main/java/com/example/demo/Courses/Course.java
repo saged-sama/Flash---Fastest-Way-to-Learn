@@ -1,12 +1,15 @@
 package com.example.demo.Courses;
 
 import java.time.LocalDateTime;
+import java.util.stream.Gatherer.Integrator;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.example.demo.Categories.Category;
 import com.example.demo.Users.Users;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -43,11 +46,20 @@ public class Course {
     private Float price;
     private Boolean isPublished;
 
+   
+
+    private String difficultyLevel;
+    private String skills; 
+
+    private Integer courseRating;
+
     @ManyToOne
     @JoinColumn(
         name = "category_id",
         nullable = true
     )
+
+   @JsonBackReference
     private Category category;
 
     @CreationTimestamp
@@ -144,4 +156,37 @@ public class Course {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }  
+
+
+    
+
+    
+     public String getDifficultyLevel() {
+        return difficultyLevel;
+    }
+
+    public void setDifficultyLevel(String difficultyLevel) {
+        this.difficultyLevel = difficultyLevel;
+    }
+
+   
+    public String getSkills() {
+        return skills;
+    }
+
+    public void setSkills(String skills) {
+        this.skills = skills;
+    }
+
+    
+    public Integer getCourseRating() {
+        return courseRating;
+    }
+
+    public void setCourseRating(Integer courseRating) {
+        this.courseRating = courseRating;
+    }
+
+
+
 }

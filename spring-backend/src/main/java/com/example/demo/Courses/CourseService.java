@@ -21,6 +21,15 @@ public class CourseService {
         return courseRepository.findById(courseId).orElse(null);
     }
 
+    public Course getCourseByTitle(String courseTitle){
+        System.out.println(courseTitle);
+        List<Course> lis = courseRepository.findManyByTitle(courseTitle );
+        if(lis.isEmpty()){
+            return null;
+        }
+        return lis.get(0);
+    }
+
     public List<Course> getCourses(Boolean published, String categoryId, String title) {
         if (published) {
             if (categoryId != null && title == null) {
@@ -53,4 +62,9 @@ public class CourseService {
         }
         courseRepository.deleteById(courseId);
     }
+
+    public List<Course> getAllCourses() {
+        return courseRepository.findAll();
+    }
+    
 }
