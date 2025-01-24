@@ -102,7 +102,7 @@ similarity = cosine_similarity(vectors)
 def recommend(course_name, courses, similarity_matrix):
     course_index = courses[courses['course_name'] == course_name].index[0]
     distances = similarity_matrix[course_index]
-    course_list = sorted(list(enumerate(distances)), reverse=True, key=lambda x: x[1])[1:4]
+    course_list = sorted(list(enumerate(distances)), reverse=True, key=lambda x: x[1])[1:8]
     recommended_courses = [courses.iloc[i[0]].course_name for i in course_list]
     return recommended_courses
 

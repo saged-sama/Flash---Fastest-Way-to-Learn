@@ -54,9 +54,9 @@ export default function({ title }: {title: string}){
                     id={course.id}
                     title={course.title}
                     imageUrl={springbase?.collection("course").file(course.id, course.imageUrl) as string}
-                    chaptersLength={0}
+                    chaptersLength={null}
                     price={course.price}
-                    progress={0}
+                    progress={null}
                     category={""}
                 />
             })

@@ -6,13 +6,22 @@ export function middleware(req: NextRequest){
     const token = req.cookies.get("token");
     const springbase = new SpringBase(process.env.backend_api_url || "http://localhost:8080");
 
+    const cookie = req.cookies.get("sessionId");
+
+    const res = NextResponse.next();
+
+    if (!cookie) {
+        res.cookies.set("sessionId", crypto.randomUUID());
+    }
+   
+
     if(token){
         springbase.authStore.loadFromToken(token.value);
     }
 
     const LoginRequiredPaths: string[] = [];
 
-    const res = NextResponse.next();
+    // const res = NextResponse.next();
 
     for(const path of LoginRequiredPaths){
         if(pathname.startsWith(path)){
@@ -40,3 +49,5 @@ export const config = {
         "/:path*"
     ]
 }
+
+
