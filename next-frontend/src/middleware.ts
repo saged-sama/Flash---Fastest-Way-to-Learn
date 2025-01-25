@@ -19,7 +19,7 @@ export function middleware(req: NextRequest){
         springbase.authStore.loadFromToken(token.value);
     }
 
-    const LoginRequiredPaths: string[] = [];
+    const LoginRequiredPaths: string[] = ["/subs", "/course"];
 
     // const res = NextResponse.next();
 
@@ -35,9 +35,9 @@ export function middleware(req: NextRequest){
         if(springbase.authStore.isValid){
             const referer = req.headers.get("referer");
             if(referer && referer.startsWith("/auth")){
-                return NextResponse.redirect(new URL("/", req.url));
+                return NextResponse.redirect(new URL("/course", req.url));
             }
-            return NextResponse.redirect(new URL(referer || "/", req.url));
+            return NextResponse.redirect(new URL(referer || "/course", req.url));
         }
     }
     

@@ -12,8 +12,8 @@ import com.example.demo.Courses.CourseService;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+// import org.springframework.web.reactive.function.client.WebClient;
+// import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +61,7 @@ public class CourseRecommendService {
 
         
 
-        String pythonScriptPath = "/Users/eyasir2047/Desktop/All in one/3-2 Project/Flash/Flash---Fastest-Way-to-Learn/spring-backend/src/main/java/com/example/CourseRecommedPython/predictContentBased.py";
+        String pythonScriptPath = "D:\\Codes\\General Projects\\Flash---Fastest-Way-to-Learn\\spring-backend\\src\\main\\java\\com\\example\\CourseRecommedPython\\predictContentBased.py";
 
        
         //endpoint -> fastapi (http request) 

@@ -113,7 +113,7 @@ public class SessionsController {
             };
             Runnable startSession = () -> {
                 createdSession.setState(SessionState.STARTED);
-                sessionService.updateSession(createdSession, user);
+                sessionService.updateSession(createdSession.getId(), createdSession, user);
             };
 
             scheduler.scheduleTask(task, createdSession.getStartTime().minusMinutes(sessionSettings.getNotifyScheduledSessionBefore()));
@@ -126,12 +126,13 @@ public class SessionsController {
 
     @PatchMapping("/records/{id}")
     public ResponseEntity<Sessions> updateSession(@PathVariable String id, @ModelAttribute Sessions session) {
+        System.out.println("Updating session state: " + session);
         Users user = AuthUtils.getAuthUser(SecurityContextHolder.getContext());
         if(user == null) {
             return ResponseEntity.badRequest().build();
         }
 
-        Sessions updatedSession = sessionService.updateSession(session, user);
+        Sessions updatedSession = sessionService.updateSession(id, session, user);
         if(updatedSession == null){
             return ResponseEntity.badRequest().build();
         }

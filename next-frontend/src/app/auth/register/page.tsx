@@ -63,6 +63,10 @@ export default function Register() {
     <Form.Item
       name="Avatar"
       className="flex flex-col items-center w-full"
+      rules={[{
+        required: true,
+        message: "An avatar is required"
+      }]}
       valuePropName="file"
     >
       <label className="cursor-pointer">

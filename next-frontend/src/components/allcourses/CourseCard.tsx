@@ -33,7 +33,7 @@ const CoursesCard = () => {
         if (data && data[0]) {
           setCourseId(data[0][0]); // Assuming data[0][0] contains the course ID
         }
-      } catch (err) {
+      } catch (err: any) {
         setError(err.message);
       } finally {
         setLoading(false);
@@ -59,7 +59,7 @@ const CoursesCard = () => {
 
         const data = await response.json();
         setCourseDetails(data); // Assuming the API returns a course details object
-      } catch (err) {
+      } catch (err: any) {
         setError(err.message);
       }
     };

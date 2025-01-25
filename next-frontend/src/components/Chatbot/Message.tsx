@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { Bot, User } from "lucide-react";
+import MarkTexRenderer from "./MarkTexRenderer";
 
 interface MessageProps {
   content: string;
@@ -34,7 +35,9 @@ export const Message = ({ content, isUserMessage }: MessageProps) => {
               </span>
             </div>
 
-            <p className="text-sm font-normal py-2.5 text-white-900 dark:text-white">{content}</p>
+            <div className="text-sm font-normal py-2.5 text-white-900 dark:text-white">
+              <MarkTexRenderer content={content} />
+            </div>
           </div>
         </div>
       </div>
