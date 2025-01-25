@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { CourseProgressButton } from "./_components/course-progress-button";
 import { getChapterData } from "@/lib/course/get-chapter";
 import { useSpringBase } from "@/context/SpringBaseContext";
+import { SummarizeButton } from "./_components/summarize-button";
 
 
 const ChapterIdPage = ({
@@ -158,20 +159,27 @@ const ChapterIdPage = ({
         <div>
           <div className="p-4 flex flex-col md:flex-row items-center justify-between">
             <h2 className="text-2xl font-bold mb-2">{chapter.title}</h2>
-            {purchase.length != 0 ? (
-              <CourseProgressButton
-                chapterId={params.chapterId}
-                courseId={params.courseId}
-                nextChapterId={nextChapter?.id}
-                isCompleted={!!userProgress?.isCompleted}
-                springbase={springbase!}
-              />
-            ) : (
-              <CourseEnrollButton
-                courseId={params.courseId}
-                price={course.price}
-              />
-            )}
+            <div className="flex items-center space-x-2">
+              {purchase.length != 0 ? (
+                <>
+                  <CourseProgressButton
+                    chapterId={params.chapterId}
+                    courseId={params.courseId}
+                    nextChapterId={nextChapter?.id}
+                    isCompleted={!!userProgress?.isCompleted}
+                    springbase={springbase!}
+                  />
+                  <SummarizeButton
+                    summary={chapter.summary}
+                  />
+                </>
+              ) : (
+                <CourseEnrollButton
+                  courseId={params.courseId}
+                  price={course.price}
+                />
+              )}
+            </div>
           </div>
           <Separator />
           <div>

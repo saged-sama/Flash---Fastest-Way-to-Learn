@@ -61,7 +61,8 @@ public class CourseRecommendService {
 
         
 
-        String pythonScriptPath = "/Users/eyasir2047/Desktop/All in one/3-2 Project/Flash/Flash---Fastest-Way-to-Learn/spring-backend/src/main/java/com/example/CourseRecommedPython/predictContentBased.py";
+        // String pythonScriptPath = "/Users/eyasir2047/Desktop/All in one/3-2 Project/Flash/Flash---Fastest-Way-to-Learn/spring-backend/src/main/java/com/example/CourseRecommedPython/predictContentBased.py";
+        String pythonScriptPath = "/Users/mahmudulhasanyeamim/Projects/Flash---Fastest-Way-to-Learn/spring-backend/src/main/java/com/example/CourseRecommedPython/predictContentBased.py";
 
        
         //endpoint -> fastapi (http request) 

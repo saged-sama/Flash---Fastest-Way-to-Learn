@@ -40,6 +40,12 @@ public class Chapter {
     private String videoUrl;
 
     @Column(
+        nullable = false,
+        length = 1000 // Specify the desired maximum length
+    )
+    private String summary;
+
+    @Column(
         nullable = false
     )
     private Integer position;
@@ -91,6 +97,14 @@ public class Chapter {
     
     public void setVideoUrl(String videoUrl) {
         this.videoUrl = videoUrl;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
     
     public Integer getPosition() {

@@ -9,12 +9,8 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from nltk.stem.porter import PorterStemmer
 import nltk
-import psycopg2
 from sqlalchemy import create_engine
 import requests
-
-
-
 
 try:
    
