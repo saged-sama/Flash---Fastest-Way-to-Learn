@@ -31,6 +31,10 @@ export default function ActiveSessions({ title }: { title: string }) {
         springbase.collection("sessions").subscribe({
             action: "create"
         }, getSessions);
+
+        springbase.collection("sessions").subscribe({
+            action: "update"
+        }, getSessions);
         
         getSessions();
 
@@ -38,6 +42,10 @@ export default function ActiveSessions({ title }: { title: string }) {
             console.log("Here we are now: ", springbase);
             springbase.collection("sessions").unsubscribe({
                 action: "create"
+            });
+
+            springbase.collection("sessions").unsubscribe({
+                action: "update"
             });
         }
     }, [springbase]);

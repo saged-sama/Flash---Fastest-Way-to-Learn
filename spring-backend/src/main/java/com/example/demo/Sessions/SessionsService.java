@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.Users.Users;
+import com.example.demo.Utilities.EntityUpdate;
 import com.example.demo.Utilities.QueryFilters;
 
 @Service
@@ -33,11 +34,11 @@ public class SessionsService {
     }
 
     public Sessions createSession(Sessions session) {
-        if(session.getState() == SessionState.STARTED && isAnyOngoing(session.getOwner())){
+        if(session.getState().equals(SessionState.STARTED) && isAnyOngoing(session.getOwner())){
             return null;
         }
 
-        if(session.getState() == SessionState.STARTED){
+        if(session.getState().equals(SessionState.STARTED)){
             session.setStartTime(LocalDateTime.now());
             session.setEndTime(session.getStartTime());
         }
@@ -57,14 +58,15 @@ public class SessionsService {
         return sessionRepository.findAll(spec, pageable);
     }
 
-    public Sessions updateSession(Sessions session, Users user) {
-        if(!user.getId().equals(session.getOwner().getId())){
+    public Sessions updateSession(String sessionId, Sessions session, Users user) {
+        Sessions existingSession = getSession(sessionId);
+
+        if(!user.getId().equals(existingSession.getOwner().getId())){
             return null;
         }
 
-        Sessions existingSession = getSession(session.getId());
         SessionState state = session.getState();
-        if(state.equals(SessionState.STARTED)){
+        if(state != null && state.equals(SessionState.STARTED)){
             if(!existingSession.getState().equals(state)){
                 session.setStartTime(LocalDateTime.now());
             }
@@ -72,7 +74,7 @@ public class SessionsService {
                 session.setStartTime(existingSession.getStartTime());
             }
         }
-        if(state.equals(SessionState.ENDED)){
+        if(state != null && state.equals(SessionState.ENDED)){
             if(!existingSession.getState().equals(state)){
                 session.setEndTime(LocalDateTime.now());
             }
@@ -80,7 +82,7 @@ public class SessionsService {
                 session.setEndTime(existingSession.getEndTime());
             }
         }
-        
-        return sessionRepository.save(session);
+        EntityUpdate.merge(existingSession, session);
+        return sessionRepository.save(existingSession);
     }   
 }

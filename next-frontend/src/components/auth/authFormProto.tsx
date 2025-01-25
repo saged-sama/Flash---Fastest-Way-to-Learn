@@ -28,8 +28,7 @@ export default function AuthFormProto({
         <Form.Item
             name="password"
             rules={[
-                {required: true, message: "Please set a password"},
-                {type: "regexp", message: "Please set a strong Password"}
+                {required: true, message: "Password is required"},
             ]}
             className="w-full"
         >

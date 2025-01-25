@@ -61,7 +61,7 @@ export default function Login() {
       <div className="flex justify-center gap-1 w-full">
         Don't have an account? <Link href="/auth/register" style={{ color: token.colorPrimary }}>Sign Up</Link>
       </div>
-      <Link href="/" className="hidden" id="redirect">Sign In</Link>
+      <Link href="/course" className="hidden" id="redirect">Sign In</Link>
     </div>
   );
 }

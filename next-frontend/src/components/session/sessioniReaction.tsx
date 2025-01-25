@@ -56,11 +56,11 @@ export default function SessionReaction({ session, allowReaction }: { session: a
         if (!springbase) {
             return;
         }
-        await springbase.collection("sessionreactions").create({
+        await springbase.collection("sessionreactions").create(objectToFormData({
             sessionId: session.id,
             userId: springbase.authStore.model.id,
             reaction: reaction,
-        });
+        }));
     };
     
 

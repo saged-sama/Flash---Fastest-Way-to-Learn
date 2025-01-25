@@ -50,7 +50,7 @@ export default function Request({ request }: { request: any }) {
             if (room) {
                 const code = await getRoomCode(springbase, room.id);
                 if (code) {
-                    router.push(`/subs/sessions/${request.session.id}/room/${code}`);
+                    router.push(`/subs/sessions/${request.session.id}/request/${request.id}/room/${code}`);
                 }
             }
         }

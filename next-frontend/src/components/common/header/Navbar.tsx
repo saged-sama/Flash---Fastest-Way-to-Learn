@@ -138,7 +138,7 @@ export default function Navbar() {
         {pathname === "/" && (
           <div>
             <Link
-              href="/subs/sessions"
+              href="/auth/register"
               className="bg-green-500 py-2 px-6 text-white font-semibold cursor-pointer rounded-3xl transform transition-all duration-300 ease-in-out hover:bg-green-600 hover:shadow-lg hover:scale-105 flex items-center space-x-2"
             >
               <GiTeacher className="text-black" />{" "}

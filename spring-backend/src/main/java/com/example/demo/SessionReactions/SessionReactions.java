@@ -25,11 +25,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(
-    uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"session_id", "user_id"})
-    }
-)
+@Table
 public class SessionReactions {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

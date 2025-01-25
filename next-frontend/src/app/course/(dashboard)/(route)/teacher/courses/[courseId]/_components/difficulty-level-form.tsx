@@ -55,7 +55,9 @@ export const DifficultyLevelForm = ({
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData,
+    defaultValues: {
+      DifficultyLevelId: initialData.DifficultyLevelId ?? undefined,
+    },
   });
 
   const { isSubmitting, isValid } = form.formState;

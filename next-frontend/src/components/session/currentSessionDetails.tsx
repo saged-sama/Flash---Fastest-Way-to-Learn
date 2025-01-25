@@ -23,8 +23,8 @@ export default function CurrentSessionDetails({ session }: { session: any}){
                 filter: `session.id=${session.id} && status="ACCEPTED"`
             });
 
-            if(sess.items[0].user.id === springbase.authStore.model.id || session.owner.id === springbase.authStore.model.id){
-                const room = await getRoom(springbase, sess.items[0].id);
+            if(sess?.items[0]?.user?.id === springbase.authStore.model.id || session?.owner?.id === springbase.authStore.model.id){
+                const room = await getRoom(springbase, sess?.items[0]?.id);
                 if(room){
                     const rCode = await getRoomCode(springbase, room.id);
                     if(rCode){
@@ -32,10 +32,10 @@ export default function CurrentSessionDetails({ session }: { session: any}){
                     }
                 }
             }
-            setCurrentSession(sess.items[0]);
-            if(sess.items[0]){
+            setCurrentSession(sess?.items[0]);
+            if(sess?.items[0]){
                 const terval = setInterval(() => {
-                    setTimePassed(getTimePassedSince(sess.items[0].createdAt));
+                    setTimePassed(getTimePassedSince(sess?.items[0]?.createdAt));
                 }, 1000);
                 setIntv(terval);
             }
@@ -44,12 +44,14 @@ export default function CurrentSessionDetails({ session }: { session: any}){
         getCurrentSession();
 
         springbase.collection("sessionrequests").subscribe({
+            id: currentSession?.id,
             action: "update"
         }, getCurrentSession);
 
         return () => {
             clearInterval(intv);
             springbase.collection("sessionrequests").unsubscribe({
+                id: currentSession?.id,
                 action: "update"
             });
         }
@@ -76,7 +78,7 @@ export default function CurrentSessionDetails({ session }: { session: any}){
                 ((currentSession.user.id === springbase?.authStore.model.id || session.owner.id === springbase?.authStore.model.id) ? 
                 " border border-orange-300" : "")} 
                 href={(springbase?.authStore.model.id === currentSession.user.id || springbase?.authStore.model.id === session.owner.id) ? 
-                `/subs/sessions/${session.id}/room/${roomCode}` : `/subs/sessions/${session.id}`
+                `/subs/sessions/${session.id}/request/${currentSession.id}/room/${roomCode}` : `/subs/sessions/${session.id}`
             }>    
                 <Request request={currentSession}/>
             </Link>

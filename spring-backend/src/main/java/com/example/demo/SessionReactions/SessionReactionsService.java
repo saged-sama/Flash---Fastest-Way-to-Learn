@@ -8,7 +8,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.Sessions.SessionsRepository;
-import com.example.demo.Sessions.SessionsService;
 import com.example.demo.Users.Users;
 import com.example.demo.Users.UsersRepository;
 import com.example.demo.Utilities.QueryFilters;

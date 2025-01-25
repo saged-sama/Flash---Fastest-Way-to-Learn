@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SessionReactionsRepository extends JpaRepository<SessionReactions, String>, JpaSpecificationExecutor<SessionReactions> {
     @Query("SELECT sr FROM SessionReactions sr WHERE sr.session.id = :sessionId AND sr.user.id = :userId")
-    SessionReactions findBySessionAndUser(String session, String user);
+    SessionReactions findBySessionAndUser(String sessionId, String userId);
 }

@@ -56,12 +56,12 @@ const Hero = () => {
             </p>
 
             <div className="button mt-6 flex justify-center lg:justify-start space-x-4">
-              <button className="primary-btn font-semibold bg-orange-600  py-3 px-6 rounded-lg shadow-2xl hover:bg-orange-400 transition duration-300">
+              <Link href="/auth/register" className="primary-btn font-semibold bg-orange-600  py-3 px-6 rounded-lg shadow-2xl hover:bg-orange-400 transition duration-300">
                 GET STARTED <i className="fa fa-long-arrow-alt-right"></i>
-              </button>
-              <button className=" primary-btn border-2 font-semibold  py-3 px-10  rounded-lg shadow-2xl hover:bg-orange-600 hover:text-white transition duration-300">
+              </Link>
+              <Link href="/auth/login" className=" primary-btn border-2 font-semibold  py-3 px-10  rounded-lg shadow-2xl hover:bg-orange-600 hover:text-white transition duration-300">
                 SIGN IN <i className="fa fa-long-arrow-alt-right"></i>
-              </button>
+              </Link>
             </div>
           </div>
 
