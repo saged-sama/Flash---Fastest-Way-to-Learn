@@ -19,6 +19,20 @@
 
 Flash is an e-learning platform built around one idea: **the best way to learn is to teach**. Users can host and join live one-on-one sessions, sell or explore courses, get AI-powered recommendations and video summaries, and track their learning progress — all in one place.
 
+Landing page 
+<img width="3022" height="1596" alt="image" src="https://github.com/user-attachments/assets/76b79d59-16aa-45c5-affb-1c133ced9a63" />
+Sign up
+<img width="2900" height="1590" alt="image" src="https://github.com/user-attachments/assets/3eb0b739-72cd-4ef2-a4f9-5ae172fc7138" />
+Explore courses 
+<img width="3024" height="1578" alt="image" src="https://github.com/user-attachments/assets/2cf10afe-0bed-4645-ab4d-4ec3ab66d0df" />
+Recommended Courses 
+<img width="3012" height="892" alt="image" src="https://github.com/user-attachments/assets/d9889264-504b-4634-a01f-635ba7455c5b" />
+Video Tutorial 
+
+
+
+
+
 ## Features
 
 - 🎥 **One-to-One Personalized Sessions** — live, focused learning sessions between a learner and a tutor
@@ -132,11 +146,11 @@ Built by a team from **CSEDU**:
 
 | Name | Contributions |
 |---|---|
-| **Sarower Jahan Rafin** | Landing page design, course section (backend & frontend), video summarizer |
-| **Mahmudul Hasan Yeamim** | Recommendation system, AI chatbot, frontend landing page |
-| **Abrar Eyasir** | Session design, session backend, database design |
-| **Md Emon Khan** | Session backend & frontend, frontend-backend connection, database design |
-| **Mahmudul Hasan Sajid** | Design patterns: Singleton, Prototype, Builder, Facade, Flyweight, Mediator, Observer, Strategy |
+| **Sarower Jahan Rafin** | Landing Page Design, Course Design, Session Design|
+| **Mahmudul Hasan Yeamim** | Course Section Backend, Course Section Frontend, Video Summarizer |
+| **Abrar Eyasir** | Recommendation System, AI Chatbot, Frontend Landing Page|
+| **Md Emon Khan** | Session backend & frontend, database design |
+| **Mahmudul Hasan Sajid** | Session Backend, Session Frontend, Frontend-Backend Connection, Database Design |
 
 ## License
 
