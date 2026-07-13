@@ -98,7 +98,6 @@ Flash's architecture applies eight classic design patterns to keep the codebase 
 | **Builder** | Creational | Incremental, chained construction of `SessionSettings` objects |
 | **Flyweight** | Structural | Debounced, shared state for search input to reduce redundant backend calls |
 
-📄 A full write-up with problem/solution breakdowns and UML diagrams for each pattern is available in the project's design documentation.
 
 ## Tech Stack
 
