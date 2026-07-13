@@ -28,7 +28,19 @@ Explore courses
 Recommended Courses 
 <img width="3012" height="892" alt="image" src="https://github.com/user-attachments/assets/d9889264-504b-4634-a01f-635ba7455c5b" />
 Video Tutorial 
-
+<img width="2104" height="1162" alt="image" src="https://github.com/user-attachments/assets/23440fdd-1a5f-4731-a16b-1849934021fa" />
+Video Summarizer 
+<img width="2092" height="1218" alt="image" src="https://github.com/user-attachments/assets/9ca671b0-ea3e-4876-9205-7797d28b7d86" />
+New course set up
+<img width="2092" height="1180" alt="image" src="https://github.com/user-attachments/assets/2762973e-cd50-4b22-8882-12b6624fb88d" />
+Payment 
+<img width="1568" height="1090" alt="image" src="https://github.com/user-attachments/assets/30875bff-b6b9-4d01-98f6-208d861ab957" />
+Chatbot 
+<img width="2092" height="1146" alt="image" src="https://github.com/user-attachments/assets/09787886-dd37-4451-ab07-3eaf7b36cbc3" />
+Session page 
+<img width="2068" height="1156" alt="image" src="https://github.com/user-attachments/assets/5f6cfdf1-97e8-4f99-9c5d-327dfdba0316" />
+Video Session 
+<img width="2096" height="1170" alt="image" src="https://github.com/user-attachments/assets/9ffdd2d1-a0e8-4012-be09-659bac5f044f" />
 
 
 
