@@ -1,4 +1,6 @@
-<img width="3002" height="1650" alt="image" src="https://github.com/user-attachments/assets/2ff4309d-ae14-4bb2-980b-d9ba19ef42cb" /><div align="center">
+<div align="center">
+
+<img width="100%" alt="Flash banner" src="https://github.com/user-attachments/assets/2ff4309d-ae14-4bb2-980b-d9ba19ef42cb" />
 
 # ⚡ Flash — Fastest Way to Learn
 
@@ -9,7 +11,7 @@
 [![Database](https://img.shields.io/badge/Database-PostgreSQL-4169E1?logo=postgresql&logoColor=white)](#tech-stack)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](#license)
 
-[Features](#features) • [Design Patterns](#design-patterns) • [Tech Stack](#tech-stack) • [Installation](#installation) • [Team](#team)
+[Features](#features) • [Screenshots](#screenshots) • [Design Patterns](#design-patterns) • [Tech Stack](#tech-stack) • [Installation](#installation) • [Team](#team)
 
 </div>
 
@@ -18,32 +20,6 @@
 ## About
 
 Flash is an e-learning platform built around one idea: **the best way to learn is to teach**. Users can host and join live one-on-one sessions, sell or explore courses, get AI-powered recommendations and video summaries, and track their learning progress — all in one place.
-
-Landing page 
-<img width="3022" height="1596" alt="image" src="https://github.com/user-attachments/assets/76b79d59-16aa-45c5-affb-1c133ced9a63" />
-Sign up
-<img width="2900" height="1590" alt="image" src="https://github.com/user-attachments/assets/3eb0b739-72cd-4ef2-a4f9-5ae172fc7138" />
-Explore courses 
-<img width="3024" height="1578" alt="image" src="https://github.com/user-attachments/assets/2cf10afe-0bed-4645-ab4d-4ec3ab66d0df" />
-Recommended Courses 
-<img width="3012" height="892" alt="image" src="https://github.com/user-attachments/assets/d9889264-504b-4634-a01f-635ba7455c5b" />
-Video Tutorial 
-<img width="2104" height="1162" alt="image" src="https://github.com/user-attachments/assets/23440fdd-1a5f-4731-a16b-1849934021fa" />
-Video Summarizer 
-<img width="2092" height="1218" alt="image" src="https://github.com/user-attachments/assets/9ca671b0-ea3e-4876-9205-7797d28b7d86" />
-New course set up
-<img width="2092" height="1180" alt="image" src="https://github.com/user-attachments/assets/2762973e-cd50-4b22-8882-12b6624fb88d" />
-Payment 
-<img width="1568" height="1090" alt="image" src="https://github.com/user-attachments/assets/30875bff-b6b9-4d01-98f6-208d861ab957" />
-Chatbot 
-<img width="2092" height="1146" alt="image" src="https://github.com/user-attachments/assets/09787886-dd37-4451-ab07-3eaf7b36cbc3" />
-Session page 
-<img width="2068" height="1156" alt="image" src="https://github.com/user-attachments/assets/5f6cfdf1-97e8-4f99-9c5d-327dfdba0316" />
-Video Session 
-<img width="2096" height="1170" alt="image" src="https://github.com/user-attachments/assets/9ffdd2d1-a0e8-4012-be09-659bac5f044f" />
-
-
-
 
 ## Features
 
@@ -54,6 +30,58 @@ Video Session
 - 📊 **Track Course Progress** — monitor completion and learning milestones
 - 🤖 **Course Recommendation System** — AI-driven suggestions based on user interests
 - 📝 **Video Summarizer** — automatic transcription and summarization of session videos
+
+## Screenshots
+
+<details open>
+<summary><b>Onboarding & Discovery</b></summary>
+<br>
+
+<table>
+<tr>
+<td width="50%" align="center"><b>Landing Page</b><br><img src="https://github.com/user-attachments/assets/76b79d59-16aa-45c5-affb-1c133ced9a63" /></td>
+<td width="50%" align="center"><b>Sign Up</b><br><img src="https://github.com/user-attachments/assets/3eb0b739-72cd-4ef2-a4f9-5ae172fc7138" /></td>
+</tr>
+<tr>
+<td width="50%" align="center"><b>Explore Courses</b><br><img src="https://github.com/user-attachments/assets/2cf10afe-0bed-4645-ab4d-4ec3ab66d0df" /></td>
+<td width="50%" align="center"><b>Recommended Courses</b><br><img src="https://github.com/user-attachments/assets/d9889264-504b-4634-a01f-635ba7455c5b" /></td>
+</tr>
+</table>
+
+</details>
+
+<details open>
+<summary><b>Learning & AI Tools</b></summary>
+<br>
+
+<table>
+<tr>
+<td width="50%" align="center"><b>Video Tutorial</b><br><img src="https://github.com/user-attachments/assets/23440fdd-1a5f-4731-a16b-1849934021fa" /></td>
+<td width="50%" align="center"><b>Video Summarizer</b><br><img src="https://github.com/user-attachments/assets/9ca671b0-ea3e-4876-9205-7797d28b7d86" /></td>
+</tr>
+<tr>
+<td width="50%" align="center"><b>Chatbot</b><br><img src="https://github.com/user-attachments/assets/09787886-dd37-4451-ab07-3eaf7b36cbc3" /></td>
+<td width="50%" align="center"><b>New Course Setup</b><br><img src="https://github.com/user-attachments/assets/2762973e-cd50-4b22-8882-12b6624fb88d" /></td>
+</tr>
+</table>
+
+</details>
+
+<details open>
+<summary><b>Sessions & Payments</b></summary>
+<br>
+
+<table>
+<tr>
+<td width="50%" align="center"><b>Session Page</b><br><img src="https://github.com/user-attachments/assets/5f6cfdf1-97e8-4f99-9c5d-327dfdba0316" /></td>
+<td width="50%" align="center"><b>Live Video Session</b><br><img src="https://github.com/user-attachments/assets/9ffdd2d1-a0e8-4012-be09-659bac5f044f" /></td>
+</tr>
+<tr>
+<td colspan="2" align="center"><b>Payment</b><br><img width="60%" src="https://github.com/user-attachments/assets/30875bff-b6b9-4d01-98f6-208d861ab957" /></td>
+</tr>
+</table>
+
+</details>
 
 ## Design Patterns
 
@@ -158,13 +186,12 @@ Built by a team from **CSEDU**:
 
 | Name | Contributions |
 |---|---|
-| **Sarower Jahan Rafin** | Landing Page Design, Course Design, Session Design|
-| **Mahmudul Hasan Yeamim** | Course Section Backend, Course Section Frontend, Video Summarizer |
-| **Abrar Eyasir** | Recommendation System, AI Chatbot, Frontend Landing Page|
+| **Sarower Jahan Rafin** | Landing page design, course design, session design |
+| **Mahmudul Hasan Yeamim** | Course section backend, course section frontend, video summarizer |
+| **Abrar Eyasir** | Recommendation system, AI chatbot, frontend landing page |
 | **Md Emon Khan** | Session backend & frontend, database design |
-| **Mahmudul Hasan Sajid** | Session Backend, Session Frontend, Frontend-Backend Connection, Database Design |
+| **Mahmudul Hasan Sajid** | Session backend, session frontend, frontend-backend connection, database design |
 
 ## License
 
 This project is licensed under the MIT License.
-# Flash - Fastest Way to Learning
